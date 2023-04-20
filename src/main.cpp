@@ -8,11 +8,11 @@ const byte POT_PIN4 = 35;
 const byte led_gpio = 32;
 
 #define midnight 1860
-#define dawn 2320
-#define twilight 2480
-#define noon 3690
+#define gloaming 2320
+#define dawn 2480
+#define noon 3800
 
-int sequence[] = {dawn, noon, midnight, twilight};
+int sequence[] = {gloaming, midnight, dawn, noon};
 int led_status[] = {midnight, midnight, midnight, midnight};
 
 void setup() {
@@ -23,10 +23,10 @@ void setup() {
 int get_status(uint16_t ar) {
   if (ar < midnight) {
     return midnight;
-  } else if (ar > midnight && ar < dawn) {
+  } else if (ar > midnight && ar < gloaming) {
+    return gloaming;
+  } else if (ar > gloaming && ar < dawn) {
     return dawn;
-  } else if (ar > dawn && ar < twilight) {
-    return twilight;
   } else {
     return noon;
   }
@@ -53,5 +53,5 @@ void loop() {
 
   String out_str = String(led_status[0]) + " " + String(led_status[1]) + " " + String(led_status[2]) + " " + String(led_status[3]);
   Serial.println(out_str);
-  delay(500);
+  delay(300);
 }

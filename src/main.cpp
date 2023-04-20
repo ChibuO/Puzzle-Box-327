@@ -1,4 +1,5 @@
 #include <Arduino.h>
+#include "opening.h"
 
 const byte POT_PIN1 = 36;
 const byte POT_PIN2 = 39;

@@ -8,8 +8,8 @@
         {
             "name": "PlatformIO",
             "includePath": [
-                "C:/Users/Amazi/Documents/PlatformIO/Projects/blink2/include",
-                "C:/Users/Amazi/Documents/PlatformIO/Projects/blink2/src",
+                "C:/Users/Amazi/Documents/GitHub/Puzzle-Box-327/include",
+                "C:/Users/Amazi/Documents/GitHub/Puzzle-Box-327/src",
                 "C:/Users/Amazi/.platformio/packages/framework-arduinoespressif32/tools/sdk/esp32/include/newlib/platform_include",
                 "C:/Users/Amazi/.platformio/packages/framework-arduinoespressif32/tools/sdk/esp32/include/freertos/include",
                 "C:/Users/Amazi/.platformio/packages/framework-arduinoespressif32/tools/sdk/esp32/include/freertos/include/esp_additions/freertos",
@@ -239,8 +239,8 @@
             "browse": {
                 "limitSymbolsToIncludedHeaders": true,
                 "path": [
-                    "C:/Users/Amazi/Documents/PlatformIO/Projects/blink2/include",
-                    "C:/Users/Amazi/Documents/PlatformIO/Projects/blink2/src",
+                    "C:/Users/Amazi/Documents/GitHub/Puzzle-Box-327/include",
+                    "C:/Users/Amazi/Documents/GitHub/Puzzle-Box-327/src",
                     "C:/Users/Amazi/.platformio/packages/framework-arduinoespressif32/tools/sdk/esp32/include/newlib/platform_include",
                     "C:/Users/Amazi/.platformio/packages/framework-arduinoespressif32/tools/sdk/esp32/include/freertos/include",
                     "C:/Users/Amazi/.platformio/packages/framework-arduinoespressif32/tools/sdk/esp32/include/freertos/include/esp_additions/freertos",

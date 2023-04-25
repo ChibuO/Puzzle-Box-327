@@ -1,7 +1,6 @@
 #ifndef PASSWORD_H
 #define PASSWORD_H
     #include <Arduino.h>
-    #include <ESP32Servo.h>
     #include <Keypad.h>
 
     void keypad_setup();

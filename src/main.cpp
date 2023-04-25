@@ -3,35 +3,52 @@
 #include "password.h"
 #include "light_knobs.h"
 
-
 const byte led_gpio = 32;
+const byte led_gpio2 = 33;
+bool lights_done = 0;
+bool keypad_done = 0;
 
+char password[6] = {'1', '2', '3', '3', '#', '*'};
 
-void setup() {
+void setup()
+{
   Serial.begin(9600);
   pinMode(led_gpio, OUTPUT);
+  pinMode(led_gpio2, OUTPUT);
   keypad_setup();
   light_knobs_setup();
 }
 
-void loop() {
-  update_led_status();
+void loop()
+{
 
-  if (led_is_correct()) {
-    digitalWrite(led_gpio, HIGH);   // turn the LED on (HIGH is the voltage level)
-  } else {
-    digitalWrite(led_gpio, LOW);    // turn the LED off by making the voltage LOW
+  // lights puzzle
+  while (!lights_done)
+  {
+    update_led_status();
+
+    if (led_is_correct())
+    {
+      digitalWrite(led_gpio, HIGH); // turn the LED on (HIGH is the voltage level)
+      lights_done = 1;
+    }
+    else
+    {
+      digitalWrite(led_gpio, LOW); // turn the LED off by making the voltage LOW
+    }
+    print_led_status();
+    delay(300);
   }
-  print_led_status();
-  delay(300);
 
-  /*
-  //code for keypad
-  char password[6] = {'1', '2', '3', '3', '#', '*'};
-  Serial.write("starting\n");
-  int done = keypad_password(6, password);
-  Serial.write("done\n");
+  // code for keypad
+  while (!keypad_done)
+  {
+    keypad_done = keypad_password(6, password);
+    digitalWrite(led_gpio2, HIGH);
+  }
+  Serial.write("******************************\n");
+  Serial.write("YOU WIN\n");
+  Serial.write("******************************\n");
 
-  digitalWrite(led_gpio, HIGH);
-  */
+  while(1) {}
 }

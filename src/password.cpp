@@ -25,7 +25,7 @@ void keypad_setup()
     msg = "";
 }
 
-char keypad_password(int n, char *code)
+char keypad_check_password(int n, char *code)
 {
     int n_temp = 0;
     int pressed = 0;

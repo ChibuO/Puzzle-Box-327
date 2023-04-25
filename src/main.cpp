@@ -43,7 +43,7 @@ void loop()
   // code for keypad
   while (!keypad_done)
   {
-    keypad_done = keypad_password(6, password);
+    keypad_done = keypad_check_password(6, password);
     digitalWrite(led_gpio2, HIGH);
   }
   Serial.write("******************************\n");

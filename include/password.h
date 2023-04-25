@@ -5,5 +5,5 @@
 
     void keypad_setup();
     void read_keypad();
-    char keypad_password(int n, char* code);
+    char keypad_check_password(int n, char* code);
 #endif /* PASSWORD_H */

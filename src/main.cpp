@@ -1,5 +1,6 @@
 #include <Arduino.h>
 #include "opening.h"
+#include "password.h"
 
 const byte POT_PIN1 = 36;
 const byte POT_PIN2 = 39;
@@ -18,6 +19,7 @@ int led_status[] = {midnight, midnight, midnight, midnight};
 void setup() {
   Serial.begin(9600);
   pinMode(led_gpio, OUTPUT);
+  keypad_setup();
 }
 
 int get_status(uint16_t ar) {
@@ -54,4 +56,14 @@ void loop() {
   String out_str = String(led_status[0]) + " " + String(led_status[1]) + " " + String(led_status[2]) + " " + String(led_status[3]);
   Serial.println(out_str);
   delay(300);
+
+  /*
+  //code for keypad
+  char password[6] = {'1', '2', '3', '3', '#', '*'};
+  Serial.write("starting\n");
+  int done = keypad_password(6, password);
+  Serial.write("done\n");
+
+  digitalWrite(led_gpio, HIGH);
+  */
 }

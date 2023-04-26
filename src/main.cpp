@@ -2,6 +2,8 @@
 #include "opening.h"
 #include "password.h"
 #include "light_knobs.h"
+#include "server.h"
+#include "filesystem.h"
 
 const byte led_gpio = 32;
 const byte led_gpio2 = 33;

@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title 
+           style="background-color: #E99204">My Webcam
+    </title>
+	
+    
+    
+	<link href="webcam_styles.css" rel="stylesheet" type="text/css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Climate+Crisis">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto">
+</head>
+
+<body>
+    <div class="wrapper">
+         <div class="sidebar">
+            <h2>Group9</h2>
+            <ul>
+                <li>
+                    <a href="index.html">
+                        Home
+                    </a>
+                </li>
+                <li><a href="webcam.html">
+                        Webcam
+                    </a>
+                </li>
+                <li><a href="info.html">
+                        About
+                    </a>
+                </li>
+                <li>
+                    <a href="/edit" target="_blank">
+                        Editor
+                    </a>
+                </li>
+            </ul>
+        </div>
+        
+        <div class="main_content">
+           <h1 class= my-class>Group9</h1>
+
+           <h3 class=paragraph id="timestamp">Time Stamp</h3>
+
+           <img class=my-class id="image" alt="My webcam image" width="640" height="480">
+        
+           <br>
+            
+           <button onclick="ButtonClick()" class =button id="btnWS" title="Click to start webcam">Start Webcam</button>
+
+           <h3 class=my-class>Log</h3>
+
+           <textarea class=my-class id="msg" rows="20" cols="50">&nbsp;</textarea>
+           <script src="webcam_functions.js"></script>
+        </div>
+    </div>
+       
+</body>
+
+</html>

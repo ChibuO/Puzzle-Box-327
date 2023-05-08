@@ -10,6 +10,9 @@ var websocket = null;
 var localhost = "";
 var status_line = document.getElementById('stat');
 var webcam_closed = false;
+var accelDict = {'accX': 0.0, 'accY': 0.0, 'accZ': 0.0};
+var gyroDict = {'gyroX': 0.0, 'gyroY': 0.0, 'gyroZ': 0.0};
+var d_tilt;
 
 // Initialize the websocket
 function init() {
@@ -52,7 +55,14 @@ function onMessage(msg) {
     
 	// Get the image just taken from WiFi chip's RAM.
 	//var image = document.getElementById('image');
-    console.log(msg.data);
+    //console.log(msg.data);
+    let accelArray = msg.data.split(", ");
+    //console.log(accelArray);
+    accelDict['accX'] = accelArray[0];
+    accelDict['accY'] = accelArray[1];
+    accelDict['accZ'] = accelArray[2];
+    //console.log(accelDict);
+    direction_tilt();
 }
 
 function onError(evt) { // when an error occurs
@@ -132,7 +142,7 @@ window.onresize = function () {
 
 function makeMaze() {
     if (player != undefined) {
-        player.unbindKeyDown();
+        // player.unbindKeyDown();
         player = null;
     }
 
@@ -150,7 +160,7 @@ function makeMaze() {
 
     player = new Player(maze, mazeCanvas, cellSize, displayVictoryMess, ballSprite);
     player.drawBallSprite(maze.startCoord());
-    player.bindKeyDown();
+    // player.bindKeyDown();
 
     if (document.getElementById("mazeContainer").style.opacity < "100") {
         document.getElementById("mazeContainer").style.opacity = "100";
@@ -172,6 +182,7 @@ function shuffle(a) {
 
 function displayVictoryMess() {
     toggleVisibility("Message-Container");
+    //websocket.send("completed");
 }
 
 function toggleVisibility(id) {
@@ -501,7 +512,7 @@ class Player {
             //when it reaches the end
             if (coord.x === maze.endCoord().x && coord.y === maze.endCoord().y) {
                 onComplete();
-                player.unbindKeyDown();
+                // player.unbindKeyDown();
             }
         }
 
@@ -523,7 +534,7 @@ class Player {
             //when it reaches the end
             if (coord.x === maze.endCoord().x && coord.y === maze.endCoord().y) {
                 onComplete();
-                player.unbindKeyDown();
+                // player.unbindKeyDown();
             }
         }
 
@@ -550,63 +561,106 @@ class Player {
         //redraw sprite in new location based on arrow keys
         function check(e) {
             var cell = map[cellCoords.x][cellCoords.y];
-            switch (e.keyCode) {
-                case 65:
-                case 37: // west
-                    if (cell.w == true) {
-                        removeSprite(cellCoords);
-                        cellCoords = {
-                            x: cellCoords.x - 1,
-                            y: cellCoords.y
-                        };
-                        player.drawBallSprite(cellCoords);
-                    }
-                    break;
-                case 87:
-                case 38: // north
-                    if (cell.n == true) {
-                        removeSprite(cellCoords);
-                        cellCoords = {
-                            x: cellCoords.x,
-                            y: cellCoords.y - 1
-                        };
-                        player.drawBallSprite(cellCoords);
-                    }
-                    break;
-                case 68:
-                case 39: // east
-                    if (cell.e == true) {
-                        removeSprite(cellCoords);
-                        cellCoords = {
-                            x: cellCoords.x + 1,
-                            y: cellCoords.y
-                        };
-                        player.drawBallSprite(cellCoords);
-                    }
-                    break;
-                case 83:
-                case 40: // south
-                    if (cell.s == true) {
-                        removeSprite(cellCoords);
-                        cellCoords = {
-                            x: cellCoords.x,
-                            y: cellCoords.y + 1
-                        };
-                        player.drawBallSprite(cellCoords);
-                    }
-                    break;
+
+            if (d_tilt == "west") {
+                if (cell.w == true) {
+                    removeSprite(cellCoords);
+                    cellCoords = {
+                        x: cellCoords.x - 1,
+                        y: cellCoords.y
+                    };
+                    player.drawBallSprite(cellCoords);
+                }
+            } else if (d_tilt == "east") {
+                if (cell.e == true) {
+                    removeSprite(cellCoords);
+                    cellCoords = {
+                        x: cellCoords.x + 1,
+                        y: cellCoords.y
+                    };
+                    player.drawBallSprite(cellCoords);
+                }
+            } else if (d_tilt == "north") {
+                if (cell.n == true) {
+                    removeSprite(cellCoords);
+                    cellCoords = {
+                        x: cellCoords.x,
+                        y: cellCoords.y - 1
+                    };
+                    player.drawBallSprite(cellCoords);
+                }
+            } else if (d_tilt == "south") {
+                if (cell.s == true) {
+                    removeSprite(cellCoords);
+                    cellCoords = {
+                        x: cellCoords.x,
+                        y: cellCoords.y + 1
+                    };
+                    player.drawBallSprite(cellCoords);
+                }
             }
+
+            // switch (e.keyCode) {
+            //     case 65:
+            //     case 37: // west
+            //         if (cell.w == true) {
+            //             removeSprite(cellCoords);
+            //             cellCoords = {
+            //                 x: cellCoords.x - 1,
+            //                 y: cellCoords.y
+            //             };
+            //             player.drawBallSprite(cellCoords);
+            //         }
+            //         break;
+            //     case 87:
+            //     case 38: // north
+            //         if (cell.n == true) {
+            //             removeSprite(cellCoords);
+            //             cellCoords = {
+            //                 x: cellCoords.x,
+            //                 y: cellCoords.y - 1
+            //             };
+            //             player.drawBallSprite(cellCoords);
+            //         }
+            //         break;
+            //     case 68:
+            //     case 39: // east
+            //         if (cell.e == true) {
+            //             removeSprite(cellCoords);
+            //             cellCoords = {
+            //                 x: cellCoords.x + 1,
+            //                 y: cellCoords.y
+            //             };
+            //             player.drawBallSprite(cellCoords);
+            //         }
+            //         break;
+            //     case 83:
+            //     case 40: // south
+            //         if (cell.s == true) {
+            //             removeSprite(cellCoords);
+            //             cellCoords = {
+            //                 x: cellCoords.x,
+            //                 y: cellCoords.y + 1
+            //             };
+            //             player.drawBallSprite(cellCoords);
+            //         }
+            //         break;
+            // }
         }
 
-        this.bindKeyDown = function () {
-            window.addEventListener("keydown", check, false);
-        };
+        setInterval(check, 100);
 
-        this.unbindKeyDown = function () {
-            window.removeEventListener("keydown", check, false);
-        };
+        // this.bindKeyDown = function () {
+        //     // window.addEventListener("keydown", check, false);
+        //     window.addEventListener(d_tilt, check, false);
+        // };
 
-        this.bindKeyDown();
+        // this.unbindKeyDown = function () {
+        //     // window.removeEventListener("keydown", check, false);
+        //     window.removeEventListener(d_tilt, check, false);
+        // };
+
+        // this.bindKeyDown();
     }
 }
 
@@ -618,3 +672,19 @@ function writeToScreen(message)
 
 // Open Websocket as soon as page loads
 window.addEventListener("load", init, false);
+
+function direction_tilt() {
+    if (accelDict['accY'] < -40.0) {
+        d_tilt = "west";
+    } else if (accelDict['accY'] > 36.0) {
+        d_tilt = "east";
+    } else if (accelDict['accX'] < -25.0) {
+        d_tilt = "north";
+    } else if (accelDict['accX'] > 45.0) {
+        d_tilt = "south";
+    } else {
+        d_tilt = "none";
+    }
+
+    //console.log(d_tilt);
+}

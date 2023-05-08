@@ -14,9 +14,15 @@ uint32_t websocket_conn_count = 0;
 volatile bool web_setup = false;
 TaskHandle_t wifi_reconnect_task_handle = NULL;
 bool is_websocket_connected = false;
+bool is_maze_completed = false;
 
 void handleWebSocketMessage(uint8_t num, WStype_t type, uint8_t * payload, size_t len) {
   Serial.printf("%s\r\n", payload);
+  int comp = strcmp((char *) payload, "completed");
+  Serial.printf("%d\r\n", comp);
+  if (!comp) {
+    is_maze_completed = true;
+  }
 }
 
 void onEvent(uint8_t num, WStype_t type, uint8_t * payload, size_t len) {

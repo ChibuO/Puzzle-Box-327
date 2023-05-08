@@ -10,6 +10,7 @@ const byte led_gpio = 32;
 const byte led_gpio2 = 33;
 bool lights_done = 0;
 bool keypad_done = 0;
+bool door_open = 0;
 
 char password[6] = {'1', '2', '3', '3', '#', '*'};
 
@@ -20,7 +21,7 @@ void setup()
   pinMode(led_gpio, OUTPUT);
   pinMode(led_gpio2, OUTPUT);
   keypad_setup();
-  light_knobs_setup();
+  //light_knobs_setup();
   open_setup();
   imu_setup();
 
@@ -77,16 +78,35 @@ void send_to_socket(String msg) {
 
 //bool show_words = is_websocket_connected;
 
+void ltoop()
+{
+  digitalWrite(BUILTIN_LED, !digitalRead(BUILTIN_LED));
+
+  
+  
+
+  delay(100);
+}
+
+
 void loop()
 {
   digitalWrite(BUILTIN_LED, !digitalRead(BUILTIN_LED));
 
-  String imu_data = read_imu();
-  send_to_socket(imu_data);
+  if (!is_maze_completed) {
+    String imu_data = read_imu();
+    send_to_socket(imu_data);
 
-  if (is_websocket_connected) {
-    Serial.println(imu_data);
+    if (is_websocket_connected) {
+      Serial.println(imu_data);
+    }
+  } else {
+    Serial.println("buzzzzzzzzzzzzz");
+    //if (!door_open)
+    open();
+    while (1) {}
   }
+  
 
   delay(100);
 }

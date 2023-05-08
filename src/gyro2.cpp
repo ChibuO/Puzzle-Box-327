@@ -132,7 +132,7 @@ String read_imu() {
     // Serial.print(" / gyAngleZ: ");
     // Serial.println(gyroAngleZ);
 
-    String s2 = (String) roll + ", " + (String) pitch + ", " + (String) yaw;
-    //String sender = (String) accAngleX + ", " + (String) accAngleY + ", " + (String) AccZ + ", " + (String) gyroAngleX + ", " + (String) gyroAngleY + ", " + (String) gyroAngleZ; 
+    //String s2 = (String) roll + ", " + (String) pitch + ", " + (String) yaw;
+    String s2 = (String) accAngleX + ", " + (String) accAngleY + ", " + (String) AccZ + ", " + (String) gyroAngleX + ", " + (String) gyroAngleY + ", " + (String) gyroAngleZ; 
     return s2;
 }

@@ -21,9 +21,10 @@ void open_setup()
 
 void open()
 {
-    myservo.write(180);
-    delay(1000);
     myservo.write(0);
+    delay(1000);
+    myservo.write(75);
+    delay(1000);
 
     // int steps = 18;
     // // myservo.write(90);

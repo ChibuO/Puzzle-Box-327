@@ -17,6 +17,7 @@ extern WebSocketsServer ws;
 extern volatile bool web_setup;
 
 extern bool is_websocket_connected;
+extern bool is_maze_completed;
 
 bool wifi_conn_status();
 String get_mac_address();

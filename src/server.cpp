@@ -13,19 +13,20 @@ WebSocketsServer ws(81);
 uint32_t websocket_conn_count = 0;
 volatile bool web_setup = false;
 TaskHandle_t wifi_reconnect_task_handle = NULL;
+bool is_websocket_connected = false;
 
 void handleWebSocketMessage(uint8_t num, WStype_t type, uint8_t * payload, size_t len) {
-  // placeholder
+  Serial.printf("%s\r\n", payload);
 }
 
 void onEvent(uint8_t num, WStype_t type, uint8_t * payload, size_t len) {
   IPAddress ip = ws.remoteIP(num);
-  BlinkData_t blink_data;
   switch (type) {
     case WStype_CONNECTED:
       Serial.printf("WebSocket client #%u connected from %d.%d.%d.%d url: %s\r\n", num, ip[0], ip[1], ip[2], ip[3], payload);
       websocket_conn_count = ws.connectedClients();
       Serial.printf("Total connected clients: %u\r\n", websocket_conn_count);
+      is_websocket_connected = true;
       break;
     case WStype_DISCONNECTED:
       Serial.printf("WebSocket client #%u disconnected\r\n", num);
@@ -33,6 +34,7 @@ void onEvent(uint8_t num, WStype_t type, uint8_t * payload, size_t len) {
       Serial.printf("Total connected clients: %u\r\n", websocket_conn_count);
       if (websocket_conn_count == 0) {
         Serial.println("No connected clients");
+        is_websocket_connected = false;
       }
       break;
     case WStype_TEXT:
@@ -117,7 +119,6 @@ void start_ota() { // Start the OTA service
 }
 
 void wifi_reconnect_task(void * parameters) {
-  BlinkData_t blink_data;
   while (1) {
     if (WiFi.status() == WL_CONNECTED) {
       vTaskDelay(10000 / portTICK_PERIOD_MS);
@@ -125,19 +126,13 @@ void wifi_reconnect_task(void * parameters) {
     }
 
     Serial.println("WiFi disconnected...reconnecting");
-    set_network_pin(LOW);
-
     // send connection data to gpio tasks
-    blink_data = {SHORT, 254};
-    xQueueSend(q_wlan_led, (void *) &blink_data, (TickType_t) 0);
 
     // restart wifi
     uint8_t mac[6];
     WiFi.macAddress(mac);
 
     // Connect to Wi-Fi
-    blink_data = {SHORT, 254};
-    xQueueSend(q_ap_led, (void *) &blink_data, (TickType_t) 0);
     WiFiManager wm;
     char web_setup_ap_ssid[20];
     sprintf(web_setup_ap_ssid, "ESD1 %x%x", mac[4], mac[5]);
@@ -153,12 +148,6 @@ void wifi_reconnect_task(void * parameters) {
     }
     else {
       Serial.println("WiFi reconnected: " + WiFi.localIP());
-      // send connection data to gpio tasks
-      blink_data = {LONG, 254};
-      xQueueSend(q_wlan_led, (void *) &blink_data, (TickType_t) 0);
-      blink_data = {OFF, 254};
-      xQueueSend(q_ap_led, (void *) &blink_data, (TickType_t) 0);
-      set_network_pin(HIGH);
     }
   }
 }
@@ -176,7 +165,7 @@ void start_web_setup() {
 
 void server_loop_task(void * params) {
   uint32_t counter = 0;
-  BlinkData_t blink_data;
+  //BlinkData_t blink_data;
   while (1) {
     ws.loop();
     server.handleClient();
@@ -187,16 +176,6 @@ void server_loop_task(void * params) {
     }
 
     if (counter++ == 1000) { // checking too frequently crashes the server
-      if (ws.connectedClients()) {
-        set_connected_clients_pin(HIGH);
-        blink_data = {LONG, 254};
-        xQueueSend(q_websocket_led, (void *) &blink_data, (TickType_t) 0);
-      }
-      else {
-        set_connected_clients_pin(LOW);
-        blink_data = {SHORT, 254};
-        xQueueSend(q_websocket_led, (void *) &blink_data, (TickType_t) 0);
-      }
       counter = 0;
     }
 
@@ -213,40 +192,17 @@ String get_mac_address() {
 }
 
 void start_web_services() {
+  Serial.println("Heyyyy"); //use putty to see these
   Serial.println(WiFi.macAddress());
   uint8_t mac[6];
   WiFi.macAddress(mac);
-  BlinkData_t blink_data;
 
-  // initialize wlan led as "not connected"
-  blink_data = {SHORT, 254};
-  xQueueSend(q_wlan_led, (void *) &blink_data, (TickType_t) 0);
-
-  // initialize websocket led as "not connected"
-  blink_data = {SHORT, 254};
-  xQueueSend(q_websocket_led, (void *) &blink_data, (TickType_t) 0);
-
-  // initialize ap led as "active"
-  blink_data = {SHORT, 254};
-  xQueueSend(q_ap_led, (void *) &blink_data, (TickType_t) 0);
-
-  // Connect to WiFi
   WiFiManager wm;
   char web_setup_ap_ssid[20];
   sprintf(web_setup_ap_ssid, "ESD1 %x%x", mac[4], mac[5]);
   Serial.printf("web setup AP: %s\r\n", web_setup_ap_ssid);
   bool res;
   res = wm.autoConnect(web_setup_ap_ssid);
-
-  if (res) {
-    // if connection successful, set the network pin high and turn off the ap led
-    set_network_pin(HIGH);
-    blink_data = {OFF, 254};
-    xQueueSend(q_ap_led, (void *) &blink_data, (TickType_t) 0);
-  }
-  else {
-    set_network_pin(LOW);
-  }
 
   while (WiFi.status() != WL_CONNECTED) {
     delay(1000);
@@ -267,14 +223,6 @@ void start_web_services() {
     &wifi_reconnect_task_handle,
     CONFIG_ARDUINO_RUNNING_CORE
   );
-
-  // send connection data to gpio tasks
-  blink_data = {LONG, 254};
-  xQueueSend(q_wlan_led, (void *) &blink_data, (TickType_t) 0);
-
-  // start by assuming no websockets connected
-  blink_data = {SHORT, 254};
-  xQueueSend(q_websocket_led, (void *) &blink_data, (TickType_t) 0);
 
   start_ota();
 

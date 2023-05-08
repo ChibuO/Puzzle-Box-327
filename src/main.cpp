@@ -4,6 +4,7 @@
 #include "light_knobs.h"
 #include "server.h"
 #include "filesystem.h"
+#include "imu.h"
 
 const byte led_gpio = 32;
 const byte led_gpio2 = 33;
@@ -14,16 +15,27 @@ char password[6] = {'1', '2', '3', '3', '#', '*'};
 
 void setup()
 {
-  Serial.begin(9600);
+  Serial.begin(115200);
+  pinMode(LED_BUILTIN, OUTPUT);
   pinMode(led_gpio, OUTPUT);
   pinMode(led_gpio2, OUTPUT);
   keypad_setup();
   light_knobs_setup();
+  open_setup();
+  imu_setup();
+
+  // Initialize SPIFFS - for saving data in flash memory
+  uint8_t spiffs_check = startSPIFFS();
+  if (spiffs_check == 1) {
+    Serial.println("SPIFFS ERROR!");
+    return;
+  }
+
+  start_web_services();
+
 }
 
-void loop()
-{
-
+void puzzle() {
   // lights puzzle
   while (!lights_done)
   {
@@ -53,4 +65,28 @@ void loop()
   Serial.write("******************************\n");
 
   while(1) {}
+}
+
+void motor() {
+  open();
+}
+
+void send_to_socket(String msg) {
+  ws.broadcastTXT(msg);
+}
+
+//bool show_words = is_websocket_connected;
+
+void loop()
+{
+  digitalWrite(BUILTIN_LED, !digitalRead(BUILTIN_LED));
+
+  String imu_data = read_imu();
+  send_to_socket(imu_data);
+
+  if (is_websocket_connected) {
+    Serial.println(imu_data);
+  }
+
+  delay(100);
 }

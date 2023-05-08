@@ -21,9 +21,29 @@ void open_setup()
 
 void open()
 {
+    myservo.write(180);
+    delay(1000);
+    myservo.write(0);
+
+    // int steps = 18;
+    // // myservo.write(90);
+    // // delay(200);
+    // for (int j = 1; j < steps; j++)
+    // {
+    //     myservo.write(90 + j * (90 / steps));
+    //     delay(30);
+    // }
+}
+
+void close()
+{
+    myservo.write(75);
+    delay(1000);
+    myservo.write(0);
+
     int steps = 18;
-    myservo.write(90);
-    delay(200);
+    // myservo.write(90);
+    // delay(200);
     for (int j = 1; j < steps; j++)
     {
         myservo.write(90 + j * (90 / steps));

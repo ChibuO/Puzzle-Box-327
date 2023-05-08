@@ -1,56 +1,48 @@
+<!-- https://github.com/devression/Maze-Game/tree/main -->
+<!-- https://www.youtube.com/watch?v=EN733Aq4ynM&ab_channel=Devression -->
+
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title 
-           style="background-color:#E99204">Group9
-    </title>
-    <link href="index_styles.css" rel="stylesheet" type="text/css">
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Climate+Crisis">
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto">
-</head>
-    
-<body>
-    <div class="wrapper">
-         <div class="sidebar">
-            <h2>Group9</h2>
-            <ul>
-               <li>
-                    <a href="index.html">
-                        Home
-                    </a>
-                </li>
-                <li><a href="webcam.html">
-                        Webcam
-                    </a>
-                </li>
-                <li><a href="info.html">
-                        About
-                    </a>
-                </li>
-                <li>
-                    <a href="/edit" target="_blank">
-                        Editor
-                    </a>
-                </li>
-            </ul>
-        </div>
-        
-        <div class="main_content">
-            <h1 class="my-class" id = "my-id">
-                Group9
-            </h1>
-            
-             <div class="container">
-                <img src="webcam4.jpg" alt="stock webcam" style="width:100%;">
-                <div class="centered">The Webcam to End All Webcams</div>
+    <head>
+        <meta charset="UTF-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width", inital-scale="1.0">
+        <title>Maze</title>
+        <link rel="stylesheet" href="./styles.css">
+    </head>
+
+    <body>
+        <div id="page">
+            <div id="Message-Container">
+                <div id="message">
+                    <h1>Conrgatulations!</h1>
+                    <p>You are done.</p>
+                    <input id="okBtn" type="button" onclick="toggleVisibility('Message-Container')" value="Cool!" />
+                </div>
             </div>
 
-            <p class="paragraph"> Equipped with state of the art technology, our webcam produces some of the best visuals in the world. Utilizing the SAM4S Atmel microcontroller, ESP32 WIFI chip, and OV2640DS camera chip with OmniPixel2 technology, this camera leaves other cameras in the dust.</p>
-            
+            <br />
+            <div>
+                <h2 id="stat">~</h2>
+            </div>
+            <div id="menu">
+                <input id="startMazeBtn" type="button" onclick="makeMaze()" value="Start" />
+            </div>
 
+            <div id="view">
+                <div id="mazeContainer">
+                    <canvas id="mazeCanvas" class="border" height="1100" width="1100"></canvas>
+                </div>
+            </div>
+
+            <p id="instructions">Get the ball to the corner</p>
         </div>
-    </div>
-</body>
+
+        <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+        <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery.touchswipe/1.6.18/jquery.touchSwipe.min.js"></script>
+
+
+        <!-- <script src="./script.js"></script> -->
+        <script src="./arrowKeyScript.js"></script>
+    </body>
 </html>

@@ -16,6 +16,8 @@ extern WebSocketsServer ws;
 
 extern volatile bool web_setup;
 
+extern bool is_websocket_connected;
+
 bool wifi_conn_status();
 String get_mac_address();
 void start_web_services();

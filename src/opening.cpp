@@ -19,21 +19,27 @@ void open_setup()
                                          // for an accurate 0 to 180 sweep
 }
 
-void open()
-{
+void reset() {
     myservo.write(0);
     delay(1000);
-    myservo.write(75);
-    delay(1000);
+}
 
-    // int steps = 18;
-    // // myservo.write(90);
-    // // delay(200);
-    // for (int j = 1; j < steps; j++)
-    // {
-    //     myservo.write(90 + j * (90 / steps));
-    //     delay(30);
-    // }
+bool open() {
+    // myservo.write(0);
+    // delay(1000);
+    // myservo.write(75);
+    // delay(1000);
+
+    int steps = 75;
+    // myservo.write(90);
+    // delay(200);
+    for (int j = 1; j < steps; j++)
+    {
+        myservo.write(j);
+        delay(30);
+    }
+
+    return true;
 }
 
 void close()

@@ -5,6 +5,7 @@
     #include <cmath>
 
     void open_setup();
-    void open();
+    bool open();
+    void reset();
 #endif /* OPENING_H */
 

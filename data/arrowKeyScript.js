@@ -13,6 +13,27 @@ var webcam_closed = false;
 var accelDict = {'accX': 0.0, 'accY': 0.0, 'accZ': 0.0};
 var gyroDict = {'gyroX': 0.0, 'gyroY': 0.0, 'gyroZ': 0.0};
 var d_tilt;
+var maze_completed = false;
+var maze_interval_id;
+
+var completed_puzzles = [];
+
+function update_list(num, data) {
+    let element_ids = ["maze_lbl", "knobs_lbl", "weights_lbl", "code_lbl", "dark_lbl", "speak_lbl"];
+    element_ids.slice(0, num).map((i) => {
+        document.getElementById(i).classList.add("strike");
+    });
+
+    if (num === 0) {
+        let accelArray = data.split(" ").map(parseFloat);
+        console.log(accelArray);
+        accelDict['accX'] = accelArray[0];
+        accelDict['accY'] = accelArray[1];
+        accelDict['accZ'] = accelArray[2];
+        //console.log(accelDict);
+        direction_tilt();
+    }
+}
 
 // Initialize the websocket
 function init() {
@@ -56,13 +77,17 @@ function onMessage(msg) {
 	// Get the image just taken from WiFi chip's RAM.
 	//var image = document.getElementById('image');
     //console.log(msg.data);
-    let accelArray = msg.data.split(", ");
-    //console.log(accelArray);
-    accelDict['accX'] = accelArray[0];
-    accelDict['accY'] = accelArray[1];
-    accelDict['accZ'] = accelArray[2];
-    //console.log(accelDict);
-    direction_tilt();
+
+    // let accelArray = msg.data.split(", ");
+    // //console.log(accelArray);
+    // accelDict['accX'] = accelArray[0];
+    // accelDict['accY'] = accelArray[1];
+    // accelDict['accZ'] = accelArray[2];
+    // //console.log(accelDict);
+    // direction_tilt();
+    // console.log(msg.data);
+    var obj = JSON.parse(msg.data);
+    update_list(Number(obj.completed), obj.data);
 }
 
 function onError(evt) { // when an error occurs
@@ -146,7 +171,7 @@ function makeMaze() {
         player = null;
     }
 
-    difficulty = 8;
+    difficulty = 4;
     cellSize = mazeCanvas.width / difficulty; //difficulty x difficulty grid
     maze = new Maze(difficulty);
     maze.genMap(); //initialzes empty map
@@ -158,7 +183,7 @@ function makeMaze() {
     draw.drawMap(); //loop through cells and draw lines
     draw.drawEndMethod(); //draw end flag or sprite
 
-    player = new Player(maze, mazeCanvas, cellSize, displayVictoryMess, ballSprite);
+    player = new Player(maze, mazeCanvas, cellSize, displayVictoryMessage, ballSprite);
     player.drawBallSprite(maze.startCoord());
     // player.bindKeyDown();
 
@@ -180,8 +205,10 @@ function shuffle(a) {
     return a;
 }
 
-function displayVictoryMess() {
+function displayVictoryMessage() {
     toggleVisibility("Message-Container");
+    maze_completed = true;
+    clearInterval(maze_interval_id);
     //websocket.send("completed");
 }
 
@@ -648,7 +675,7 @@ class Player {
             // }
         }
 
-        setInterval(check, 100);
+        maze_interval_id = setInterval(check, 200);
 
         // this.bindKeyDown = function () {
         //     // window.addEventListener("keydown", check, false);
@@ -678,7 +705,7 @@ function direction_tilt() {
         d_tilt = "west";
     } else if (accelDict['accY'] > 36.0) {
         d_tilt = "east";
-    } else if (accelDict['accX'] < -25.0) {
+    } else if (accelDict['accX'] < -35.0) {
         d_tilt = "north";
     } else if (accelDict['accX'] > 45.0) {
         d_tilt = "south";

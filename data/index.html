@@ -13,6 +13,17 @@
 
     <body>
         <div id="page">
+            <div id="puzzles-container">
+                <div id="puzzles">
+                    <h3 id="maze_lbl">Puzzle 1 - Maze</h3>
+                    <h3 id="knobs_lbl">Puzzle 2 - Intensity</h3>
+                    <h3 id="weights_lbl">Puzzle 3 - Weights</h3>
+                    <h3 id="code_lbl">Puzzle 4 - The Code</h3>
+                    <h3 id="dark_lbl">Puzzle 5 - Darkness</h3>
+                    <h3 id="speak_lbl">Puzzle 6 - Vibrations</h3>
+                </div>
+            </div>
+
             <div id="Message-Container">
                 <div id="message">
                     <h1>Conrgatulations!</h1>
@@ -21,21 +32,21 @@
                 </div>
             </div>
 
-            <br />
-            <div>
-                <h2 id="stat">~</h2>
-            </div>
-            <div id="menu">
-                <input id="startMazeBtn" type="button" onclick="makeMaze()" value="Start" />
-            </div>
-
-            <div id="view">
-                <div id="mazeContainer">
-                    <canvas id="mazeCanvas" class="border" height="1100" width="1100"></canvas>
+            <!-- <br /> -->
+            <div id="rightside">
+                <div>
+                    <h2 id="stat">~</h2>
+                </div>
+                <div id="menu">
+                    <input id="startMazeBtn" type="button" onclick="makeMaze()" value="Start" />
+                </div>
+    
+                <div id="view">
+                    <div id="mazeContainer">
+                        <canvas id="mazeCanvas" class="border" height="1100" width="1100"></canvas>
+                    </div>
                 </div>
             </div>
-
-            <p id="instructions">Get the ball to the corner</p>
         </div>
 
         <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>

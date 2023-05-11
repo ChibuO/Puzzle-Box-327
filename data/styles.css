@@ -14,6 +14,10 @@ html, body {
     font-family: 'Poppins', sans-serif;
 }
 
+body {
+    background-color: rgb(255, 203, 223);
+}
+
 #view {
     margin-top: 30px;
 }
@@ -21,14 +25,14 @@ html, body {
 #mazeContainer {
     top: 15px;
     opacity: 0;
-    display: inline-block;
+    /* display: inline-block; */
     margin: auto;
     border-radius: 10px;
 }
 
 #mazeContainer #mazeCanvas {
     margin: 0;
-    display: block;
+    /* display: block; */
     border: 3px solid black;
 }
 
@@ -91,9 +95,38 @@ input:focus, select:focus {
 
 #page {
     text-align: center;
-    height: auto;
     width: auto;
     margin: auto;
+    display: flex;
+    justify-content: left;
+}
+
+#puzzles-container {    
+    border: 3px solid red;
+    height: 100%;
+    padding: 30px;
+}
+
+.strike {
+    text-decoration: line-through;
+}
+
+#puzzles {
+    width: 300px;
+    padding-left: 10px;
+    text-align: left;
+    border-radius: 12px;
+    backdrop-filter: blur(18px);
+    background: rgba(230, 235, 249, .7);
+    border: 2px solid rgba(230, 235, 249, .7);
+    box-shadow: 0 0 30px rgba(0, 0, 0, .05);
+}
+
+#rightside {
+    border: 3px solid green;
+    width: 100%;
+    position: relative;
+    height: 100vh;
 }
 
 #page #menu {
@@ -112,7 +145,7 @@ input:focus, select:focus {
 
 #page #view {
     position: absolute;
-    top: 65px;
+    top: 150px;
     bottom: 0;
     left: 0;
     right: 0;

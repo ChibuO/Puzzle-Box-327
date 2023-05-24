@@ -8,7 +8,7 @@ var difficulty;
 
 var websocket = null;
 var localhost = "";
-var status_line = document.getElementById('stat');
+var status_line = document.getElementById('status_lbl');
 var webcam_closed = false;
 var accelDict = {'accX': 0.0, 'accY': 0.0, 'accZ': 0.0};
 var gyroDict = {'gyroX': 0.0, 'gyroY': 0.0, 'gyroZ': 0.0};
@@ -96,7 +96,7 @@ function onError(evt) { // when an error occurs
 }
 
 window.onload = function () {
-    let viewbox = document.querySelector("#view");
+    let viewbox = document.querySelector("#maze_box");
     let viewWidth = viewbox.offsetWidth;
     let viewHeight = viewbox.offsetHeight;
     if (viewHeight < viewWidth) {
@@ -146,7 +146,7 @@ window.onload = function () {
 };
 
 window.onresize = function () {
-    let viewbox = document.querySelector("#view");
+    let viewbox = document.querySelector("#maze_box");
     let viewWidth = viewbox.offsetWidth;
     let viewHeight = viewbox.offsetHeight;
     // let viewWidth = $("#view").width();
@@ -694,11 +694,43 @@ class Player {
 // Function to display to the message box
 function writeToScreen(message)
 {
-  document.getElementById("stat").innerHTML = message;
+  document.getElementById("status_lbl").innerHTML = message;
 }
 
 // Open Websocket as soon as page loads
 window.addEventListener("load", init, false);
+
+const passkey_txtbox = document.getElementById("passkey_txtbox");
+let welcome_screen = document.getElementById("welcome-screen")
+
+function whichTransitionEvent(){
+    var t;
+    var el = document.createElement('fakeelement');
+    var transitions = {
+      'transition':'transitionend',
+      'OTransition':'oTransitionEnd',
+      'MozTransition':'transitionend',
+      'WebkitTransition':'webkitTransitionEnd'
+    }
+
+    for(t in transitions){
+        if( el.style[t] !== undefined ){
+            return transitions[t];
+        }
+    }
+}
+
+var transitionEnd = whichTransitionEvent();
+welcome_screen.addEventListener(transitionEnd, (e) => {
+    welcome_screen.style.display = "none";
+}, false);
+
+passkey_txtbox.addEventListener("input", (event) => {
+    if(event.target.value === " ") {
+        welcome_screen.style.opacity = 0;
+        event.target.value = "";
+    }
+});
 
 function direction_tilt() {
     if (accelDict['accY'] < -40.0) {

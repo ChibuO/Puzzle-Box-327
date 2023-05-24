@@ -12,41 +12,38 @@
     </head>
 
     <body>
-        <div id="page">
-            <div id="puzzles-container">
-                <div id="puzzles">
-                    <h3 id="maze_lbl">Puzzle 1 - Maze</h3>
-                    <h3 id="knobs_lbl">Puzzle 2 - Intensity</h3>
-                    <h3 id="weights_lbl">Puzzle 3 - Weights</h3>
-                    <h3 id="code_lbl">Puzzle 4 - The Code</h3>
-                    <h3 id="dark_lbl">Puzzle 5 - Darkness</h3>
-                    <h3 id="speak_lbl">Puzzle 6 - Vibrations</h3>
-                    <input id="skipBtn" type="button" onclick="displayVictoryMessage()" value="Skip Maze" />
-                </div>
-            </div>
+        <div id="welcome-screen">
+            <input type="text" id="passkey_txtbox" name="passkey">
+        </div>
 
+        <div id="maze-screen">
             <div id="Message-Container">
                 <div id="message">
                     <h1>Conrgatulations!</h1>
                     <p>You are done.</p>
-                    <input id="okBtn" type="button" onclick="toggleVisibility('Message-Container')" value="Cool!" />
+                    <input class"btn_class" id="okBtn" type="button" onclick="toggleVisibility('Message-Container')" value="Cool!" />
                 </div>
             </div>
 
-            <!-- <br /> -->
-            <div id="rightside">
-                <div>
-                    <h2 id="stat">~</h2>
+            <h2 id="status_lbl">~</h2>
+            <input class="btn_class" id="startMazeBtn" type="button" onclick="makeMaze()" value="Start" />
+
+            <div id="maze_box">
+                <div id="mazeContainer">
+                    <canvas id="mazeCanvas" height="1100" width="1100"></canvas>
                 </div>
-                <div id="menu">
-                    <input id="startMazeBtn" type="button" onclick="makeMaze()" value="Start" />
-                </div>
-    
-                <div id="view">
-                    <div id="mazeContainer">
-                        <canvas id="mazeCanvas" class="border" height="1100" width="1100"></canvas>
-                    </div>
-                </div>
+            </div>
+        </div>
+
+        <div id="puzzles-container">
+            <div id="puzzles">
+                <h3 id="maze_lbl">Puzzle 1 - Maze</h3>
+                <h3 id="knobs_lbl">Puzzle 2 - Intensity</h3>
+                <h3 id="weights_lbl">Puzzle 3 - Weights</h3>
+                <h3 id="code_lbl">Puzzle 4 - The Code</h3>
+                <h3 id="dark_lbl">Puzzle 5 - Darkness</h3>
+                <h3 id="speak_lbl">Puzzle 6 - Vibrations</h3>
+                <input class="btn_class" id="skipBtn" type="button" onclick="displayVictoryMessage()" value="Skip Maze" />
             </div>
         </div>
 

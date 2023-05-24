@@ -1,11 +1,15 @@
 @import url('https://fonts.googleapis.com/css2?family=Poppins&display=swap');
 
+* {
+    padding: 0;
+    margin: 0;
+}
+
 html, body {
     width: 100vw;
     height: 100vh;
     position: fixed;
-    padding: 0;
-    margin: 0;
+    
     top: 0;
     bottom: 0;
     left: 0;
@@ -18,54 +22,57 @@ body {
     background-color: rgb(255, 203, 223);
 }
 
-#view {
-    margin-top: 30px;
-}
+/* https://cssgradient.io/ */
 
-#mazeContainer {
-    top: 15px;
-    opacity: 0;
-    /* display: inline-block; */
-    margin: auto;
-    border-radius: 10px;
-}
-
-#mazeContainer #mazeCanvas {
-    margin: 0;
-    /* display: block; */
-    border: 3px solid black;
-}
-
-#mazeCanvas {
-    background-color: aquamarine;
-}
-
-input, select {
-    cursor: pointer;
-    background-color: rgba(0, 0, 0, 0.30);
-    height: 45px;
-    width: 158px;
-    padding: 18px;
-    border: none;
-    border-radius: 5px;
-    color: white;
-    display: inline-block;
-    font-size: 20px;
+#welcome-screen  {
+    background: rgb(2,0,36);
+    background: radial-gradient(circle, rgba(2,0,36,1) 0%, rgba(9,9,121,1) 35%, rgba(0,212,255,1) 100%);
+    height: 100%;
+    width: 100%;
+    position: relative;
     text-align: center;
+    display: block;
+    opacity: 1;
+    transition: opacity 1s ease;
+}
+
+#passkey_txtbox {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    color: white;
+    transform: translate(-50%, -50%); /*center to middle*/
+    width: 300px;
+    height: 50px;
+    background-color: rgba(81, 150, 110, 0.3);
+    font-size: 25px;
+    padding-left: 10px;
+    border: none;
+    border-radius: 2px;
     text-decoration: none;
     appearance: none;
+    text-align: center;
 }
 
-input:hover, select:hover {
-    background-color: rgba(0, 0, 0, .70);
+#passkey_txtbox:focus, #passkey_txtbox:hover {
+    outline-style: solid;
+    outline-color: rgba(81, 150, 110);
+    outline-offset: 3px;
 }
 
-input:active, select:active {
-    background-color: black;
-}
-
-input:focus, select:focus {
-    outline: none;
+#maze-screen {
+    background: rgb(131,58,180);
+    background: linear-gradient(22deg, rgba(131,58,180,1) 0%, rgba(81,29,253,1) 29%, rgba(252,176,69,1) 89%);
+    text-align: center;
+    width: auto;
+    /* display: none; */
+    /* width: 100%; */
+    position: relative;
+    height: 100vh;
+    margin: auto;
+    display: flex;
+    justify-content: left;
+    border: 3px solid red;
 }
 
 #Message-Container {
@@ -93,12 +100,46 @@ input:focus, select:focus {
     margin-top: -150px;
 }
 
-#page {
-    text-align: center;
-    width: auto;
+#maze-container {
+    width: 100%;
+    position: relative;
+    height: 100vh;
+}
+
+#maze-container h1 {
+    font-weight: 600;
+    font-size: 3.2rem;
+}
+
+#maze_box {
+    margin-top: 30px;
+}
+
+#mazeContainer {
+    top: 15px;
+    opacity: 0;
+    display: inline-block;
     margin: auto;
-    display: flex;
-    justify-content: left;
+}
+
+#mazeContainer #mazeCanvas {
+    margin: 0;
+    display: block;
+    border: 3px solid black;
+}
+
+#mazeCanvas {
+    background-color: aquamarine;
+}
+
+#maze-screen #maze_box {
+    position: absolute;
+    top: 150px;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    width: 100%;
+    height: auto;
 }
 
 #puzzles-container {    
@@ -122,50 +163,38 @@ input:focus, select:focus {
     box-shadow: 0 0 30px rgba(0, 0, 0, .05);
 }
 
-#rightside {
-    border: 3px solid green;
-    width: 100%;
-    position: relative;
-    height: 100vh;
+
+select, .btn_class {
+    cursor: pointer;
+    background-color: rgba(0, 0, 0, 0.30);
+    height: 45px;
+    width: 158px;
+    padding: 18px;
+    border: none;
+    border-radius: 5px;
+    color: white;
+    display: inline-block;
+    font-size: 20px;
+    text-align: center;
+    text-decoration: none;
+    appearance: none;
 }
 
-#page #menu {
-    margin: auto;
-    padding: 10px;
-    height: 65px;
-    box-sizing: border-box;
+.btn_class:hover, select:hover {
+    background-color: rgba(0, 0, 0, .70);
 }
 
-#page #menu h1 {
-    margin: 0;
-    margin-bottom: 10px;
-    font-weight: 600;
-    font-size: 3.2rem;
+.btn_class:active, select:active {
+    background-color: black;
 }
 
-#page #view {
-    position: absolute;
-    top: 150px;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    width: 100%;
-    height: auto;
+.btn_class:focus, select:focus {
+    outline: none;
 }
-
-.border {
-    border: 18px solid black;
-    border-radius: 18px;
-}
-
-#instructions {
-    margin-top: 425px;
-}
-
 
 /* Extra small devices (phones, 600px and down) */
 @media only screen and (max-width: 400px) {
-    input, select {
+    .btn_class, select {
         width: 120px;
     }
 }

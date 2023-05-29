@@ -8,40 +8,102 @@
 html, body {
     width: 100vw;
     height: 100vh;
-    position: fixed;
-    
-    top: 0;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    background-color: #fff;
+
+    overflow: hidden;
+
     font-family: 'Poppins', sans-serif;
 }
 
 body {
-    background-color: rgb(255, 203, 223);
+    background: rgb(131,58,180);
+    background: linear-gradient(22deg, rgba(131,58,180,1) 0%, rgba(81,29,253,1) 29%, rgba(252,176,69,1) 89%);
+}
+
+#main-game {
+    transition: margin-left .5s; /* for admin panel*/
+    /* width: 300%; */
+    height: 100%;
+    position: relative;
+    display: flex;
+    box-sizing: border-box;
+    /* overflow-x: hidden; */
+}
+
+.screen {
+    height: 100vh;
+    width: 100%;
+    position: relative;
+    transition: all 1s ease;
+    /* border: 3px solid red; */
+}
+
+#status_lbl {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    z-index: 12;
 }
 
 /* https://cssgradient.io/ */
 
+#puzzles-container {
+    height: 100%;
+    width: 45px;
+    position: fixed;
+    z-index: 1;
+    top: 0;
+    left: 0;
+    overflow-x: hidden;
+    transition: width .5s;
+    display:flex;
+    z-index: 9;
+}
+
+#admin-btn {
+    font-size: 30px;
+    cursor: pointer;
+    color: white;
+    padding: 0px 10px;
+}
+
+.strike {
+    text-decoration: line-through;
+}
+
+#puzzles {
+    height: fit-content;
+    width: 180px;
+    padding: 15px;
+    margin: 10px;
+    text-align: left;
+    border-radius: 12px;
+    backdrop-filter: blur(18px);
+    background: rgba(230, 235, 249, .7);
+    border: 2px solid rgba(230, 235, 249, .7);
+    box-shadow: 0 0 30px rgba(0, 0, 0, .05);
+}
+
+#puzzles h3 {
+    padding-bottom: 10px;
+    font-size: .8rem;
+    width: fit-content;
+    white-space: nowrap;
+    text-overflow: clip;
+    overflow: hidden;
+}
+
 #welcome-screen  {
     background: rgb(2,0,36);
     background: radial-gradient(circle, rgba(2,0,36,1) 0%, rgba(9,9,121,1) 35%, rgba(0,212,255,1) 100%);
-    height: 100%;
-    width: 100%;
-    position: relative;
     text-align: center;
-    display: block;
-    opacity: 1;
-    transition: opacity 1s ease;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 10;
 }
 
 #passkey_txtbox {
-    position: fixed;
-    top: 50%;
-    left: 50%;
     color: white;
-    transform: translate(-50%, -50%); /*center to middle*/
     width: 300px;
     height: 50px;
     background-color: rgba(81, 150, 110, 0.3);
@@ -60,19 +122,39 @@ body {
     outline-offset: 3px;
 }
 
+#box-down-screen {
+    background: rgb(31,35,56);
+    background: radial-gradient(circle, rgba(31,35,56,1) 0%, rgba(61,48,80,1) 49%, rgba(120,107,110,1) 100%);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 9;
+}
+
+#box-down-screen h1{
+    color: white;
+}
+
 #maze-screen {
-    background: rgb(131,58,180);
-    background: linear-gradient(22deg, rgba(131,58,180,1) 0%, rgba(81,29,253,1) 29%, rgba(252,176,69,1) 89%);
     text-align: center;
     width: auto;
-    /* display: none; */
-    /* width: 100%; */
-    position: relative;
-    height: 100vh;
+    display: flex;
+    /* height: 100vh; */
     margin: auto;
     display: flex;
-    justify-content: left;
-    border: 3px solid red;
+    flex-direction: column;
+    /* border: 3px solid red; */
+}
+
+#status-box {
+    margin: 0;
+}
+
+#startMazeBtn {
+    /* border: 3px solid yellow; */
+    align-items: center;
+    height: 50px;
+    margin-bottom: 5px;
 }
 
 #Message-Container {
@@ -100,96 +182,88 @@ body {
     margin-top: -150px;
 }
 
-#maze-container {
-    width: 100%;
-    position: relative;
-    height: 100vh;
-}
-
-#maze-container h1 {
-    font-weight: 600;
-    font-size: 3.2rem;
-}
-
 #maze_box {
-    margin-top: 30px;
-}
-
-#mazeContainer {
-    top: 15px;
-    opacity: 0;
-    display: inline-block;
-    margin: auto;
-}
-
-#mazeContainer #mazeCanvas {
-    margin: 0;
-    display: block;
-    border: 3px solid black;
-}
-
-#mazeCanvas {
-    background-color: aquamarine;
-}
-
-#maze-screen #maze_box {
     position: absolute;
-    top: 150px;
-    bottom: 0;
+    bottom: 30px;
     left: 0;
     right: 0;
     width: 100%;
     height: auto;
+    margin-bottom: 20px;
+    display: flex;
+    flex-direction: column;
+    /* border: 3px solid orange; */
 }
 
-#puzzles-container {    
-    border: 3px solid red;
-    height: 100%;
-    padding: 30px;
+#mazeContainer {
+    opacity: 0;
+    display: flex;
+    margin: auto;
 }
 
-.strike {
-    text-decoration: line-through;
+#mazeCanvas {
+    margin: 0;
+    display: block;
+    background-color: rgb(158, 14, 69);
 }
 
-#puzzles {
-    width: 300px;
-    padding-left: 10px;
-    text-align: left;
-    border-radius: 12px;
-    backdrop-filter: blur(18px);
-    background: rgba(230, 235, 249, .7);
-    border: 2px solid rgba(230, 235, 249, .7);
-    box-shadow: 0 0 30px rgba(0, 0, 0, .05);
+.light-num-divs {
+    /* border: 3px solid orange; */
+    opacity: 0;
+    transition: opacity .5s;
 }
 
+.lr-num-divs {
+    align-items: center;
+    justify-content: center;
+    margin: auto;
+    padding: 0 20px;
+}
 
-select, .btn_class {
-    cursor: pointer;
-    background-color: rgba(0, 0, 0, 0.30);
-    height: 45px;
-    width: 158px;
-    padding: 18px;
-    border: none;
-    border-radius: 5px;
+.light-nums {
     color: white;
-    display: inline-block;
-    font-size: 20px;
-    text-align: center;
-    text-decoration: none;
-    appearance: none;
+    font-size: 25px;
 }
 
-.btn_class:hover, select:hover {
-    background-color: rgba(0, 0, 0, .70);
+.btn_class {
+  align-items: center;
+  appearance: none;
+  background-color: #FCFCFD;
+  border-radius: 4px;
+  border-width: 0;
+  box-shadow: rgba(45, 35, 66, 0.4) 0 2px 4px,rgba(45, 35, 66, 0.3) 0 7px 13px -3px,#D6D6E7 0 -3px 0 inset;
+  box-sizing: border-box;
+  color: #36395A;
+  cursor: pointer;
+  display: inline-flex;
+  height: 40px;
+  justify-content: center;
+  padding-left: 16px;
+  padding-right: 16px;
+  position: relative;
+  text-align: left;
+  text-decoration: none;
+  transition: box-shadow .15s,transform .15s;
+  user-select: none;
+  -webkit-user-select: none;
+  touch-action: manipulation;
+  white-space: nowrap;
+  will-change: box-shadow,transform;
+  font-size: 18px;
 }
 
-.btn_class:active, select:active {
-    background-color: black;
+.btn_class:focus {
+  box-shadow: #D6D6E7 0 0 0 1.5px inset, rgba(45, 35, 66, 0.4) 0 2px 4px, rgba(45, 35, 66, 0.3) 0 7px 13px -3px, #D6D6E7 0 -3px 0 inset;
 }
 
-.btn_class:focus, select:focus {
-    outline: none;
+.btn_class:hover {
+  box-shadow: rgba(45, 35, 66, 0.4) 0 4px 8px, rgba(45, 35, 66, 0.3) 0 7px 13px -3px, #D6D6E7 0 -3px 0 inset;
+  transform: translateY(-2px);
+}
+
+.btn_class:active {
+  box-shadow: #D6D6E7 0 3px 7px inset;
+  transform: translateY(2px);
 }
 
 /* Extra small devices (phones, 600px and down) */
@@ -198,4 +272,3 @@ select, .btn_class {
         width: 120px;
     }
 }
-

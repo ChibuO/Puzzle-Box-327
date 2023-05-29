@@ -1,3 +1,5 @@
+var passkey = "jo";
+
 var mazeCanvas = document.getElementById("mazeCanvas");
 var ctx = mazeCanvas.getContext("2d");
 var ballSprite;
@@ -15,6 +17,14 @@ var gyroDict = {'gyroX': 0.0, 'gyroY': 0.0, 'gyroZ': 0.0};
 var d_tilt;
 var maze_completed = false;
 var maze_interval_id;
+var maze_wall_color = "white";
+var adminPanelEnabled = true;
+
+const passkey_txtbox = document.getElementById("passkey_txtbox");
+let welcome_screen = document.getElementById("welcome-screen");
+let box_down_screen = document.getElementById("box-down-screen");
+
+var light_order = [];
 
 var completed_puzzles = [];
 
@@ -99,6 +109,8 @@ window.onload = function () {
     let viewbox = document.querySelector("#maze_box");
     let viewWidth = viewbox.offsetWidth;
     let viewHeight = viewbox.offsetHeight;
+    console.log(viewHeight);
+    console.log(viewWidth);
     if (viewHeight < viewWidth) {
         ctx.canvas.width = viewHeight - viewHeight / 100;
         ctx.canvas.height = viewHeight - viewHeight / 100;
@@ -142,15 +154,15 @@ window.onload = function () {
         console.log("Sprite 2 loaded");
         isComplete();
     };
+    
 
 };
 
 window.onresize = function () {
+    return;
     let viewbox = document.querySelector("#maze_box");
     let viewWidth = viewbox.offsetWidth;
     let viewHeight = viewbox.offsetHeight;
-    // let viewWidth = $("#view").width();
-    // let viewHeight = $("#view").height();
     if (viewHeight < viewWidth) {
         ctx.canvas.width = viewHeight - viewHeight / 100;
         ctx.canvas.height = viewHeight - viewHeight / 100;
@@ -206,8 +218,14 @@ function shuffle(a) {
 }
 
 function displayVictoryMessage() {
-    toggleVisibility("Message-Container");
-    maze_completed = true;
+    box_down_screen.style.visibility = "hidden";
+    box_down_screen.style.display = "flex";
+    box_down_screen.style.opacity = 1;
+    // setTimeout(() => {
+    //     box_down_screen.style.opacity = 0;
+    //     maze_completed = true;
+    // }, 2000);
+    // maze_completed = true;
     clearInterval(maze_interval_id);
     //websocket.send("completed");
 }
@@ -407,7 +425,7 @@ class DrawMaze {
         function drawCell(xCord, yCord, cell) {
             var x = xCord * cellSize;
             var y = yCord * cellSize;
-            ctx.strokeStyle = "green";
+            ctx.strokeStyle = maze_wall_color;
 
             if (cell.n == false) {
                 ctx.beginPath();
@@ -700,9 +718,6 @@ function writeToScreen(message)
 // Open Websocket as soon as page loads
 window.addEventListener("load", init, false);
 
-const passkey_txtbox = document.getElementById("passkey_txtbox");
-let welcome_screen = document.getElementById("welcome-screen")
-
 function whichTransitionEvent(){
     var t;
     var el = document.createElement('fakeelement');
@@ -725,10 +740,35 @@ welcome_screen.addEventListener(transitionEnd, (e) => {
     welcome_screen.style.display = "none";
 }, false);
 
+box_down_screen.addEventListener(transitionEnd, (e) => {
+    console.log("trea");
+    if (box_down_screen.style.display === "none") {
+        console.log("me!");
+        box_down_screen.style.display = "flex";
+    } else {
+        console.log("you!");
+        box_down_screen.style.display = "none";
+        if(maze_completed) {
+            let light_num_divs = Array.from(document.getElementsByClassName("light-num-divs"));
+            light_num_divs.forEach((div) => {
+                div.style.opacity = "1";
+            });
+        }
+    }
+    
+}, false);
+
 passkey_txtbox.addEventListener("input", (event) => {
-    if(event.target.value === " ") {
+    if(event.target.value === passkey) {
         welcome_screen.style.opacity = 0;
         event.target.value = "";
+        set_light_order();
+        setTimeout(() => {
+            box_down_screen.style.opacity = 1;
+        }, 1000);
+        setTimeout(() => {
+            box_down_screen.style.display = "flex";
+        }, 5000);
     }
 });
 
@@ -746,4 +786,51 @@ function direction_tilt() {
     }
 
     //console.log(d_tilt);
+}
+
+let showAdmin = false;
+
+function toggleAdminPanel() {
+    if(!adminPanelEnabled) {
+        let adminName = prompt("This puzzle box was created by Chibu, Haris, and Chele for EE327 Spring 2023. ;)\nName?");
+        if (adminName != "ilya") {
+            if(adminName != null) {
+                alert("Hi " + adminName + "! Have fun!");
+            }
+            return;
+        } else {
+            adminPanelEnabled = true;
+        }
+    }
+    if(showAdmin) {
+        //if showing, hide
+        document.getElementById("puzzles-container").style.width = "45px";
+        document.getElementById("main-game").style.marginLeft = "0px";
+        showAdmin = false;
+    } else {
+        //if not, show
+        document.getElementById("puzzles-container").style.width = "28vw";
+        document.getElementById("main-game").style.marginLeft = "28vw";
+        showAdmin = true;
+    }
+}
+
+function set_light_order() {
+    //get numbers for sides of box
+    for(i=0; i < 4; i++) {
+        // Returns a random integer from 1 to 4:
+        let r_int = Math.floor(Math.random() * 4) + 1;
+        while (light_order.includes(r_int)) {
+            r_int = Math.floor(Math.random() * 4) + 1;
+        }
+        light_order.push(r_int);
+    }
+
+    let light_num_lbls = Array.from(document.getElementsByClassName("light-nums"));
+    for(let light_num in light_num_lbls) {
+        // let light_value = light_order.pop();
+        light_num_lbls[light_num].innerHTML = light_order.pop();
+        // light_num.innerHTML = light_order.pop();
+    }
+
 }

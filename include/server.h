@@ -18,6 +18,12 @@ extern volatile bool web_setup;
 
 extern bool is_websocket_connected;
 extern bool is_maze_completed;
+extern bool start_maze;
+extern char light_order[];
+extern bool start_photoresistors;
+extern bool ais_prs_complete;
+extern bool start_weights2;
+extern bool is_weights2_complete;
 
 bool wifi_conn_status();
 String get_mac_address();

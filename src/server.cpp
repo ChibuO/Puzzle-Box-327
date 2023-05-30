@@ -15,13 +15,79 @@ volatile bool web_setup = false;
 TaskHandle_t wifi_reconnect_task_handle = NULL;
 bool is_websocket_connected = false;
 bool is_maze_completed = false;
+bool start_maze = false;
+char light_order[4];
+bool start_photoresistors = false;
+bool is_prs_complete = false;
+bool start_weights2 = false;
+bool is_weights2_complete = false;
+
+void handleComplete(int current_puzzle, char* rest) {
+  Serial.printf("curr: %d\r\n", current_puzzle);
+  switch (current_puzzle) {
+    case 0:
+      //key given
+      start_maze = true;
+      break;
+    case 1:
+      //maze completed
+      is_maze_completed = true;
+      for (int i = 0; i<4; i++) {
+        light_order[i] = *(rest + i);
+      }
+      break;
+    case 4:
+      //tilt completed
+      start_photoresistors = true;
+      break;
+    case 5:
+      //photoresistors completed
+      is_prs_complete = true;
+      break;
+    case 6:
+      //neopixels completed
+      start_weights2 = true;
+      break;
+    case 7:
+      //weights2 completed
+      is_weights2_complete = true;
+      break;
+    default:
+      break;
+  }
+}
+
+char* substring(char *dest, const char *source, int beg, int n) {
+  while (n > 0) {
+    *dest = *(source + beg);
+    dest++;
+    source++;
+    n--;
+  }
+
+  *dest = '\0';
+  return dest;
+}
 
 void handleWebSocketMessage(uint8_t num, WStype_t type, uint8_t * payload, size_t len) {
-  Serial.printf("%s\r\n", payload);
-  int comp = strcmp((char *) payload, "completed");
-  Serial.printf("%d\r\n", comp);
+  Serial.printf("payload: %s\r\n", payload);
+  char completed_char[10];
+  char current_puzzle[2];
+  char rest_msg[10];
+  
+  substring(completed_char, (char*) payload, 0, 9); //modifies completed_char
+  int comp = strcmp((char *) completed_char, "completed"); //1 is no, 0 is yes
+  Serial.printf("compare: %d\r\n", comp);
+  Serial.printf("len: %d\r\n", len);
+  
+  substring(current_puzzle, (char*) payload, 9, 1); //modifies rest_msg
+  Serial.printf("num: %s\r\n", current_puzzle);
+  
+  substring(rest_msg, (char*) payload, 10, len-10);
+  Serial.printf("rest: %s\r\n", rest_msg);
+
   if (!comp) {
-    is_maze_completed = true;
+    handleComplete(atoi(current_puzzle), rest_msg);
   }
 }
 

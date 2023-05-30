@@ -9,6 +9,7 @@
         <meta name="viewport" content="width=device-width", inital-scale="1.0">
         <title>Maze</title>
         <link rel="stylesheet" href="./styles.css">
+        <link rel="stylesheet" href="./mazeStyles.css">
     </head>
 
     <body>
@@ -45,8 +46,62 @@
                 </div>
             </div>
 
-            <div>
+            <div id="weight-screen" class="screen">
+                <div class="frac-div" id="frac-div1">
+                    <h2>~</h2>
+                </div>
+                <div class="frac-div" id="frac-div2">
+                    <h2>~</h2>
+                </div>
+                <div class="frac-div" id="frac-div3">
+                    <h2>~</h2>
+                </div>
+                <div class="frac-div" id="frac-div4">
+                    <h2>~</h2>
+                </div>
+            </div>
 
+            <div id="tilt-screen" class="screen">
+                <h1>Tilt Puzzle</h1>
+            </div>
+
+            <div id="light-screen" class="screen">
+                <div class="light-div" id="lightside">
+                    <h2>hiya</h2>
+                    <h2 style="color: black;">Turn back</h2>
+                </div>
+                <div class="light-div" id="darkside">
+                    <h2>dawg</h2>
+                    <h2 style="color: white;">all to Zero</h2>
+                </div>
+            </div>
+
+            <div id="neopixel-screen" class="screen">
+                <h1>It's too bright...turn it off</h1>
+            </div>
+
+            <div id="door-screen" class="screen">
+                <div class="door-div" id="leftside">
+                    <h2>hiya</h2>
+                    <input class="btn_class" id="weight-left-btn" type="button" onclick="" value="Lock In" />
+                </div>
+                <div class="door-div" id="center-door-div">
+                    <img id="knob-img" src="sol1.png" alt="3rd knob">
+                    <div id="doorside">
+                        <!-- <input class="btn_class" id="reset-btn" type="button" onclick="" value="Reset" /> -->
+                    </div>
+                </div>
+                <div class="door-div" id="rightside">
+                    <h2>dawg</h2>
+                    <input class="btn_class" id="weight-right-btn" type="button" onclick="" value="Lock In" />
+                </div>
+            </div>
+
+            <div id="end-screen" class="screen">
+                <h1>Congratulations!</h1>
+
+                <iframe src="https://www.youtube.com/embed/TsaDzekhPMw?autoplay=1&mute=1&loop=1&playlist=TsaDzekhPMw" frameborder="0"></iframe>
+                
             </div>
 
         </div>
@@ -54,23 +109,27 @@
         <div id="puzzles-container">
             <span id="admin-btn" onclick="toggleAdminPanel()">&#9776;</span>
             <div id="puzzles">
-                <h3 id="maze_lbl">Puzzle 1 - Maze</h3>
-                <h3 id="knobs_lbl">Puzzle 2 - Intensity</h3>
-                <h3 id="weights_lbl">Puzzle 3 - Weights</h3>
-                <h3 id="code_lbl">Puzzle 4 - The Code</h3>
-                <h3 id="dark_lbl">Puzzle 5 - Darkness</h3>
-                <h3 id="speak_lbl">Puzzle 6 - Vibrations</h3>
-                <input class="btn_class" id="skipBtn" type="button" onclick="displayVictoryMessage()" value="Skip Maze" />
+                <h3 id="key_lbl">Password</h3>
+                <h3 id="maze_lbl">Maze</h3>
+                <h3 id="knobs_lbl">Intensities</h3>
+                <h3 id="weights_lbl">Weights</h3>
+                <h3 id="tilt_lbl">Tilt</h3>
+                <h3 id="dark_lbl">Dark/Light</h3>
+                <h3 id="neo_lbl">Freqs</h3>
+                <h3 id="door_lbl">Weightier</h3>
+                <h3 id="final_lbl">Turn It</h3>
+                <input class="btn_class" id="skipBtn" type="button" onclick="displayVictoryMessage()" value="Skip Puzzle" />
             </div>
         </div>
 
         <h2 id="status_lbl">~</h2>
 
-        <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
-        <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery.touchswipe/1.6.18/jquery.touchSwipe.min.js"></script>
+        <!-- <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+        <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery.touchswipe/1.6.18/jquery.touchSwipe.min.js"></script> -->
 
 
         <!-- <script src="./script.js"></script> -->
         <script src="./arrowKeyScript.js"></script>
+        <script src="./mazeCode.js"></script>
     </body>
 </html>

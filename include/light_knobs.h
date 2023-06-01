@@ -3,12 +3,13 @@
     #include <Arduino.h>
 
     #define midnight 1860
+    #define def_light 200
     #define gloaming 2320
     #define dawn 2480
     #define noon 3800
 
     void light_knobs_setup();
-    int get_status(uint16_t ar);
+    // int get_led_status(uint16_t ar);
     void update_led_status();
     bool led_is_correct(int sequence[]);
     void print_led_status();

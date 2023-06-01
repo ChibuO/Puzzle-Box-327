@@ -16,7 +16,7 @@ TaskHandle_t wifi_reconnect_task_handle = NULL;
 bool is_websocket_connected = false;
 bool is_maze_completed = false;
 bool start_maze = false;
-char light_order[4];
+char light_order[3];
 bool start_photoresistors = false;
 bool is_prs_complete = false;
 bool start_weights2 = false;
@@ -32,7 +32,7 @@ void handleComplete(int current_puzzle, char* rest) {
     case 1:
       //maze completed
       is_maze_completed = true;
-      for (int i = 0; i<4; i++) {
+      for (int i = 0; i<3; i++) {
         light_order[i] = *(rest + i);
       }
       break;

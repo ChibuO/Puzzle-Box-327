@@ -38,8 +38,10 @@ var current_puzzle = 0;
 
 var mesg_received = false;
 
-let prev_num = 0;
-let curr_num = 0;
+let walls = ["graveyard", "lunch", "twilight", "stairs"];
+let light_phrases = ["It's too dark to see the name on the coffin", "The light in the fridge is out", "I can barely see what's howling", "I need more light to see what's on the stairs"];
+let dark_phrases = ["I can only visit the dead at night", "Someone's trying to peak at my lunch", "Protect the vampire from the sun", "Darness can hide magic pumpkins"];
+
 
 function updateDirection(data) {
     //on maze puzzle
@@ -58,7 +60,9 @@ function update_list(num, data) {
         document.getElementById(i).classList.add("strike");
     });
 
-    switch(current_puzzle) {
+    console.log(`puzzle ${num}`);
+
+    switch(num) {
         case 0:
             //password - web tells box that it's completed
             if (data === "boxdown") {
@@ -88,17 +92,29 @@ function update_list(num, data) {
         case 4:
             //tilt - web tells box that it's completed
             // updateDirection(data);
-            if (data === "boxdown") {
+            //should be boxdown
+            if (data === "completed") {
                 slide();
             }
             break;
         case 5:
-            //photoresistors  - web tells box that ot's completed
-            //box gives web photoresistor data
-            // updatePhotos(data);
-            //box then tells web when all potentiometers turned down
-            if (data === "completed") {
+            //photoresistors  - box tells web that it's completed
+            //box gives web photoresistor status
+            //reveal first half
+            if (data === "halfway") {
+                document.getElementById("lightside").style.background = "white";
+                document.getElementById("lightside-clue").style.color = "black";
+                document.getElementById("darkside-clue").style.color = "black";
+            } else if (data === "continue") { //reveal second half
+                document.getElementById("lightside-clue").style.color = "white";
+                document.getElementById("darkside").style.background = "black";
+            } else if (data === "completed") {
+                 //box then tells web when all potentiometers turned down
                 slide();
+            } else {
+                //the clue numbers
+                console.log(data);
+                set_ldr_clue(Number(data[0]), Number(data[1]));
             }
             break;
         case 6:
@@ -170,8 +186,6 @@ function onMessage(msg) {
     // direction_tilt();
     // console.log(msg.data);
     var obj = JSON.parse(msg.data);
-    prev_num = curr_num;
-    curr_num = Number(obj.completed);
     update_list(Number(obj.completed), obj.data);
 }
 
@@ -346,7 +360,7 @@ function toggleAdminPanel() {
 function set_light_order() {
     let lights = [];
     //get numbers for sides of box
-    for(i=0; i < 4; i++) {
+    for(i=0; i < 3; i++) {
         // Returns a random integer from 1 to 4:
         let r_int = Math.floor(Math.random() * 4) + 1;
         while (light_order.includes(r_int)) {
@@ -359,9 +373,11 @@ function set_light_order() {
     console.log(lights);
     
     let light_num_lbls = Array.from(document.getElementsByClassName("light-nums"));
-    for(let light_num in light_num_lbls) {
+    // let skip_side = Math.floor(Math.random() * 4) + 1;
+    for(let light_num in light_num_lbls.slice(0, 3)) {
         light_num_lbls[light_num].innerHTML = lights.pop();
     }
+    light_num_lbls[3].innerHTML = "~";
 
     
 }
@@ -378,11 +394,6 @@ slide = (direction = 1, skip = 1) => {
     );
 }
 
-walls = ["graveyard", "lunch", "twilight", "stairs"];
-light_phrases = ["It's too dark to see the name on the coffin", "The light in the fridge is out", "I can barely see what's howling", "I need more light to see what's on the stairs"];
-dark_phrases = ["I can only visit the dead at night", "Someone's trying to peak at my lunch", "Protect the vampire from the sun", "Darness can hide magic pumpkins"];
-
-
 function random_item(items) {
     return items[Math.floor(Math.random() * items.length)];
 }
@@ -390,4 +401,10 @@ function random_item(items) {
 function puzzle_complete(data) {
     websocket.send(`completed${current_puzzle}${data}`);
     current_puzzle++;
+}
+
+function set_ldr_clue(light_ldr, dark_ldr) {
+    console.log(walls[light_ldr], walls[dark_ldr]);
+    document.getElementById("lightside-clue").innerHTML= light_phrases[light_ldr];
+    document.getElementById("darkside-clue").innerHTML = dark_phrases[dark_ldr];
 }

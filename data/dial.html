@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width", inital-scale="1.0">
+        <title>Maze</title>
+        <link rel="stylesheet" href="./dial.css">
+        <link rel="stylesheet" href="./styles.css">
+        <link rel="stylesheet" href="./mazeStyles.css">
+    </head>
+
+    <body>
+<hr>
+<div class="container"><svg viewBox="-6 -6 12 12" class="dial" id="foobar">
+    <defs>
+      <radialGradient id="knobgradient">
+        <stop offset="0" stop-color="gray"/>
+        <stop offset="1" stop-color="silver"/>
+      </radialGradient>
+    </defs>
+    <g class="knob">
+      <circle class="knob_center" cx="0" cy="0" r="0.015625"/>
+      <g class="knob_gfx">
+        <circle cx="0" cy="0" r="5"/>
+        <line x1="0" y1="-2.5" x2="0" y2="-4.5"/>
+      </g>
+      <text class="knob_number"/>
+    </g>
+  </svg></div>
+
+
+<script src="./dial.js"></script>
+</body>
+</html>

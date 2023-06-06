@@ -1,0 +1,40 @@
+.container {
+    width: 1920px;
+    height: 1080px;
+    margin: 50px;
+    display: flex;
+    outline: transparent;
+    justify-content: center;
+    align-items: center;
+}
+
+svg.dial {
+    width: 256px;
+    height: 256px;
+    border: 1px gray dotted;
+  }
+  
+  .dial .knob {
+    /*transition: 500ms transform;*/
+  }
+  .dial .knob circle {
+    stroke: rgb(182, 0, 182);
+    stroke-width: 0.25px;
+    fill: black;
+  }
+  .dial .knob line {
+    stroke: rgb(182, 0, 182);
+    stroke-width: 0.5px;
+    stroke-linecap: round;
+  }
+  .dial .knob_number {
+    fill: white;
+    stroke: black;
+    stroke-width: 0.0625px;
+    font-size: 6px;
+    font-family: "Helvetica", "Arial", sans-serif;
+    letter-spacing: -0.5px;
+    text-anchor: middle;
+    dominant-baseline: central;
+    pointer-events: none;
+  }

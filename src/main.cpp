@@ -38,11 +38,11 @@ void setup() {
   // weight_setup();
 
   // Initialize SPIFFS - for saving data in flash memory
-  uint8_t spiffs_check = startSPIFFS();
-  if (spiffs_check == 1) {
-    Serial.println("SPIFFS ERROR!");
-    return;
-  }
+  // uint8_t spiffs_check = startSPIFFS();
+  // if (spiffs_check == 1) {
+  //   Serial.println("SPIFFS ERROR!");
+  //   return;
+  // }
 
   // start_web_services();
 
@@ -108,13 +108,10 @@ void puzzle() {
   //weight
   // code for keypad
   while (!keypad_done) {
-    keypad_done = keypad_check_password(6, password);
+    keypad_done = neos_plus_keypad(400);
     // digitalWrite(led_gpio2, HIGH);
   }
 
-  // Serial.write("******************************\r\n");
-  // Serial.write("YOU WIN\r\n");
-  // Serial.write("******************************\r\n");
   puzzle_complete();
 
   delay(3000);
@@ -192,5 +189,8 @@ void loo9p() {
 void loop() {
   // print_weight();
   // delay(1000);
-  neos_main();
+  while (!keypad_done) {
+    keypad_done = neos_plus_keypad(400);
+    // digitalWrite(led_gpio2, HIGH);
+  }
 }

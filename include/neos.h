@@ -31,4 +31,10 @@
     void theaterChaseRainbow(Adafruit_NeoPixel strip, int wait);
     void neos_main();
 
+    int freqs[7];
+    void neopixel_puzzle(int wait);
+    bool neos_plus_keypad(int wait);
+    bool pause_lights;
+    bool lights_solved;
+
 #endif /* NEOS_H */

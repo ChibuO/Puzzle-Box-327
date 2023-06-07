@@ -1,13 +1,13 @@
 #include <weight.h>
 
-const int LOADCELL_DOUT_PIN = 16;
-const int LOADCELL_SCK_PIN = 4;
+const int LOADCELL_DOUT_PIN = 14;
+const int LOADCELL_SCK_PIN = 13;
 
 HX711 scale;
 long calibration_factor = -14241.6;
 
 void weight_setup() {
-    Serial.begin(115200);
+  Serial.begin(115200);
   //rtc_clk_cpu_freq_set(RTC_CPU_FREQ_80M);
   Serial.println("HX711 Demo");
 
@@ -52,7 +52,7 @@ void weight_setup() {
 
 // dont use
 void weight_loop() {
-    Serial.print("one reading:\t");
+  Serial.print("one reading:\t");
   Serial.print(scale.get_units(), 1);
   Serial.print("\t| average:\t");
   Serial.println(scale.get_units(10), 5);

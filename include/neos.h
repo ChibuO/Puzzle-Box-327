@@ -26,8 +26,9 @@
     void neopixel_setup();
     uint32_t rgb_to_binary(uint8_t r, uint8_t g, uint8_t b);
     void colorWipe(uint32_t color, int wait);
-    void theaterChase(Adafruit_NeoPixel strip, uint32_t color, int wait);
+    void theaterChase(uint32_t color, int wait);
     void rainbow(Adafruit_NeoPixel strip, int wait);
     void theaterChaseRainbow(Adafruit_NeoPixel strip, int wait);
+    void neos_main();
 
 #endif /* NEOS_H */

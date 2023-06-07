@@ -27,14 +27,15 @@ int randInt(int lower, int upper) {
 void setup() {
   Serial.begin(115200);
   pinMode(LED_BUILTIN, OUTPUT);
-  pinMode(led_gpio, OUTPUT);
-  pinMode(led_gpio2, OUTPUT);
-  keypad_setup();
-  light_knobs_setup();
-  open_setup();
-  imu_setup();
+  // pinMode(led_gpio, OUTPUT);
+  // pinMode(led_gpio2, OUTPUT);
+  // keypad_setup();
+  // light_knobs_setup();
+  // open_setup();
+  // imu_setup();
   neopixel_setup();
-  photosensors_setup();
+  // photosensors_setup();
+  // weight_setup();
 
   // Initialize SPIFFS - for saving data in flash memory
   uint8_t spiffs_check = startSPIFFS();
@@ -43,9 +44,9 @@ void setup() {
     return;
   }
 
-  start_web_services();
+  // start_web_services();
 
-  reset();
+  // servo_reset();
 
   light_ldr = randInt(0, 2);
   dark_ldr = randInt(0, 2);
@@ -88,19 +89,19 @@ void puzzle() {
   // String out_str = String(sequence[0]) + " " + String(sequence[1]) + " " + String(sequence[2]) + " " + String(sequence[3]);
   String out_str = String(sequence[0]) + " " + String(sequence[1]) + " " + String(sequence[2]);
   Serial.println(out_str);
-  // while (!lights_done) {
-  //   update_led_status();
+  while (!lights_done) {
+    update_led_status();
 
-  //   if (led_is_correct(sequence)) {
-  //     // digitalWrite(led_gpio, HIGH); // turn the LED on (HIGH is the voltage level)
-  //     lights_done = 1;
-  //   // } else {
-  //   //   digitalWrite(led_gpio, LOW); // turn the LED off by making the voltage LOW
-  //   }
+    if (led_is_correct(sequence)) {
+      // digitalWrite(led_gpio, HIGH); // turn the LED on (HIGH is the voltage level)
+      lights_done = 1;
+    // } else {
+    //   digitalWrite(led_gpio, LOW); // turn the LED off by making the voltage LOW
+    }
 
-  //   print_led_status();
-  //   delay(300);
-  // }
+    print_led_status();
+    delay(300);
+  }
 
   puzzle_complete();
   
@@ -166,7 +167,7 @@ void puzzle() {
 }
 
 
-void loop() {
+void loo9p() {
   digitalWrite(BUILTIN_LED, !digitalRead(BUILTIN_LED));
 
   //check for box down
@@ -177,7 +178,7 @@ void loop() {
     //check for box down
     Serial.println("!!!! " + String(current_puzzle));
     current_puzzle++;
-    // while (!open()) {};
+    while (!open()) {};
     send_to_socket("");
 
     puzzle();
@@ -188,6 +189,8 @@ void loop() {
   delay(100);
 }
 
-// void loop() {
-//   ldr_main();
-// }
+void loop() {
+  // print_weight();
+  // delay(1000);
+  neos_main();
+}

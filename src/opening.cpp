@@ -19,7 +19,7 @@ void open_setup()
                                          // for an accurate 0 to 180 sweep
 }
 
-void reset() {
+void servo_reset() {
     myservo.write(0);
     delay(1000);
 }

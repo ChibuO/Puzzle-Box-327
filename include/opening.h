@@ -6,6 +6,6 @@
 
     void open_setup();
     bool open();
-    void reset();
+    void servo_reset();
 #endif /* OPENING_H */
 

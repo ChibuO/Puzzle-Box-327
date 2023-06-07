@@ -62,15 +62,87 @@ void colorWipe(uint32_t color, int wait) {
   }
 }
 
+void colorWipe2(int * frenqs, int num_colors, int wait) {
+  uint32_t rainbow_colors[] = {
+    rgb_to_binary(255, 0, 0),
+    rgb_to_binary(255, 128, 0),
+    rgb_to_binary(255, 236, 64),
+    rgb_to_binary(3, 136, 51),
+    rgb_to_binary(3, 113, 136),
+    rgb_to_binary(144, 0, 255),
+    rgb_to_binary(221, 53, 240)};
+
+  int freqs[] = {2, 1, 3, 1, 2, 5, 3}; 
+
+  num_colors = 17;
+  
+  int color_index = 0;
+  int freq_index = 0;
+  int pix_count = 0; //number to nount up to
+  int pix_index = pix_count + color_index; //number that's counting
+  int rep_counter = 1;
+  bool freq_flag = 0;
+
+  for(int b = 0; b < 100; b++) {
+    for(int d = strip.numPixels()-1; d > -1; d--) {
+      uint32_t color = rainbow_colors[pix_index];
+      color = strip.gamma32(color);
+      strip.setPixelColor(d, color);
+      
+      Serial.print(rep_counter);
+      Serial.print(" - ");
+      Serial.print(freq_index);
+      Serial.print(" : ");
+      Serial.print(freqs[freq_index]);
+
+      if (freqs[freq_index] == rep_counter) {
+        freq_index++;
+        rep_counter = 1;
+        pix_index = pix_count + color_index;
+        color_index++;
+        freq_flag = 1;
+      } else {
+        rep_counter++;
+      }
+
+      if (pix_index > num_colors-1) {
+        pix_index = pix_index - num_colors;
+      }
+
+      Serial.print(" so ");
+      Serial.println(pix_index);
+
+      
+
+      if (color_index == strip.numPixels()) {
+        color_index = 0;
+      }
+    }
+    strip.show();
+    delay(10000);
+
+    if (freq_flag == 1) {
+      if (pix_count == num_colors-1) {
+        pix_count = 0;
+        freq_index = 0;
+      } else {
+        pix_count++;
+      }
+      freq_flag = 0;
+    }
+    
+  }
+}
+
 // Theater-marquee-style chasing lights. Pass in a color (32-bit value,
 // a la strip.Color(r,g,b) as mentioned above), and a delay time (in ms)
 // between frames.
-void theaterChase(Adafruit_NeoPixel strip, uint32_t color, int wait) {
+void theaterChase(uint32_t color, int wait) {
   for(int a=0; a<10; a++) {  // Repeat 10 times...
     for(int b=0; b<3; b++) { //  'b' counts from 0 to 2...
       strip.clear();         //   Set all pixels in RAM to 0 (off)
       // 'c' counts up from 'b' to end of strip in steps of 3...
-      for(int c=b; c<strip.numPixels(); c += 3) {
+      for(int c=b; c<strip.numPixels(); c += 1) {
         strip.setPixelColor(c, color); // Set pixel 'c' to value 'color'
       }
       strip.show(); // Update strip with new contents
@@ -126,21 +198,53 @@ uint32_t rgb_to_binary(uint8_t r, uint8_t g, uint8_t b) {
 }
 
 
-// loop() function -- runs repeatedly as long as board is on ---------------
+static int randInt(int lower, int upper) { //lower and upper included
+  // int i;
+  // for (i = 0; i < count; i++) {
+  //     int num = (rand() %
+  //     (upper - lower + 1)) + lower;
+  // }
+  int num = (rand() % (upper - lower + 1)) + lower;
+  return num;
+}
 
-/*
-void loop() {
-  // Fill along the length of the strip in various colors...
-  colorWipe(strip.Color(255,   0,   0), 50); // Red
-  colorWipe(strip.Color(  0, 255,   0), 50); // Green
-  colorWipe(strip.Color(  0,   0, 255), 50); // Blue
+void setFrequencies(int * freqs) {
+  for (int i = 0; i < 7; i++) {
+    freqs[i] = randInt(1, 9);
+  }
+  Serial.println("freqs");
+  for (int i = 0; i < 7; i++) {
+    Serial.println(String(freqs[i]));
+  }
+  // int red_freq = randInt(0, 9);
+  // int red_freq = randInt(0, 9);
+  // int red_freq = randInt(0, 9);
+  // int red_freq = randInt(0, 9);
+  // int red_freq = randInt(0, 9);
+  // int red_freq = randInt(0, 9);
+  // int red_freq = randInt(0, 9);
+}
+
+void neos_main() {
+  int freqs[7];
+  setFrequencies(freqs);
+  int num_colors;
+  for(int i=0; i < 7; i++) {
+    num_colors += freqs[i];
+  }
+  colorWipe2(freqs, num_colors, 400);
+
+  // // Fill along the length of the strip in various colors...
+  // colorWipe(rgb_to_binary(255,   0,   0), 75); // Red
+  // colorWipe(rgb_to_binary(  0, 255,   0), 50); // Green
+  // colorWipe(rgb_to_binary(  0,   0, 255), 50); // Blue
 
   // Do a theater marquee effect in various colors...
-  theaterChase(strip.Color(127, 127, 127), 50); // White, half brightness
-  theaterChase(strip.Color(127,   0,   0), 50); // Red, half brightness
-  theaterChase(strip.Color(  0,   0, 127), 50); // Blue, half brightness
+  // theaterChase(rgb_to_binary(127, 127, 127), 100); // White, half brightness
+  // theaterChase(rgb_to_binary(127,   0,   0), 75); // Red, half brightness
+  // theaterChase(rgb_to_binary(  0,   0, 127), 25); // Blue, half brightness
 
-  rainbow(10);             // Flowing rainbow cycle along the whole strip
-  theaterChaseRainbow(50); // Rainbow-enhanced theaterChase variant
+  // rainbow(strip, 10);             // Flowing rainbow cycle along the whole strip
+  // theaterChaseRainbow(strip, 50); // Rainbow-enhanced theaterChase variant
+  colorWipe(rgb_to_binary(0,0,0), 100);
 }
-*/

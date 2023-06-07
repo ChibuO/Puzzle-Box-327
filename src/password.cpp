@@ -147,3 +147,11 @@ void read_keypad()
         }
     }
 } // End loop
+
+bool is_getKeys() {
+    return kpd.getKeys();
+}
+
+Key getKeypadKey(int i) {
+    return kpd.key[i];
+}

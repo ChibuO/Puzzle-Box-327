@@ -6,4 +6,6 @@
     void keypad_setup();
     void read_keypad();
     char keypad_check_password(int n, char* code);
+    bool is_getKeys();
+    Key getKeypadKey(int i);
 #endif /* PASSWORD_H */

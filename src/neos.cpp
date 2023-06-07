@@ -41,13 +41,14 @@ uint32_t rainbow_colors[] = {
     rgb_to_binary(221, 53, 240)};
 
 uint32_t full_color_list[63];
-int freqs[7];
+// int freqs[7] = {};
 int color_sum = 0;
 // bool pause_lights = false;
 // bool lights_solved = false;
 
-void setColors(int * freqs);
-void setFrequencies(int * freqs);
+void setColors();
+void setFrequencies();
+int freqs[7];
 
 // setup() function -- runs once at startup --------------------------------
 
@@ -62,8 +63,8 @@ void neopixel_setup() {
   strip.begin();           // INITIALIZE NeoPixel strip object (REQUIRED)
   strip.show();            // Turn OFF all pixels ASAP
   strip.setBrightness(100); // Set BRIGHTNESS to about 1/5 (max = 255)
-  setFrequencies(freqs);
-  setColors(freqs);
+  setFrequencies();
+  setColors();
   for(int i=0; i < 7; i++) {
     color_sum += freqs[i];
   }
@@ -158,7 +159,7 @@ static int randInt(int lower, int upper) { //lower and upper included
   return num;
 }
 
-void setFrequencies(int * freqs) {
+void setFrequencies() {
   for (int i = 0; i < 7; i++) {
     freqs[i] = randInt(1, 9);
   }
@@ -168,7 +169,7 @@ void setFrequencies(int * freqs) {
   }
 }
 
-void setColors(int * freqs) {
+void setColors() {
   int color_index = 0;
   for(int j = 0; j < 7; j++) { //number of colors
     for(int k = 0; k < freqs[j]; k++) { //frequency of each
@@ -226,15 +227,15 @@ bool neos_plus_keypad(int wait) {
   while(!done) {
     neopixel_puzzle(wait);
 
-    if (kpd.getKeys()) {
+    if (is_getKeys()) {
       for (int i = 0; i < LIST_MAX; i++) {
-        if (kpd.key[i].stateChanged) {
-          switch (kpd.key[i].kstate) { 
+        if (getKeypadKey(i).stateChanged) {
+          switch (getKeypadKey(i).kstate) { 
             // Report active key state : IDLE, PRESSED, HOLD, or RELEASED
           case PRESSED:
             char s[1];
             sprintf(s, "%d", freqs[n_temp] );
-            if (s[0] == kpd.key[i].kchar) {
+            if (s[0] == getKeypadKey(i).kchar) {
               released = 0;
               pressed = 1;
             }
@@ -252,7 +253,7 @@ bool neos_plus_keypad(int wait) {
             if (pressed) {
               char s[1];
               sprintf(s, "%d", freqs[n_temp] );
-              if (s[0] == kpd.key[i].kchar) {
+              if (s[0] == getKeypadKey(i).kchar) {
                 pressed = 0;
                 released = 1;
                 n_temp++;

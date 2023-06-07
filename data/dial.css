@@ -1,7 +1,8 @@
 .container {
-    width: 1920px;
-    height: 1080px;
-    margin: 50px;
+    width: 350px;
+    height: 200px;
+    margin: auto;
+    margin-top: 400px;
     display: flex;
     outline: transparent;
     justify-content: center;

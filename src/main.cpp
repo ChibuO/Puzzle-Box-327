@@ -114,9 +114,11 @@ void puzzle() {
 
   puzzle_complete();
 
-  delay(3000);
-
   //tilt
+  if (!is_dial_completed) {
+    String imu_data = read_imu();
+    send_to_socket(imu_data);
+  }
   puzzle_complete();
 
   delay(3000);

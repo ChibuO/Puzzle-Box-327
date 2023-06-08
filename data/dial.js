@@ -44,8 +44,8 @@ function format_number(number) {
 
   
   
-  var cur_speed = null;
-  var cur_rotations = null;
+  var cur_speed = 0;
+  var cur_rotations = 0;
   var max_rotations = Infinity;
   var min_rotations = -1*Infinity;
   
@@ -62,27 +62,30 @@ function format_number(number) {
   }
 
   
-  var knob_gyro_previous_rad = null;
-  var knob_gyro_previous_rotations = null;
- 
+  var rad = 0;
+  var knob_gyro_previous_rad = 0;
+  var knob_gyro_previous_rotations = 0;
+
+
   function dial_rotate() {
-    
-    var rad = gyroDict['gyroZ'];
+    if (gyroDict['gyroX'] > 5) {
+      delta = 0.1611
+    } else if (gyroDict['gyroX'] < -5) {
+      delta = -0.1611
+      delta += Math.PI * 2;
+    } else {
+      delta = 0;
+    }
+
+    console.log(delta);
+
+    rad += delta;
     var old = knob_gyro_previous_rad;
     knob_gyro_previous_rad = rad;
-    
-    var delta = rad - old;
-    if (delta < 0) {
-      // Because this is a circle
-      delta += Math.PI * 2;
-    }
-    if (delta > Math.PI) {
-      // Converting from 0..360 to -180..180.
-      delta -= Math.PI * 2;
-    }
+
+    console.log(knob_gyro_previous_rad);
+
     console.assert(delta >= -Math.PI && delta <= Math.PI, {delta: delta, rad: rad, old: old});
-  
-    // var rotation = rad / Math.PI / 2;
     
     var delta_rotation = delta / Math.PI / 2;
     var rotations = knob_gyro_previous_rotations + delta_rotation;
@@ -90,15 +93,17 @@ function format_number(number) {
     set_rotations(rotations);
   }
   
-  function updateRotation(data) {
-    let gyroArray = data.split(" ").map(parseFloat);
+  function updateRotation(/*data*/) {
+    /*let gyroArray = data.split(" ").map(parseFloat);
     // console.log(accelArray);
     gyroDict['gyroX'] = gyroArray[0];
     gyroDict['gyroY'] = gyroArray[1];
     gyroDict['gyroZ'] = gyroArray[2];
-    // console.log(accelDict);
+    // console.log(accelDict);*/
+    console.log('here');
     dial_rotate();
   }
+
 
   set_speed(1);
   

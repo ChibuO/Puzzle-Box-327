@@ -24,6 +24,7 @@ extern bool start_photoresistors;
 extern bool ais_prs_complete;
 extern bool start_weights2;
 extern bool is_weights2_complete;
+extern bool is_dial_complete;
 
 bool wifi_conn_status();
 String get_mac_address();

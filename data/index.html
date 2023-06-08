@@ -10,6 +10,7 @@
         <title>Maze</title>
         <link rel="stylesheet" href="./styles.css">
         <link rel="stylesheet" href="./mazeStyles.css">
+        <link rel="stylesheet" href="./dial.css">
     </head>
 
     <body>
@@ -62,7 +63,22 @@
             </div>
 
             <div id="tilt-screen" class="screen">
-                <h1>Tilt Puzzle</h1>
+                <div class="container"><svg viewBox="-6 -6 12 12" class="dial" id="foobar">
+                    <defs>
+                      <radialGradient id="knobgradient">
+                        <stop offset="0" stop-color="gray"/>
+                        <stop offset="1" stop-color="silver"/>
+                      </radialGradient>
+                    </defs>
+                    <g class="knob">
+                      <circle class="knob_center" cx="0" cy="0" r="0.015625"/>
+                      <g class="knob_gfx">
+                        <circle cx="0" cy="0" r="5"/>
+                        <line x1="0" y1="-2.5" x2="0" y2="-4.5"/>
+                      </g>
+                      <text class="knob_number"/>
+                    </g>
+                  </svg></div>
             </div>
 
             <div id="light-screen" class="screen">
@@ -131,5 +147,6 @@
         <!-- <script src="./script.js"></script> -->
         <script src="./arrowKeyScript.js"></script>
         <script src="./mazeCode.js"></script>
+        <script src="./dial.js"></script>
     </body>
 </html>

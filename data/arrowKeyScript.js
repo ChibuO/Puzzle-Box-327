@@ -60,7 +60,7 @@ function update_list(num, data) {
         document.getElementById(i).classList.add("strike");
     });
 
-    console.log(`puzzle ${num}`);
+    console.log(`updlist puzzle ${num}`);
 
     switch(num) {
         case 0:
@@ -74,7 +74,7 @@ function update_list(num, data) {
             //box gives acceleration data
             updateDirection(data);
             if (data === "boxdown") {
-                slide(1, 2);
+                 slide(1, 2);
             }
             break;
         case 2:
@@ -85,13 +85,14 @@ function update_list(num, data) {
             break;
         case 3:
             //fractions - box tells web that it's completed
+            updateRotation(/*data*/);
             if (data === "completed") {
                 slide();
             }
             break;
         case 4:
             //tilt - web tells box that it's completed
-            // updateDirection(data);
+            
             //should be boxdown
             if (data === "completed") {
                 slide();
@@ -266,22 +267,60 @@ window.onresize = function () {
     }
 };
 
-function displayVictoryMessage() {
+// function displayVictoryMessage() {
+//     slide(-1);
+//     maze_completed = true;
+//     setTimeout(() => {
+//         slide();
+//         if(maze_completed) {
+//             let light_num_divs = Array.from(document.getElementsByClassName("light-num-divs"));
+//             light_num_divs.forEach((div) => {
+//                 div.style.opacity = "1";
+//             });
+//         }
+//     }, 1000);
+//     clearInterval(maze_interval_id);
+//     let light_string = `${light_order.indexOf(1)}${light_order.indexOf(2)}${light_order.indexOf(3)}${light_order.indexOf(4)}`;
+//     puzzle_complete(light_string);
+// }
+
+
+function maze_comp(){
     slide(-1);
+
     maze_completed = true;
-    setTimeout(() => {
-        slide();
-        if(maze_completed) {
+        setTimeout(() => {
+            slide();
+
             let light_num_divs = Array.from(document.getElementsByClassName("light-num-divs"));
             light_num_divs.forEach((div) => {
                 div.style.opacity = "1";
             });
-        }
-    }, 1000);
-    clearInterval(maze_interval_id);
-    let light_string = `${light_order.indexOf(1)}${light_order.indexOf(2)}${light_order.indexOf(3)}${light_order.indexOf(4)}`;
-    puzzle_complete(light_string);
+        
+        }, 1000);
+        clearInterval(maze_interval_id);
+        let light_string = `${light_order.indexOf(1)}${light_order.indexOf(2)}${light_order.indexOf(3)}${light_order.indexOf(4)}`;
+        puzzle_complete(light_string);
 }
+
+function displayVictoryMessage() {
+    console.log('vic msg', current_puzzle);
+    if (current_puzzle < 1){
+        update_list(current_puzzle, "boxdown");
+        setTimeout(() => {
+            slide(1,1);
+        } , 1000);
+        current_puzzle++;
+    } else if (current_puzzle === 1){
+       maze_comp();
+    } else if (current_puzzle >= 2) {
+        update_list(current_puzzle, "completed");
+        current_puzzle++;
+    }
+    console.log('end', current_puzzle);
+}
+
+
 
 function toggleVisibility(id) {
     if (document.getElementById(id).style.visibility == "visible") {

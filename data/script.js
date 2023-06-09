@@ -143,6 +143,7 @@ function update_list(num, data) {
 }
 
 function skipPuzzle() {
+    document.getElementById("skipBtn").disabled = true;
     websocket.send(`skip${current_puzzle}`);
 
     switch(current_puzzle) {
@@ -161,38 +162,15 @@ function skipPuzzle() {
             // current_puzzle++;
             break;
         case 3:
-            //fractions
-            // slide();
-            // current_puzzle++;
-            break;
         case 4:
-            //tilt - web tells box that it's completed
-            //should be boxdown
-            // setMazeComplete();
-            // slide();
-            // current_puzzle++;
-            break;
         case 5:
-            //photoresistors  - box tells web that it's completed
-            //box gives web photoresistor status
-            //reveal first half
-            // slide();
-            // current_puzzle++;
-            break;
         case 6:
-            //neopixels - box tells web when completed
-            // slide();
-            // current_puzzle++;
-            break;
         case 7:
-            //weights2 - box tells web when completed
-            // slide();
-            // current_puzzle++;
-            break;
         case 8:
             //finale - box tells web when completed
             // slide();
             // current_puzzle++;
+            break;
         default:
             break;
     }
@@ -332,44 +310,6 @@ function setMazeComplete() {
     puzzle_complete(light_string, true);
 }
 
-
-// function maze_comp(){
-//     slide(-1);
-
-//     maze_completed = true;
-//         setTimeout(() => {
-//             slide();
-
-//             let light_num_divs = Array.from(document.getElementsByClassName("light-num-divs"));
-//             light_num_divs.forEach((div) => {
-//                 div.style.opacity = "1";
-//             });
-        
-//         }, 1000);
-//         clearInterval(maze_interval_id);
-//         let light_string = `${light_order.indexOf(1)}${light_order.indexOf(2)}${light_order.indexOf(3)}${light_order.indexOf(4)}`;
-//         puzzle_complete(light_string);
-// }
-
-// function displayVictoryMessage() {
-//     console.log('vic msg', current_puzzle);
-//     if (current_puzzle < 1){
-//         update_list(current_puzzle, "boxdown");
-//         setTimeout(() => {
-//             slide(1,1);
-//         } , 1000);
-//         current_puzzle++;
-//     } else if (current_puzzle === 1){
-//        maze_comp();
-//     } else if (current_puzzle >= 2) {
-//         update_list(current_puzzle, "completed");
-//         current_puzzle++;
-//     }
-//     console.log('end', current_puzzle);
-// }
-
-
-
 function toggleVisibility(id) {
     if (document.getElementById(id).style.visibility == "visible") {
         document.getElementById(id).style.visibility = "hidden";
@@ -498,6 +438,7 @@ function puzzle_complete(data = "", should_send = false) {
         websocket.send(`completed${current_puzzle}${data}`);
     }
     current_puzzle++;
+    document.getElementById("skipBtn").disabled = false;
 }
 
 function set_ldr_clue(light_ldr, dark_ldr) {

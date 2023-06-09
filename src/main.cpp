@@ -86,6 +86,7 @@ void puzzle_complete() {
   // if(!should_skip_puzzle) {
   //   send_to_socket("completed");
   // }
+  send_to_socket("");
 }
 
 
@@ -120,17 +121,11 @@ void start_puzzles() {
   }
 
   puzzle_complete();
-  Serial.println("first");
   
   //weight
   // code for keypad
-  while (!keypad_done && !should_skip_puzzle) {
-    // Serial.println("2nd");
-    // keypad_done = keypad_check_password(6, password);
-    Serial.println("keypad");
-  }
+  while (!getPressed(6, password) && !should_skip_puzzle) {}
 
-  Serial.println("done");
   puzzle_complete();
 
   //tilt
@@ -199,22 +194,6 @@ void loop() {
     //then start
     start_puzzles();
   }
-  
-
-
-  // if (!is_maze_completed) {
-  //   String imu_data = read_imu();
-  //   send_to_socket(imu_data);
-  // } else {
-  //   //todo: check for box down
-  //   Serial.println("!!!! " + String(current_puzzle));
-  //   current_puzzle++;
-  //   while (!open()) {};
-  //   send_to_socket("");
-
-  //   puzzle();
-  // }
-  
 
   delay(100);
 }

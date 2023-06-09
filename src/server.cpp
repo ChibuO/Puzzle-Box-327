@@ -65,28 +65,32 @@ void handleSkip(int current_puzzle) {
     case 2:
       //lights
       should_skip_puzzle = true;
-      Serial.printf("skipping\r\n");
+      Serial.printf("skipping %d\r\n", current_puzzle);
       break;
     case 3:
       //weights1 completed
       should_skip_puzzle = true;
-      Serial.printf("skipping\r\n");
+      Serial.printf("skipping %d\r\n", current_puzzle);
       break;
     case 4:
       //tilt completed
       should_skip_puzzle = true;
+      Serial.printf("skipping %d\r\n", current_puzzle);
       break;
     case 5:
       //photoresistors completed
       should_skip_puzzle = true;
+      Serial.printf("skipping %d\r\n", current_puzzle);
       break;
     case 6:
       //neopixels completed
       should_skip_puzzle = true;
+      Serial.printf("skipping %d\r\n", current_puzzle);
       break;
     case 7:
       //weights2 completed
       should_skip_puzzle = true;
+      Serial.printf("skipping %d\r\n", current_puzzle);
       break;
     default:
       break;

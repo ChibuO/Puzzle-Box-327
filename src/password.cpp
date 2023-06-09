@@ -19,6 +19,9 @@ Keypad kpd = Keypad(makeKeymap(keys), rowPins, colPins, ROWS, COLS);
 unsigned long loopCount;
 unsigned long startTime;
 String msg;
+int pressed = 0;
+int released = 0;
+int n_temp = 0;
 
 void keypad_setup()
 {
@@ -26,6 +29,67 @@ void keypad_setup()
     loopCount = 0;
     startTime = millis();
     msg = "";
+}
+
+int getPressed(int n, char *code) {
+    if (kpd.getKeys()) {
+        for (int i = 0; i < LIST_MAX; i++) {
+            if (kpd.key[i].stateChanged) {
+                switch (kpd.key[i].kstate) { 
+                    // Report active key state : IDLE, PRESSED, HOLD, or RELEASED
+                    case PRESSED:
+                        if (code[n_temp] == kpd.key[i].kchar) {
+                            released = 0;
+                            pressed = 1;
+                        }
+                        else {
+                            released = 0;
+                            pressed = 0;
+                            n_temp = 0;
+                        }
+                        msg = " PRESSED";
+                        break;
+                    case HOLD:
+                        break;
+                        msg = " HOLD";
+                    case RELEASED:
+                        if (pressed) {
+                            if (code[n_temp] == kpd.key[i].kchar) {
+                                pressed = 0;
+                                released = 1;
+                                n_temp++;
+                                if (n_temp > n-1) return 1;
+                            }
+                            else {
+                                pressed = 0;
+                                released = 0;
+                                n_temp = 0;
+                            }
+                        }
+                        else {
+                            pressed = 0;
+                            released = 0;
+                            n_temp = 0;
+                        }
+                        msg = " RELEASED";
+                        break;
+                    case IDLE:
+                        msg = " IDLE";
+                        break;
+                }
+                Serial.print("Key ");
+                Serial.print(kpd.key[i].kchar);
+                Serial.println(msg);
+                Serial.print("n_temp: ");
+                Serial.print(n_temp);
+                Serial.print(" pressed: ");
+                Serial.print(pressed);
+                Serial.print(" released: ");
+                Serial.println(released);
+            }
+        }
+    }
+    return 0;    
 }
 
 char keypad_check_password(int n, char *code)
@@ -54,7 +118,6 @@ char keypad_check_password(int n, char *code)
                             {
                                 released = 0;
                                 pressed = 1;
-                                
                             }
                             else
                             {

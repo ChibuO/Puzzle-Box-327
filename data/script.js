@@ -5,11 +5,250 @@ var goalSprite;
 var maze, draw, player;
 var cellSize;
 var difficulty;
-// sprite.src = 'media/sprite.png';
+var accelDict = {'accX': 0.0, 'accY': 0.0, 'accZ': 0.0};
+var gyroDict = {'gyroX': 0.0, 'gyroY': 0.0, 'gyroZ': 0.0};
+var d_tilt;
+var maze_completed = false;
+var maze_interval_id;
+var maze_wall_color = "white";
+
+
+var websocket = null;
+var localhost = "";
+var status_line = document.getElementById('status_lbl');
+var webcam_closed = false;
+
+var passkey = "jo";
+var adminPanelEnabled = true;
+let showAdmin = false;
+
+const pages = document.querySelectorAll(".screen");
+const translateAmount = 100;
+let translate = 0;
+
+const passkey_txtbox = document.getElementById("passkey_txtbox");
+let welcome_screen = document.getElementById("welcome-screen");
+let box_down_screen = document.getElementById("box-down-screen");
+
+var light_order = [];
+
+var completed_puzzles = [];
+
+var current_puzzle = 0;
+
+let walls = ["graveyard", "lunch", "twilight", "stairs"];
+let light_phrases = ["It's too dark to see the name on the coffin", "The light in the fridge is out", "I can barely see what's howling", "I need more light to see what's on the stairs"];
+let dark_phrases = ["I can only visit the dead at night", "Someone's trying to peak at my lunch", "Protect the vampire from the sun", "Darness can hide magic pumpkins"];
+
+
+function updateDirection(data) {
+    //on maze puzzle
+    let accelArray = data.split(" ").map(parseFloat);
+    // console.log(accelArray);
+    accelDict['accX'] = accelArray[0];
+    accelDict['accY'] = accelArray[1];
+    accelDict['accZ'] = accelArray[2];
+    // console.log(accelDict);
+    direction_tilt();
+}
+
+function update_list(num, data) {
+    let element_ids = ["key_lbl", "maze_lbl", "knobs_lbl", "weights_lbl", "tilt_lbl", "dark_lbl", "neo_lbl", "door_lbl","final_lbl"];
+    element_ids.slice(0, num).map((i) => {
+        document.getElementById(i).classList.add("strike");
+    });
+
+    console.log(`list puzzle ${num}`);
+
+    //num comes from the box itself
+    switch(num) {
+        // case 0:
+        //     //password - web tells box that it's completed
+        //     if (data === "boxdown") {
+        //         slide();
+        //     }
+        //     break;
+        case 1:
+            //maze - web tells box that it's completed
+            //box gives acceleration data
+            updateDirection(data);
+            break;
+        case 2:
+            //lights - box tells web that it's completed
+            if (data === "completed") {
+                slide();
+                puzzle_complete();
+            }
+            break;
+        case 3:
+            //weights1 - box tells web that it's completed
+            if (data === "completed") {
+                slide();
+                puzzle_complete();
+            }
+            break;
+        case 4:
+            //tilt - web tells box that it's completed
+
+            if (data === "completed") {
+                slide();
+            } else {
+                updateRotation(data);
+            }
+            break;
+        case 5:
+            //photoresistors  - box tells web that it's completed
+            //box gives web photoresistor status
+            //reveal first half
+            if (data === "halfway") {
+                document.getElementById("lightside").style.background = "white";
+                document.getElementById("lightside-clue").style.color = "black";
+                document.getElementById("darkside-clue").style.color = "black";
+            } else if (data === "continue") { //reveal second half
+                document.getElementById("lightside-clue").style.color = "white";
+                document.getElementById("darkside").style.background = "black";
+            } else if (data === "completed") {
+                 //box then tells web when all potentiometers turned down
+                slide();
+            } else {
+                //the clue numbers
+                console.log(data);
+                set_ldr_clue(Number(data[0]), Number(data[1]));
+            }
+            break;
+        case 6:
+            //neopiixels - box tells web when completed
+            document.getElementById("admin-btn").style.color = "black";
+            if (data === "completed") {
+                slide();
+            }
+            break;
+        case 7:
+            //weights2 - box tells web when completed
+            document.getElementById("admin-btn").style.color = "white";
+            if (data === "completed") {
+                slide();
+            }
+            break;
+        case 8:
+            //finale - box tells web when completed
+            if (data === "completed") {
+                slide();
+            }
+            break;
+        default:
+            break;
+    }
+    
+}
+
+function skipPuzzle() {
+    websocket.send(`skip${current_puzzle}`);
+
+    switch(current_puzzle) {
+        case 0:
+            //password
+            slide();
+            current_puzzle++;
+            break;
+        case 1:
+            //maze
+            setMazeComplete();
+            break;
+        case 2:
+            //lights
+            // slide();
+            // current_puzzle++;
+            break;
+        case 3:
+            //fractions
+            // slide();
+            // current_puzzle++;
+            break;
+        case 4:
+            //tilt - web tells box that it's completed
+            //should be boxdown
+            // setMazeComplete();
+            // slide();
+            // current_puzzle++;
+            break;
+        case 5:
+            //photoresistors  - box tells web that it's completed
+            //box gives web photoresistor status
+            //reveal first half
+            // slide();
+            // current_puzzle++;
+            break;
+        case 6:
+            //neopixels - box tells web when completed
+            // slide();
+            // current_puzzle++;
+            break;
+        case 7:
+            //weights2 - box tells web when completed
+            // slide();
+            // current_puzzle++;
+            break;
+        case 8:
+            //finale - box tells web when completed
+            // slide();
+            // current_puzzle++;
+        default:
+            break;
+    }
+}
+
+// Initialize the websocket
+function init() {
+	if (window.location.hostname != "") {
+		localhost = window.location.hostname;
+	}
+
+	doConnect();
+}
+
+function doConnect() { // makes a connection and defines callbacks
+    writeToScreen("Connecting to ws://" + localhost + ":81/ ...");
+    websocket = new WebSocket("ws://" + localhost + ":81/");
+    websocket.onopen = function(evt) {
+        onOpen(evt)
+    };
+    websocket.onclose = function(evt) {
+        onClose(evt)
+        webcam_closed = true;
+    };
+    websocket.onmessage = function(evt) {
+        onMessage(evt)
+    };
+    websocket.onerror = function(evt) {
+        onError(evt)
+    };
+}
+
+function onOpen(evt) { // when handshake is complete:
+	writeToScreen("Connected.");
+}
+
+function onClose(evt) { // when socket is closed:
+	writeToScreen("Disconnected. Error: " + evt);
+}
+
+function onMessage(msg) {
+    var obj = JSON.parse(msg.data);
+    update_list(Number(obj.completed), obj.data);
+}
+
+function onError(evt) { // when an error occurs
+	websocket.close();
+	writeToScreen("Websocket error");
+}
 
 window.onload = function () {
-    let viewWidth = $("#view").width();
-    let viewHeight = $("#view").height();
+    let viewbox = document.querySelector("#maze_box");
+    let viewWidth = viewbox.offsetWidth;
+    let viewHeight = viewbox.offsetHeight;
+    console.log(viewHeight);
+    console.log(viewWidth);
     if (viewHeight < viewWidth) {
         ctx.canvas.width = viewHeight - viewHeight / 100;
         ctx.canvas.height = viewHeight - viewHeight / 100;
@@ -21,6 +260,7 @@ window.onload = function () {
     //Load and edit sprites
     var completeOne = false;
     var completeTwo = false;
+
     var isComplete = () => {
         if (completeOne === true && completeTwo === true) {
             console.log("Runs");
@@ -29,6 +269,7 @@ window.onload = function () {
             }, 500);
         }
     };
+
     ballSprite = new Image();
     ballSprite.src =
         "./key.png" +
@@ -36,9 +277,8 @@ window.onload = function () {
         new Date().getTime();
     ballSprite.setAttribute("crossOrigin", " ");
     ballSprite.onload = function () {
-        ballSprite = changeBrightness(1.1, ballSprite);
         completeOne = true;
-        console.log(completeOne);
+        console.log("Sprite 1 loaded");
         isComplete();
     };
 
@@ -48,17 +288,19 @@ window.onload = function () {
         new Date().getTime();
     goalSprite.setAttribute("crossOrigin", " ");
     goalSprite.onload = function () {
-        goalSprite = changeBrightness(1.1, goalSprite);
         completeTwo = true;
-        console.log(completeTwo);
+        console.log("Sprite 2 loaded");
         isComplete();
     };
+    
 
 };
 
 window.onresize = function () {
-    let viewWidth = $("#view").width();
-    let viewHeight = $("#view").height();
+    return;
+    let viewbox = document.querySelector("#maze_box");
+    let viewWidth = viewbox.offsetWidth;
+    let viewHeight = viewbox.offsetHeight;
     if (viewHeight < viewWidth) {
         ctx.canvas.width = viewHeight - viewHeight / 100;
         ctx.canvas.height = viewHeight - viewHeight / 100;
@@ -73,532 +315,193 @@ window.onresize = function () {
     }
 };
 
-function makeMaze() {
-    if (player != undefined) {
-        player.unbindKeyDown();
-        player = null;
-    }
-
-    difficulty = 5;
-    cellSize = mazeCanvas.width / difficulty;
-    maze = new Maze(difficulty, difficulty);
-    maze.genMap();
-    maze.defineStartEnd();
-    maze.defineMaze();
-    draw = new DrawMaze(maze, ctx, cellSize, goalSprite);
-    draw.clear();
-    draw.drawMap();
-    draw.drwl();
-    player = new Player(maze, mazeCanvas, cellSize, displayVictoryMess, ballSprite);
-    if (document.getElementById("mazeContainer").style.opacity < "100") {
-        document.getElementById("mazeContainer").style.opacity = "100";
-    }
+function setMazeComplete() {
+    slide(-1);
+    maze_completed = true;
+    setTimeout(() => {
+        slide();
+        if(maze_completed) {
+            let light_num_divs = Array.from(document.getElementsByClassName("light-num-divs"));
+            light_num_divs.forEach((div) => {
+                div.style.opacity = "1";
+            });
+        }
+    }, 4000);
+    clearInterval(maze_interval_id);
+    let light_string = `${light_order.indexOf(1)}${light_order.indexOf(2)}${light_order.indexOf(3)}`;
+    puzzle_complete(light_string, true);
 }
 
-function rand(max) {
-    return Math.floor(Math.random() * max);
-}
 
-function shuffle(a) {
-    //fisher-yates algorithm
-    for (let i = a.length - 1; i > 0; i--) {
-        const j = Math.floor(Math.random() * (i + 1));
-        [a[i], a[j]] = [a[j], a[i]]; //destructuring assignment
-    }
-    return a;
-}
+// function maze_comp(){
+//     slide(-1);
 
-function changeBrightness(factor, sprite) {
-    var virtCanvas = document.createElement("canvas");
-    virtCanvas.width = 500;
-    virtCanvas.height = 500;
-    var context = virtCanvas.getContext("2d");
-    context.drawImage(sprite, 0, 0, 500, 500);
+//     maze_completed = true;
+//         setTimeout(() => {
+//             slide();
 
-    var imgData = context.getImageData(0, 0, 500, 500);
+//             let light_num_divs = Array.from(document.getElementsByClassName("light-num-divs"));
+//             light_num_divs.forEach((div) => {
+//                 div.style.opacity = "1";
+//             });
+        
+//         }, 1000);
+//         clearInterval(maze_interval_id);
+//         let light_string = `${light_order.indexOf(1)}${light_order.indexOf(2)}${light_order.indexOf(3)}${light_order.indexOf(4)}`;
+//         puzzle_complete(light_string);
+// }
 
-    for (let i = 0; i < imgData.data.length; i += 4) {
-        imgData.data[i] = imgData.data[i] * factor;
-        imgData.data[i + 1] = imgData.data[i + 1] * factor;
-        imgData.data[i + 2] = imgData.data[i + 2] * factor;
-    }
-    context.putImageData(imgData, 0, 0);
+// function displayVictoryMessage() {
+//     console.log('vic msg', current_puzzle);
+//     if (current_puzzle < 1){
+//         update_list(current_puzzle, "boxdown");
+//         setTimeout(() => {
+//             slide(1,1);
+//         } , 1000);
+//         current_puzzle++;
+//     } else if (current_puzzle === 1){
+//        maze_comp();
+//     } else if (current_puzzle >= 2) {
+//         update_list(current_puzzle, "completed");
+//         current_puzzle++;
+//     }
+//     console.log('end', current_puzzle);
+// }
 
-    var spriteOutput = new Image();
-    spriteOutput.src = virtCanvas.toDataURL();
-    virtCanvas.remove();
-    return spriteOutput;
-}
 
-function displayVictoryMess(moves) {
-    toggleVisibility("Message-Container");
-}
 
 function toggleVisibility(id) {
     if (document.getElementById(id).style.visibility == "visible") {
         document.getElementById(id).style.visibility = "hidden";
         makeMaze();
+        websocket.send("completed");
     } else {
         document.getElementById(id).style.visibility = "visible";
     }
 }
 
-class Maze {
-    constructor(Width, Height) {
-        var mazeMap;
-        var width = Width;
-        var height = Height;
-        var startCoord, endCoord;
-        var dirs = ["n", "s", "e", "w"];
-        var modDir = {
-            n: {
-                y: -1,
-                x: 0,
-                o: "s"
-            },
-            s: {
-                y: 1,
-                x: 0,
-                o: "n"
-            },
-            e: {
-                y: 0,
-                x: 1,
-                o: "w"
-            },
-            w: {
-                y: 0,
-                x: -1,
-                o: "e"
-            }
-        };
-
-        this.map = function () {
-            return mazeMap;
-        };
-        this.startCoord = function () {
-            return startCoord;
-        };
-        this.endCoord = function () {
-            return endCoord;
-        };
-
-        this.genMap = function () {
-            mazeMap = new Array(height);
-            for (let y = 0; y < height; y++) {
-                mazeMap[y] = new Array(width);
-                for (let x = 0; x < width; ++x) {
-                    mazeMap[y][x] = {
-                        n: false,
-                        s: false,
-                        e: false,
-                        w: false,
-                        visited: false,
-                        priorPos: null
-                    };
-                }
-            }
-        }
-
-        this.defineMaze = function () {
-            var isComplete = false;
-            var moved = false;
-            var cellsVisited = 1;
-            var numLoops = 0;
-            var maxLoops = 0;
-            var pos = {
-                x: 0,
-                y: 0
-            };
-            var numCells = width * height;
-            while (!isComplete) {
-                moved = false;
-                mazeMap[pos.x][pos.y].visited = true;
-
-                if (numLoops >= maxLoops) {
-                    shuffle(dirs);
-                    maxLoops = Math.round(rand(height / 8));
-                    numLoops = 0;
-                }
-                numLoops++;
-                for (let index = 0; index < dirs.length; index++) {
-                    var direction = dirs[index];
-                    var nx = pos.x + modDir[direction].x;
-                    var ny = pos.y + modDir[direction].y;
-
-                    if (nx >= 0 && nx < width && ny >= 0 && ny < height) {
-                        //Check if the tile is already visited
-                        if (!mazeMap[nx][ny].visited) {
-                            //Carve through walls from this tile to next
-                            mazeMap[pos.x][pos.y][direction] = true;
-                            mazeMap[nx][ny][modDir[direction].o] = true;
-
-                            //Set Currentcell as next cells Prior visited
-                            mazeMap[nx][ny].priorPos = pos;
-                            //Update Cell position to newly visited location
-                            pos = {
-                                x: nx,
-                                y: ny
-                            };
-                            cellsVisited++;
-                            //Recursively call this method on the next tile
-                            moved = true;
-                            break;
-                        }
-                    }
-                }
-
-                if (!moved) {
-                    //  If it failed to find a direction,
-                    //  move the current position back to the prior cell and Recall the method.
-                    pos = mazeMap[pos.x][pos.y].priorPos;
-                }
-                if (numCells == cellsVisited) {
-                    isComplete = true;
-                }
-            }
-        }
-
-        this.defineStartEnd = function () {
-            switch (rand(4)) {
-                case 0:
-                    startCoord = {
-                        x: 0,
-                        y: 0
-                    };
-                    endCoord = {
-                        x: height - 1,
-                        y: width - 1
-                    };
-                    break;
-                case 1:
-                    startCoord = {
-                        x: 0,
-                        y: width - 1
-                    };
-                    endCoord = {
-                        x: height - 1,
-                        y: 0
-                    };
-                    break;
-                case 2:
-                    startCoord = {
-                        x: height - 1,
-                        y: 0
-                    };
-                    endCoord = {
-                        x: 0,
-                        y: width - 1
-                    };
-                    break;
-                case 3:
-                    startCoord = {
-                        x: height - 1,
-                        y: width - 1
-                    };
-                    endCoord = {
-                        x: 0,
-                        y: 0
-                    };
-                    break;
-            }
-        }
-
-        // genMap();
-        // defineStartEnd();
-        // defineMaze();
-    }
+// Function to display to the message box
+function writeToScreen(message)
+{
+  document.getElementById("status_lbl").innerHTML = message;
 }
 
-class DrawMaze {
-    constructor(Maze, ctx, cellsize, endSprite = null) {
-        var map = Maze.map();
-        var cellSize = cellsize;
-        var drawEndMethod;
-        ctx.lineWidth = cellSize / 30;
+// Open Websocket as soon as page loads
+window.addEventListener("load", init, false);
 
-        //redraw maze with new size
-        this.redrawMaze = function (size) {
-            cellSize = size;
-            ctx.lineWidth = cellSize / 30;
-            this.drawMap();
-            drawEndMethod();
-        };
+passkey_txtbox.addEventListener("input", (event) => {
+    if(event.target.value === passkey) {
+        // welcome_screen.style.opacity = 0;
+        event.target.value = "";
+        set_light_order();
+        slide();
+        setTimeout(() => {
+            // box_down_screen.style.opacity = 1;
+            slide();
+        }, 4000);
+        puzzle_complete("", true);
+    }
+});
 
-        //draw a line on the side of the cell that isn't open
-        function drawCell(xCord, yCord, cell) {
-            var x = xCord * cellSize;
-            var y = yCord * cellSize;
-            ctx.strokeStyle = "green";
+function direction_tilt() {
+    if (accelDict['accY'] < -40.0) {
+        d_tilt = "west";
+    } else if (accelDict['accY'] > 30.0) {
+        d_tilt = "east";
+    } else if (accelDict['accX'] < -30.0) {
+        d_tilt = "north";
+    } else if (accelDict['accX'] > 45.0) {
+        d_tilt = "south";
+    } else {
+        d_tilt = "none";
+    }
 
-            if (cell.n == false) {
-                ctx.beginPath();
-                ctx.moveTo(x, y);
-                ctx.lineTo(x + cellSize, y);
-                ctx.stroke();
+    //console.log(d_tilt);
+}
+
+function toggleAdminPanel() {
+    if(!adminPanelEnabled) {
+        let adminName = prompt("This puzzle box was created by Chibu, Haris, and Chele for EE327 Spring 2023. ;)\nName?");
+        if (adminName != "ilya") {
+            if(adminName != null) {
+                alert("Hi " + adminName + "! Have fun!");
             }
-            if (cell.s === false) {
-                ctx.beginPath();
-                ctx.moveTo(x, y + cellSize);
-                ctx.lineTo(x + cellSize, y + cellSize);
-                ctx.stroke();
-            }
-            if (cell.e === false) {
-                ctx.beginPath();
-                ctx.moveTo(x + cellSize, y);
-                ctx.lineTo(x + cellSize, y + cellSize);
-                ctx.stroke();
-            }
-            if (cell.w === false) {
-                ctx.beginPath();
-                ctx.moveTo(x, y);
-                ctx.lineTo(x, y + cellSize);
-                ctx.stroke();
-            }
-        }
-
-        //loop through cells and draw lines
-        this.drawMap = function () {
-            for (let x = 0; x < map.length; x++) {
-                for (let y = 0; y < map[x].length; y++) {
-                    drawCell(x, y, map[x][y]);
-                }
-            }
-        }
-
-        //checkered flag in case there's a problem with end sprite 
-        function drawEndFlag() {
-            var coord = Maze.endCoord();
-            var gridSize = 4;
-            var fraction = cellSize / gridSize - 2;
-            var colorSwap = true;
-            for (let y = 0; y < gridSize; y++) {
-                if (gridSize % 2 == 0) {
-                    colorSwap = !colorSwap;
-                }
-                for (let x = 0; x < gridSize; x++) {
-                    ctx.beginPath();
-                    ctx.rect(
-                        coord.x * cellSize + x * fraction + 4.5,
-                        coord.y * cellSize + y * fraction + 4.5,
-                        fraction,
-                        fraction
-                    );
-                    if (colorSwap) {
-                        ctx.fillStyle = "rgba(0, 0, 0, 0.8)";
-                    } else {
-                        ctx.fillStyle = "rgba(255, 255, 255, 0.8)";
-                    }
-                    ctx.fill();
-                    colorSwap = !colorSwap;
-                }
-            }
-        }
-
-        function drawEndSprite() {
-            var offsetLeft = cellSize / 50;
-            var offsetRight = cellSize / 25;
-            var coord = Maze.endCoord();
-            ctx.drawImage(
-                endSprite,
-                2,
-                2,
-                endSprite.width,
-                endSprite.height,
-                coord.x * cellSize + offsetLeft,
-                coord.y * cellSize + offsetLeft,
-                cellSize - offsetRight,
-                cellSize - offsetRight
-            );
-        }
-
-        this.clear = function () {
-            var canvasSize = cellSize * map.length;
-            ctx.clearRect(0, 0, canvasSize, canvasSize);
-        }
-
-        if (endSprite != null) {
-            drawEndMethod = drawEndSprite;
+            return;
         } else {
-            drawEndMethod = drawEndFlag;
+            adminPanelEnabled = true;
         }
-
-        this.drwl = function () {
-            drawEndMethod();
-        }
+    }
+    if(showAdmin) {
+        //if showing, hide
+        document.getElementById("puzzles-container").style.width = "45px";
+        document.getElementById("main-game").style.marginLeft = "0px";
+        showAdmin = false;
+    } else {
+        //if not, show
+        document.getElementById("puzzles-container").style.width = "28vw";
+        document.getElementById("main-game").style.marginLeft = "28vw";
+        showAdmin = true;
     }
 }
 
-class Player {
-    constructor(maze, c, _cellsize, onComplete, sprite = null) {
-        var ctx = c.getContext("2d");
-        var drawSprite;
-        var moves = 0;
-        drawSprite = drawSpriteCircle;
-        if (sprite != null) {
-            drawSprite = drawSpriteImg;
-        }
-        var player = this;
-        var map = maze.map();
-        var cellCoords = {
-            x: maze.startCoord().x,
-            y: maze.startCoord().y
-        };
-        var cellSize = _cellsize;
-        var halfCellSize = cellSize / 2;
-
-        this.redrawPlayer = function (_cellsize) {
-            cellSize = _cellsize;
-            drawSpriteImg(cellCoords);
-        };
-
-        //circle chape in case sprite doesn't show
-        function drawSpriteCircle(coord) {
-            ctx.beginPath();
-            ctx.fillStyle = "yellow";
-            ctx.arc(
-                (coord.x + 1) * cellSize - halfCellSize,
-                (coord.y + 1) * cellSize - halfCellSize,
-                halfCellSize - 2,
-                0,
-                2 * Math.PI
-            );
-            ctx.fill();
-            if (coord.x === maze.endCoord().x && coord.y === maze.endCoord().y) {
-                onComplete(moves);
-                player.unbindKeyDown();
+function set_light_order() {
+    let lights = [];
+    let skip_side = Math.floor(Math.random() * 3); //side to skip, want to keep 4
+    //get numbers for sides of box
+    for(i=0; i < 4; i++) {
+        if (i != skip_side) {
+            // Returns a random integer from 1 to 4 (inclusive):
+            let r_int = Math.floor(Math.random() * 3) + 1;
+            while (light_order.includes(r_int)) {
+                r_int = Math.floor(Math.random() * 3) + 1;
             }
+            light_order.push(r_int);
+            lights.push(r_int);
+        } else {
+            light_order.push(0);
+            lights.push(0);
         }
-
-        function drawSpriteImg(coord) {
-            var offsetLeft = cellSize / 50;
-            var offsetRight = cellSize / 25;
-            ctx.drawImage(
-                sprite,
-                0,
-                0,
-                sprite.width,
-                sprite.height,
-                coord.x * cellSize + offsetLeft,
-                coord.y * cellSize + offsetLeft,
-                cellSize - offsetRight,
-                cellSize - offsetRight
-            );
-            if (coord.x === maze.endCoord().x && coord.y === maze.endCoord().y) {
-                onComplete(moves);
-                player.unbindKeyDown();
-            }
-        }
-
-        function removeSprite(coord) {
-            var offsetLeft = cellSize / 50;
-            var offsetRight = cellSize / 25;
-            ctx.clearRect(
-                coord.x * cellSize + offsetLeft,
-                coord.y * cellSize + offsetLeft,
-                cellSize - offsetRight,
-                cellSize - offsetRight
-            );
-        }
-
-        function check(e) {
-            var cell = map[cellCoords.x][cellCoords.y];
-            moves++;
-            switch (e.keyCode) {
-                case 65:
-                case 37: // west
-                    if (cell.w == true) {
-                        removeSprite(cellCoords);
-                        cellCoords = {
-                            x: cellCoords.x - 1,
-                            y: cellCoords.y
-                        };
-                        drawSprite(cellCoords);
-                    }
-                    break;
-                case 87:
-                case 38: // north
-                    if (cell.n == true) {
-                        removeSprite(cellCoords);
-                        cellCoords = {
-                            x: cellCoords.x,
-                            y: cellCoords.y - 1
-                        };
-                        drawSprite(cellCoords);
-                    }
-                    break;
-                case 68:
-                case 39: // east
-                    if (cell.e == true) {
-                        removeSprite(cellCoords);
-                        cellCoords = {
-                            x: cellCoords.x + 1,
-                            y: cellCoords.y
-                        };
-                        drawSprite(cellCoords);
-                    }
-                    break;
-                case 83:
-                case 40: // south
-                    if (cell.s == true) {
-                        removeSprite(cellCoords);
-                        cellCoords = {
-                            x: cellCoords.x,
-                            y: cellCoords.y + 1
-                        };
-                        drawSprite(cellCoords);
-                    }
-                    break;
-            }
-        }
-
-        this.bindKeyDown = function () {
-            window.addEventListener("keydown", check, false);
-
-            $("#view").swipe({
-                swipe: function (
-                    event,
-                    direction,
-                    distance,
-                    duration,
-                    fingerCount,
-                    fingerData
-                ) {
-                    console.log(direction);
-                    switch (direction) {
-                        case "up":
-                            check({
-                                keyCode: 38
-                            });
-                            break;
-                        case "down":
-                            check({
-                                keyCode: 40
-                            });
-                            break;
-                        case "left":
-                            check({
-                                keyCode: 37
-                            });
-                            break;
-                        case "right":
-                            check({
-                                keyCode: 39
-                            });
-                            break;
-                    }
-                },
-                threshold: 0
-            });
-        };
-
-        this.unbindKeyDown = function () {
-            window.removeEventListener("keydown", check, false);
-            $("#view").swipe("destroy");
-        };
-
-        drawSprite(maze.startCoord());
-
-        this.bindKeyDown();
     }
+    
+    console.log(lights.toString());
+    
+    let light_num_lbls = Array.from(document.getElementsByClassName("light-nums"));
+    
+    for(let light_num in light_num_lbls) {
+        let light_val = lights.pop();
+        if (light_val != 0) {
+            light_num_lbls[light_num].innerHTML = light_val;
+        } else {
+            light_num_lbls[light_num].innerHTML = "";
+        }
+    }    
+}
+
+slide = (direction = 1, skip = 1) => {
+    if(direction === 1) {
+        translate -= translateAmount * skip;
+    } else if (direction === -1) {
+        translate += translateAmount * skip;
+    }
+
+    pages.forEach(
+        pages => (pages.style.transform = `translateX(${translate}%)`)
+    );
+}
+
+function random_item(items) {
+    return items[Math.floor(Math.random() * items.length)];
+}
+
+function puzzle_complete(data = "", should_send = false) {
+    if (should_send) {
+        websocket.send(`completed${current_puzzle}${data}`);
+    }
+    current_puzzle++;
+}
+
+function set_ldr_clue(light_ldr, dark_ldr) {
+    console.log(walls[light_ldr], walls[dark_ldr]);
+    document.getElementById("lightside-clue").innerHTML= light_phrases[light_ldr];
+    document.getElementById("darkside-clue").innerHTML = dark_phrases[dark_ldr];
 }

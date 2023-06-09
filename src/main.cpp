@@ -27,26 +27,26 @@ int randInt(int lower, int upper) {
 void setup() {
   Serial.begin(115200);
   pinMode(LED_BUILTIN, OUTPUT);
-  // pinMode(led_gpio, OUTPUT);
-  // pinMode(led_gpio2, OUTPUT);
-  // keypad_setup();
-  // light_knobs_setup();
-  // open_setup();
+  pinMode(led_gpio, OUTPUT);
+  pinMode(led_gpio2, OUTPUT);
+  keypad_setup();
+  light_knobs_setup();
+  open_setup();
   // imu_setup();
   neopixel_setup();
-  // photosensors_setup();
-  // weight_setup();
+  photosensors_setup();
+  weight_setup();
 
   // Initialize SPIFFS - for saving data in flash memory
-  // uint8_t spiffs_check = startSPIFFS();
-  // if (spiffs_check == 1) {
-  //   Serial.println("SPIFFS ERROR!");
-  //   return;
-  // }
+  uint8_t spiffs_check = startSPIFFS();
+  if (spiffs_check == 1) {
+    Serial.println("SPIFFS ERROR!");
+    return;
+  }
 
-  // start_web_services();
+  start_web_services();
 
-  // servo_reset();
+  servo_reset();
 
   light_ldr = randInt(0, 2);
   dark_ldr = randInt(0, 2);
@@ -166,7 +166,7 @@ void puzzle() {
 }
 
 
-void loo9p() {
+void loop() {
   digitalWrite(BUILTIN_LED, !digitalRead(BUILTIN_LED));
 
   //check for box down
@@ -188,7 +188,7 @@ void loo9p() {
   delay(100);
 }
 
-void loop() {
+void lo6op() {
   // print_weight();
   // delay(1000);
   while (!keypad_done) {

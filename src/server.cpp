@@ -15,6 +15,7 @@ volatile bool web_setup = false;
 TaskHandle_t wifi_reconnect_task_handle = NULL;
 bool is_websocket_connected = false;
 bool is_maze_completed = false;
+bool is_dial_completed = false;
 bool start_maze = false;
 char light_order[3];
 bool start_photoresistors = false;

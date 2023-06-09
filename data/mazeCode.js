@@ -29,7 +29,7 @@ function makeMaze() {
     draw.drawMap(); //loop through cells and draw lines
     draw.drawEndMethod(); //draw end flag or sprite
 
-    player = new Player(maze, mazeCanvas, cellSize, displayVictoryMessage, ballSprite);
+    player = new Player(maze, mazeCanvas, cellSize, setMazeComplete, ballSprite);
     player.drawBallSprite(maze.startCoord());
     // player.bindKeyDown();
 
@@ -377,7 +377,6 @@ class Player {
             //when it reaches the end
             if (coord.x === maze.endCoord().x && coord.y === maze.endCoord().y) {
                 onComplete();
-                // player.unbindKeyDown();
             }
         }
 
@@ -442,67 +441,8 @@ class Player {
                     player.drawBallSprite(cellCoords);
                 }
             }
-
-            // switch (e.keyCode) {
-            //     case 65:
-            //     case 37: // west
-            //         if (cell.w == true) {
-            //             removeSprite(cellCoords);
-            //             cellCoords = {
-            //                 x: cellCoords.x - 1,
-            //                 y: cellCoords.y
-            //             };
-            //             player.drawBallSprite(cellCoords);
-            //         }
-            //         break;
-            //     case 87:
-            //     case 38: // north
-            //         if (cell.n == true) {
-            //             removeSprite(cellCoords);
-            //             cellCoords = {
-            //                 x: cellCoords.x,
-            //                 y: cellCoords.y - 1
-            //             };
-            //             player.drawBallSprite(cellCoords);
-            //         }
-            //         break;
-            //     case 68:
-            //     case 39: // east
-            //         if (cell.e == true) {
-            //             removeSprite(cellCoords);
-            //             cellCoords = {
-            //                 x: cellCoords.x + 1,
-            //                 y: cellCoords.y
-            //             };
-            //             player.drawBallSprite(cellCoords);
-            //         }
-            //         break;
-            //     case 83:
-            //     case 40: // south
-            //         if (cell.s == true) {
-            //             removeSprite(cellCoords);
-            //             cellCoords = {
-            //                 x: cellCoords.x,
-            //                 y: cellCoords.y + 1
-            //             };
-            //             player.drawBallSprite(cellCoords);
-            //         }
-            //         break;
-            // }
         }
 
         maze_interval_id = setInterval(check, 200);
-
-        // this.bindKeyDown = function () {
-        //     // window.addEventListener("keydown", check, false);
-        //     window.addEventListener(d_tilt, check, false);
-        // };
-
-        // this.unbindKeyDown = function () {
-        //     // window.removeEventListener("keydown", check, false);
-        //     window.removeEventListener(d_tilt, check, false);
-        // };
-
-        // this.bindKeyDown();
     }
 }

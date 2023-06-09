@@ -7,5 +7,6 @@
 
     void imu_setup();
     String read_imu();
+    void calculate_IMU_error();
 
 #endif /* IMU_H */

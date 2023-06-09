@@ -11,13 +11,6 @@
     margin: 0;
 }
 
-#startMazeBtn {
-    /* border: 3px solid yellow; */
-    align-items: center;
-    height: 50px;
-    margin-bottom: 5px;
-}
-
 #Message-Container {
     visibility: hidden;
     color: white;

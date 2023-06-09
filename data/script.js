@@ -168,6 +168,10 @@ function skipPuzzle() {
     }
 }
 
+function onRecalibrate() {
+    websocket.send(`recalibrate${current_puzzle}`);
+}
+
 // Initialize the websocket
 function init() {
 	if (window.location.hostname != "") {
@@ -263,7 +267,7 @@ window.onload = function () {
         isComplete();
     };
     
-
+    set_dial_speed(1);
 };
 
 window.onresize = function () {

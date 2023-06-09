@@ -1,3 +1,9 @@
+var max_rotations = Infinity;
+var min_rotations = -1 * Infinity;
+var rad = 0;
+var previous_rad = 0;
+var previous_rotations = 0;
+
 function speed_to_rotations(speed) {
   var sign = speed < 0 ? -1 : 1;
   var abs = Math.abs(speed);
@@ -14,25 +20,23 @@ function speed_to_rotations(speed) {
 // Inverse of speed_to_rotations.
 function rotations_to_speed(rotations) {
   var sign = rotations < 0 ? -1 : 1;
-  var abs = Math.abs(rotations);
+  var abs_rotations = Math.abs(rotations);
+  let speed;
 
-  if (rotations < 1 && rotations > 0) {  // 0..2
-    test = Math.round(100 * abs);
-    bob = Math.round(test * 0.39);
-    return bob;
+  if (rotations > 0 && rotations < 1) {  // 0..1
+    speed = Math.round(100 * abs_rotations);
   } else if (rotations <= 0) {
-    test = Math.round(100 * abs - (Math.ceil(abs) * 100)) * sign;
-    bob = Math.round(test * 0.39);
-    return bob;
+    speed = Math.round(100 * abs_rotations - (Math.ceil(abs_rotations) * 100)) * sign;
+  } else { // rotations > 1
+    speed = Math.round(100 * abs_rotations - (Math.floor(abs_rotations) * 100));
+  }
+
+  if (Math.round(speed * 0.40) === 0) {
+    return 0;
   } else {
-    test = Math.round(100 * abs - (Math.floor(abs) * 100));
-    bob = Math.round(test * 0.39);
-    return bob;
+    return Math.round(speed * 0.40);
   }
 }
-
-var max_rotations = Infinity;
-var min_rotations = -1 * Infinity;
 
 function set_rotations(rotations) {
   let cur_speed = Math.round(Math.abs(rotations_to_speed(rotations)));
@@ -41,20 +45,14 @@ function set_rotations(rotations) {
   foobar.getElementsByClassName('knob_gfx')[0].style.transform = 'rotate(' + (rotations * 360) + 'deg)';
 }
 
-function set_speed(speed) {
+function set_dial_speed(speed) {
   set_rotations(speed_to_rotations(speed));
 }
 
-
-var rad = 0;
-var previous_rad = 0;
-var previous_rotations = 0;
-
 function dial_rotate(angle) {
-  console.log("angle", angle);
-  if (angle > 30.0) {
+  if (angle < -20.0) {
     delta = 0.1611
-  } else if (angle < -20.0) {
+  } else if (angle > 30.0) {
     delta = -0.1611
     delta += Math.PI * 2;
   } else {
@@ -81,9 +79,6 @@ function updateRotation(data) {
   accelDict['accY'] = accelArray[1];
   accelDict['accZ'] = accelArray[2];
 
-  dial_rotate(accelDict['accX']);
+  dial_rotate(accelDict['accY']);
 }
-
-
-set_speed(1);
 

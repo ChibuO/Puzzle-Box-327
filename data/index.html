@@ -25,7 +25,7 @@
 
             <div id="maze-screen" class="screen">
                 <div id="status-box">
-                    <input class="btn_class" id="startMazeBtn" type="button" onclick="makeMaze()" value="Recalibrate" />
+                    <input class="btn_class" id="recal-btn" type="button" onclick="onRecalibrate()" value="Recalibrate" />
                 </div>
 
                 <div id="maze_box">
@@ -63,22 +63,87 @@
             </div>
 
             <div id="tilt-screen" class="screen">
-                <div class="container"><svg viewBox="-6 -6 12 12" class="dial" id="foobar">
-                    <defs>
-                      <radialGradient id="knobgradient">
-                        <stop offset="0" stop-color="gray"/>
-                        <stop offset="1" stop-color="silver"/>
-                      </radialGradient>
-                    </defs>
-                    <g class="knob">
-                      <circle class="knob_center" cx="0" cy="0" r="0.015625"/>
-                      <g class="knob_gfx">
-                        <circle cx="0" cy="0" r="5"/>
-                        <line x1="0" y1="-2.5" x2="0" y2="-4.5"/>
-                      </g>
-                      <text class="knob_number"/>
-                    </g>
-                  </svg></div>
+                <div id="status-box">
+                    <input class="btn_class" id="recal-btn" type="button" onclick="onRecalibrate()" value="Recalibrate" />
+                </div>
+                <div id="dials-div">
+                    <div class="frac-div" id="frac-div1">
+                        <svg viewBox="-6 -6 12 12" class="dial" id="foobar">
+                            <defs>
+                            <radialGradient id="knobgradient">
+                                <stop offset="0" stop-color="gray"/>
+                                <stop offset="1" stop-color="silver"/>
+                            </radialGradient>
+                            </defs>
+                            <g class="knob">
+                            <circle class="knob_center" cx="0" cy="0" r="0.015625"/>
+                            <g class="knob_gfx">
+                                <circle cx="0" cy="0" r="5"/>
+                                <line x1="0" y1="-2.5" x2="0" y2="-4.5"/>
+                            </g>
+                            <text class="knob_number"/>
+                            </g>
+                        </svg>
+                        <input class="btn_class" id="dial1-btn" type="button" onclick="" value="Lock In" />
+                    </div>
+                    <div class="frac-div" id="frac-div2">
+                        <svg viewBox="-6 -6 12 12" class="dial" id="foobar">
+                            <defs>
+                            <radialGradient id="knobgradient">
+                                <stop offset="0" stop-color="gray"/>
+                                <stop offset="1" stop-color="silver"/>
+                            </radialGradient>
+                            </defs>
+                            <g class="knob">
+                            <circle class="knob_center" cx="0" cy="0" r="0.015625"/>
+                            <g class="knob_gfx">
+                                <circle cx="0" cy="0" r="5"/>
+                                <line x1="0" y1="-2.5" x2="0" y2="-4.5"/>
+                            </g>
+                            <text class="knob_number"/>
+                            </g>
+                        </svg>
+                        <input class="btn_class" id="dial2-btn" type="button" onclick="" value="Lock In" />
+                    </div>
+                    <div class="frac-div" id="frac-div3">
+                        <svg viewBox="-6 -6 12 12" class="dial" id="foobar">
+                            <defs>
+                            <radialGradient id="knobgradient">
+                                <stop offset="0" stop-color="gray"/>
+                                <stop offset="1" stop-color="silver"/>
+                            </radialGradient>
+                            </defs>
+                            <g class="knob">
+                            <circle class="knob_center" cx="0" cy="0" r="0.015625"/>
+                            <g class="knob_gfx">
+                                <circle cx="0" cy="0" r="5"/>
+                                <line x1="0" y1="-2.5" x2="0" y2="-4.5"/>
+                            </g>
+                            <text class="knob_number"/>
+                            </g>
+                        </svg>
+                        <input class="btn_class" id="dial3-btn" type="button" onclick="" value="Lock In" />
+                    </div>
+                </div>
+                
+                <!-- <div class="container">
+                    <svg viewBox="-6 -6 12 12" class="dial" id="foobar">
+                        <defs>
+                        <radialGradient id="knobgradient">
+                            <stop offset="0" stop-color="gray"/>
+                            <stop offset="1" stop-color="silver"/>
+                        </radialGradient>
+                        </defs>
+                        <g class="knob">
+                        <circle class="knob_center" cx="0" cy="0" r="0.015625"/>
+                        <g class="knob_gfx">
+                            <circle cx="0" cy="0" r="5"/>
+                            <line x1="0" y1="-2.5" x2="0" y2="-4.5"/>
+                        </g>
+                        <text class="knob_number"/>
+                        </g>
+                  </svg>
+                </div> -->
             </div>
 
             <div id="light-screen" class="screen">
@@ -134,7 +199,7 @@
                 <h3 id="neo_lbl">Freqs</h3>
                 <h3 id="door_lbl">Weightier</h3>
                 <h3 id="final_lbl">Turn It</h3>
-                <input class="btn_class" id="skipBtn" type="button" onclick="skipPuzzle()" value="Skip Puzzle" />
+                <input class="btn_class" id="skipBtn" type="button" onclick="skipPuzzle()" disabled="false" value="Skip Puzzle" />
             </div>
         </div>
 

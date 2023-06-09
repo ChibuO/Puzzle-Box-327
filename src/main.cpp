@@ -69,8 +69,9 @@ void send_to_socket(String data) {
 }
 
 void puzzle_complete() {
-  should_skip_puzzle = false;
-  send_to_socket("completed");
+  if(should_skip_puzzle) {
+    send_to_socket("completed");
+  }
   Serial.println("!!!! " + String(current_puzzle));
   current_puzzle++;
   colorWipe(rgb_to_binary(  0, 255,   0), 100); // Green
@@ -82,10 +83,10 @@ void puzzle_complete() {
   colorWipe(rgb_to_binary(  0, 255,   0), 100); // Green
   // delay(1500);
   colorWipe(rgb_to_binary(  0, 0,   0), 50); // dark
-
-  // if(!should_skip_puzzle) {
-  //   send_to_socket("completed");
-  // }
+  if(!should_skip_puzzle) {
+    send_to_socket("completed");
+  }
+  should_skip_puzzle = false;
   send_to_socket("");
 }
 
@@ -93,6 +94,10 @@ void puzzle_complete() {
 void start_puzzles() {
   //maze puzzle
   while(!is_maze_completed) {
+    if(recal_accelerometer) {
+      calculate_IMU_error();
+      recal_accelerometer = false;
+    }
     String imu_data = read_imu();
     send_to_socket(imu_data);
     delay(100);
@@ -124,17 +129,25 @@ void start_puzzles() {
   
   //weight
   // code for keypad
-  while (!getPressed(6, password) && !should_skip_puzzle) {}
+  while (!getPressed(6, password) && !should_skip_puzzle) {
+    if(recal_accelerometer) {
+      recal_accelerometer = false;
+    }
+  }
 
   puzzle_complete();
 
   //tilt
   calculate_IMU_error(); //wait 5 seconds and calibrate
   while (!is_dial_completed && !should_skip_puzzle) {
+    if(recal_accelerometer) {
+      calculate_IMU_error();
+      recal_accelerometer = false;
+    }
     String imu_data = read_imu();
     // Serial.println(imu_data);
     send_to_socket(imu_data);
-    delay(100);
+    delay(300);
   }
 
   puzzle_complete();

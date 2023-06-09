@@ -23,6 +23,7 @@ bool is_prs_complete = false;
 bool start_weights2 = false;
 bool is_weights2_complete = false;
 bool should_skip_puzzle = false;
+bool recal_accelerometer = false;
 
 void handleComplete(int current_puzzle, char* rest) {
   Serial.printf("curr: %d\r\n", current_puzzle);
@@ -60,7 +61,7 @@ void handleComplete(int current_puzzle, char* rest) {
 }
 
 void handleSkip(int current_puzzle) {
-  Serial.printf("curr: %d\r\n", current_puzzle);
+  Serial.printf("skip curr: %d\r\n", current_puzzle);
   switch (current_puzzle) {
     case 2:
       //lights
@@ -97,6 +98,36 @@ void handleSkip(int current_puzzle) {
   }
 }
 
+void handleRecalibrate(int current_puzzle) {
+  Serial.printf("recal curr: %d\r\n", current_puzzle);
+  switch (current_puzzle) {
+    case 1:
+      //maze
+      recal_accelerometer = true;
+      Serial.printf("recal-ing %d\r\n", current_puzzle);
+      break;
+    case 3:
+      //weights1 completed
+      recal_accelerometer = true;
+      Serial.printf("recal-ing %d\r\n", current_puzzle);
+      break;
+    case 4:
+      //tilt completed
+      recal_accelerometer = true;
+      Serial.printf("recal-ing %d\r\n", current_puzzle);
+      break;
+    case 7:
+      //weights2 completed
+      recal_accelerometer = true;
+      Serial.printf("recal-ing %d\r\n", current_puzzle);
+      break;
+    default:
+      break;
+  }
+}
+
+
+
 char* substring(char *dest, const char *source, int beg, int n) {
   while (n > 0) {
     *dest = *(source + beg);
@@ -113,39 +144,53 @@ void handleWebSocketMessage(uint8_t num, WStype_t type, uint8_t * payload, size_
   Serial.printf("payload: %s\r\n", payload);
   char completed_char[10];
   char skip_char[5];
+  char recal_char[12];
   char current_puzzle[2];
   char rest_msg[10];
+  int char_len = 9;
   
-  substring(completed_char, (char*) payload, 0, 9); //modifies completed_char
+  substring(completed_char, (char*) payload, 0, char_len); //modifies completed_char
   int complete_compare = strcmp((char *) completed_char, "completed"); //1 is no, 0 is yes
 
   if (!complete_compare) {
     Serial.printf("compare: %d\r\n", complete_compare);
     Serial.printf("len: %d\r\n", len);
     
-    substring(current_puzzle, (char*) payload, 9, 1); //modifies rest_msg
+    substring(current_puzzle, (char*) payload, char_len, 1); //modifies rest_msg
     Serial.printf("num: %s\r\n", current_puzzle);
     
-    substring(rest_msg, (char*) payload, 10, len-10);
+    substring(rest_msg, (char*) payload, char_len+1, len-(char_len+1));
     Serial.printf("rest: %s\r\n", rest_msg);
 
     handleComplete(atoi(current_puzzle), rest_msg);
   }
 
-  substring(skip_char, (char*) payload, 0, 4); //modifies skip_char
+  char_len = 4;
+  substring(skip_char, (char*) payload, 0, char_len); //modifies skip_char
   int skip_compare = strcmp((char *) skip_char, "skip"); //1 is no, 0 is yes
 
   if (!skip_compare) {
     Serial.printf("compare: %d\r\n", skip_compare);
     Serial.printf("len: %d\r\n", len);
     
-    substring(current_puzzle, (char*) payload, 4, 1); //modifies rest_msg
+    substring(current_puzzle, (char*) payload, char_len, 1); //modifies rest_msg
     Serial.printf("num: %s\r\n", current_puzzle);
-    
-    substring(rest_msg, (char*) payload, 5, len-5);
-    Serial.printf("rest: %s\r\n", rest_msg);
 
     handleSkip(atoi(current_puzzle));
+  }
+
+  char_len = 11;
+  substring(recal_char, (char*) payload, 0, char_len); //modifies recal_char
+  int recal_compare = strcmp((char *) recal_char, "recalibrate"); //1 is no, 0 is yes
+
+  if (!recal_compare) {
+    Serial.printf("compare: %d\r\n", recal_compare);
+    Serial.printf("len: %d\r\n", len);
+    
+    substring(current_puzzle, (char*) payload, char_len, 1); //modifies rest_msg
+    Serial.printf("num: %s\r\n", current_puzzle);
+    
+    handleRecalibrate(atoi(current_puzzle));
   }
 }
 

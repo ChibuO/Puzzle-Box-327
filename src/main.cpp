@@ -129,9 +129,12 @@ void start_puzzles() {
   puzzle_complete();
 
   //tilt
-  if (!is_dial_completed && !should_skip_puzzle) {
+  calculate_IMU_error(); //wait 5 seconds and calibrate
+  while (!is_dial_completed && !should_skip_puzzle) {
     String imu_data = read_imu();
+    // Serial.println(imu_data);
     send_to_socket(imu_data);
+    delay(100);
   }
 
   puzzle_complete();

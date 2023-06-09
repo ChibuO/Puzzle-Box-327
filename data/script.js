@@ -62,12 +62,6 @@ function update_list(num, data) {
 
     //num comes from the box itself
     switch(num) {
-        // case 0:
-        //     //password - web tells box that it's completed
-        //     if (data === "boxdown") {
-        //         slide();
-        //     }
-        //     break;
         case 1:
             //maze - web tells box that it's completed
             //box gives acceleration data
@@ -89,7 +83,6 @@ function update_list(num, data) {
             break;
         case 4:
             //tilt - web tells box that it's completed
-
             if (data === "completed") {
                 slide();
             } else {
@@ -149,8 +142,7 @@ function skipPuzzle() {
     switch(current_puzzle) {
         case 0:
             //password
-            slide();
-            current_puzzle++;
+            passkey_completed();
             break;
         case 1:
             //maze
@@ -329,17 +321,21 @@ function writeToScreen(message)
 // Open Websocket as soon as page loads
 window.addEventListener("load", init, false);
 
+passkey_completed = () => {
+    set_light_order();
+    slide();
+    setTimeout(() => {
+        // box_down_screen.style.opacity = 1;
+        slide();
+    }, 4000);
+    puzzle_complete("", true);
+}
+
 passkey_txtbox.addEventListener("input", (event) => {
     if(event.target.value === passkey) {
         // welcome_screen.style.opacity = 0;
         event.target.value = "";
-        set_light_order();
-        slide();
-        setTimeout(() => {
-            // box_down_screen.style.opacity = 1;
-            slide();
-        }, 4000);
-        puzzle_complete("", true);
+        passkey_completed();
     }
 });
 
@@ -427,6 +423,8 @@ slide = (direction = 1, skip = 1) => {
     pages.forEach(
         pages => (pages.style.transform = `translateX(${translate}%)`)
     );
+
+    document.getElementById("skipBtn").disabled = false;
 }
 
 function random_item(items) {
@@ -438,7 +436,6 @@ function puzzle_complete(data = "", should_send = false) {
         websocket.send(`completed${current_puzzle}${data}`);
     }
     current_puzzle++;
-    document.getElementById("skipBtn").disabled = false;
 }
 
 function set_ldr_clue(light_ldr, dark_ldr) {

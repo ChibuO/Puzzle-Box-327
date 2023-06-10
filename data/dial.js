@@ -41,8 +41,8 @@ function rotations_to_speed(rotations) {
 function set_rotations(rotations) {
   let cur_speed = Math.round(Math.abs(rotations_to_speed(rotations)));
 
-  foobar.getElementsByClassName('knob_number')[0].textContent = cur_speed;
-  foobar.getElementsByClassName('knob_gfx')[0].style.transform = 'rotate(' + (rotations * 360) + 'deg)';
+  foobar1.getElementsByClassName('knob_number')[0].textContent = cur_speed;
+  foobar1.getElementsByClassName('knob_gfx')[0].style.transform = 'rotate(' + (rotations * 360) + 'deg)';
 }
 
 function set_dial_speed(speed) {

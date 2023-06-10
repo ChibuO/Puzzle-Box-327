@@ -201,6 +201,11 @@ function doConnect() { // makes a connection and defines callbacks
 
 function onOpen(evt) { // when handshake is complete:
 	writeToScreen("Connected.");
+
+    skipPuzzle();
+    skipPuzzle();
+    skipPuzzle();
+    skipPuzzle();
 }
 
 function onClose(evt) { // when socket is closed:
@@ -300,7 +305,7 @@ function setMazeComplete() {
                 div.style.opacity = "1";
             });
         }
-    }, 4000);
+    }, 3000);
     clearInterval(maze_interval_id);
     let light_string = `${light_order.indexOf(1)}${light_order.indexOf(2)}${light_order.indexOf(3)}`;
     puzzle_complete(light_string, true);
@@ -331,7 +336,7 @@ passkey_completed = () => {
     setTimeout(() => {
         // box_down_screen.style.opacity = 1;
         slide();
-    }, 4000);
+    }, 3000);
     puzzle_complete("", true);
 }
 

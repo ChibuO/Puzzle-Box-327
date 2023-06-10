@@ -24,8 +24,8 @@
             </div>
 
             <div id="maze-screen" class="screen">
-                <div id="status-box">
-                    <input class="btn_class" id="recal-btn" type="button" onclick="onRecalibrate()" value="Recalibrate" />
+                <div class="recal-container">
+                    <input class="btn_class recal-btn" type="button" onclick="onRecalibrate()" value="Recalibrate" />
                 </div>
 
                 <div id="maze_box">
@@ -63,14 +63,14 @@
             </div>
 
             <div id="tilt-screen" class="screen">
-                <div id="status-box">
-                    <input class="btn_class" id="recal-btn" type="button" onclick="onRecalibrate()" value="Recalibrate" />
+                <div class="recal-container">
+                    <input class="btn_class recal-btn" type="button" onclick="onRecalibrate()" value="Recalibrate" />
                 </div>
                 <div id="dials-div">
-                    <div class="frac-div" id="frac-div1">
-                        <svg viewBox="-6 -6 12 12" class="dial" id="foobar">
+                    <div class="dial-div" id="dial-div1">
+                        <svg viewBox="-6 -6 12 12" class="dial" id="foobar1">
                             <defs>
-                            <radialGradient id="knobgradient">
+                            <radialGradient>
                                 <stop offset="0" stop-color="gray"/>
                                 <stop offset="1" stop-color="silver"/>
                             </radialGradient>
@@ -86,10 +86,10 @@
                         </svg>
                         <input class="btn_class" id="dial1-btn" type="button" onclick="" value="Lock In" />
                     </div>
-                    <div class="frac-div" id="frac-div2">
-                        <svg viewBox="-6 -6 12 12" class="dial" id="foobar">
+                    <div class="dial-div" id="dial-div2">
+                        <svg viewBox="-6 -6 12 12" class="dial" id="foobar2">
                             <defs>
-                            <radialGradient id="knobgradient">
+                            <radialGradient>
                                 <stop offset="0" stop-color="gray"/>
                                 <stop offset="1" stop-color="silver"/>
                             </radialGradient>
@@ -105,10 +105,10 @@
                         </svg>
                         <input class="btn_class" id="dial2-btn" type="button" onclick="" value="Lock In" />
                     </div>
-                    <div class="frac-div" id="frac-div3">
-                        <svg viewBox="-6 -6 12 12" class="dial" id="foobar">
+                    <div class="dial-div" id="dial-div3">
+                        <svg viewBox="-6 -6 12 12" class="dial" id="foobar3">
                             <defs>
-                            <radialGradient id="knobgradient">
+                            <radialGradient>
                                 <stop offset="0" stop-color="gray"/>
                                 <stop offset="1" stop-color="silver"/>
                             </radialGradient>
@@ -199,7 +199,7 @@
                 <h3 id="neo_lbl">Freqs</h3>
                 <h3 id="door_lbl">Weightier</h3>
                 <h3 id="final_lbl">Turn It</h3>
-                <input class="btn_class" id="skipBtn" type="button" onclick="skipPuzzle()" disabled="false" value="Skip Puzzle" />
+                <input class="btn_class" id="skipBtn" type="button" onclick="skipPuzzle()" value="Skip Puzzle" />
             </div>
         </div>
 

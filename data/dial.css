@@ -42,3 +42,32 @@ svg.dial {
   dominant-baseline: central;
   pointer-events: none;
 }
+
+#dials-div {
+  height: 100%;
+  width: 100%;
+  position: relative;
+  display: flex;
+  flex-direction: row;
+}
+
+.dial-div {
+  height: 100%;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-evenly;
+  flex-direction: column;
+}
+
+#dial-div1 {
+  background-color: rgba(255, 0, 0, 0.4);
+}
+
+#dial-div2 {
+  background-color: rgba(255, 255, 0, 0.4);
+}
+
+#dial-div3 {
+  background-color: rgba(137, 43, 226, 0.4);
+}

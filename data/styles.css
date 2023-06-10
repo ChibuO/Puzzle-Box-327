@@ -51,7 +51,12 @@ body {
     z-index: 12;
 }
 
-#recal-btn {
+.recal-container {
+    text-align: center;
+    margin: 0;
+}
+
+.recal-btn {
     /* border: 3px solid yellow; */
     align-items: center;
     height: 50px;
@@ -189,8 +194,7 @@ body {
     background: rgb(228,70,210);
     background: linear-gradient(90deg, rgba(228,70,210,1) 0%, rgba(22,255,90,1) 100%);
     display: flex;
-    justify-content: center;
-    align-items: center;
+    flex-direction: column;
 }
 
 #light-screen {

@@ -10,5 +10,6 @@
     #include "neos.h"
     #include "light_sensors.h"
     #include "weight.h"
+    #include <Arduino_FreeRTOS.h>
 
 #endif /* MAIN_H */

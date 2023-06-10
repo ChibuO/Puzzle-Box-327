@@ -7,13 +7,13 @@ bool keypad_done = 0;
 bool neos_done = 0;
 bool door_open = 0;
 int current_puzzle = 1; //website starts at zero
+bool start_neos_task = true;
 
 char password[6] = {'1', '2', '3', '3', '#', '*'};
 int sequence[3] = {};
 
 int light_ldr, dark_ldr;
 String light_dark_str;
-
 
 int randInt(int lower, int upper) {
     // int i;
@@ -57,6 +57,9 @@ void setup() {
   light_dark_str = String(light_ldr) + "" + String(dark_ldr);
   Serial.print("ld: ");
   Serial.println(light_dark_str);
+
+  //task scheduler for neos
+  xTaskCreate(looping_neos, "looping neos", 50, NULL, 1, NULL);
 }
 
 void send_to_socket(String data) {
@@ -133,6 +136,7 @@ void start_puzzles() {
     if(recal_accelerometer) {
       recal_accelerometer = false;
     }
+    delay(100);
   }
 
   puzzle_complete();
@@ -180,8 +184,14 @@ void start_puzzles() {
   puzzle_complete();
 
   //neo
-  while (!neos_done && !should_skip_puzzle) {
-    neos_done = neos_plus_keypad(400);
+  if (start_neos_task) {
+    vTaskStartScheduler();
+    start_neos_task = false;
+  }
+  int freqs_password[7];
+  getFreqs(freqs_password);
+  while (!getPressed(7, freqs_password) && !should_skip_puzzle) {
+    delay(100);
   }
   
   puzzle_complete();

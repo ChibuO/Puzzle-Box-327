@@ -36,9 +36,9 @@ var completed_puzzles = [];
 
 var current_puzzle = 0;
 
-let walls = ["graveyard", "lunch", "twilight", "stairs"];
-let light_phrases = ["It's too dark to see the name on the coffin", "The light in the fridge is out", "I can barely see what's howling", "I need more light to see what's on the stairs"];
-let dark_phrases = ["I can only visit the dead at night", "Someone's trying to peak at my lunch", "Protect the vampire from the sun", "Darness can hide magic pumpkins"];
+let walls = ["graveyard", "twilight", "stairs"];
+let light_phrases = ["It's too dark to see the name on the coffin", "I can barely see what's howling", "I need more light to see what's on the stairs"];
+let dark_phrases = ["I can only visit the dead at night", "Protect the vampire from the sun", "Darkness can hide magic pumpkins"];
 
 
 function updateDirection(data) {

@@ -10,6 +10,10 @@ const char* mdns_name = "esp32-webcam";
 WebServer server(80);
 WebSocketsServer ws(81);
 
+// IPAddress local_IP(192, 168, 1, 184);
+// IPAddress gateway(192, 168, 1, 1);
+// IPAddress subnet(255, 255, 0, 0);
+
 uint32_t websocket_conn_count = 0;
 volatile bool web_setup = false;
 TaskHandle_t wifi_reconnect_task_handle = NULL;
@@ -126,8 +130,6 @@ void handleRecalibrate(int current_puzzle) {
   }
 }
 
-
-
 char* substring(char *dest, const char *source, int beg, int n) {
   while (n > 0) {
     *dest = *(source + beg);
@@ -189,7 +191,7 @@ void handleWebSocketMessage(uint8_t num, WStype_t type, uint8_t * payload, size_
     
     substring(current_puzzle, (char*) payload, char_len, 1); //modifies rest_msg
     Serial.printf("num: %s\r\n", current_puzzle);
-    
+
     handleRecalibrate(atoi(current_puzzle));
   }
 }
@@ -378,6 +380,10 @@ void start_web_services() {
   Serial.printf("web setup AP: %s\r\n", web_setup_ap_ssid);
   bool res;
   res = wm.autoConnect(web_setup_ap_ssid);
+
+  // if(!WiFi.config(local_IP, gateway, subnet)) {
+  //   Serial.println("STA Failed to configure");
+  // }
 
   while (WiFi.status() != WL_CONNECTED) {
     delay(1000);

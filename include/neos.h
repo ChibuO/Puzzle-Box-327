@@ -1,6 +1,7 @@
 #ifndef NEOS_H_
 #define NEOS_H_
     #include <Adafruit_NeoPixel.h>
+    #include <Arduino_FreeRTOS.h>
     #ifdef __AVR__
         #include <avr/power.h> // Required for 16 MHz Adafruit Trinket
     #endif
@@ -33,7 +34,7 @@
 
     void neopixel_puzzle(int wait);
     bool neos_plus_keypad(int wait);
-    // bool pause_lights;
-    // bool lights_solved;
+    void getFreqs(int * p);
+    void looping_neos(  void *pvParameters );
 
 #endif /* NEOS_H */

@@ -3,6 +3,7 @@ var min_rotations = -1 * Infinity;
 var rad = 0;
 var previous_rad = 0;
 var previous_rotations = 0;
+let knob_num = 1;
 
 function speed_to_rotations(speed) {
   var sign = speed < 0 ? -1 : 1;
@@ -41,8 +42,24 @@ function rotations_to_speed(rotations) {
 function set_rotations(rotations) {
   let cur_speed = Math.round(Math.abs(rotations_to_speed(rotations)));
 
-  foobar1.getElementsByClassName('knob_number')[0].textContent = cur_speed;
-  foobar1.getElementsByClassName('knob_gfx')[0].style.transform = 'rotate(' + (rotations * 360) + 'deg)';
+  switch(knob_num) {
+    case 1:
+      foobar1.getElementsByClassName('knob_number')[0].textContent = cur_speed;
+      foobar1.getElementsByClassName('knob_gfx')[0].style.transform = 'rotate(' + (rotations * 360) + 'deg)';
+      break;
+    case 2:
+      foobar2.getElementsByClassName('knob_number')[0].textContent = cur_speed;
+      foobar2.getElementsByClassName('knob_gfx')[0].style.transform = 'rotate(' + (rotations * 360) + 'deg)';
+      break;
+    case 3:
+      foobar3.getElementsByClassName('knob_number')[0].textContent = cur_speed;
+      foobar3.getElementsByClassName('knob_gfx')[0].style.transform = 'rotate(' + (rotations * 360) + 'deg)';
+      break;
+    default:
+      foobar1.getElementsByClassName('knob_number')[0].textContent = cur_speed;
+      foobar1.getElementsByClassName('knob_gfx')[0].style.transform = 'rotate(' + (rotations * 360) + 'deg)';
+      break;
+  }
 }
 
 function set_dial_speed(speed) {

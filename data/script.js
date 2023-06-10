@@ -110,14 +110,17 @@ function update_list(num, data) {
             }
             break;
         case 6:
-            //neopiixels - box tells web when completed
+            //neopixels - box tells web when completed
             document.getElementById("admin-btn").style.color = "black";
             if (data === "completed") {
                 slide();
+                let sol_num = setKnobImage(); //for next puzzle
+                websocket.send(`info7${sol_num}`);
             }
             break;
         case 7:
             //weights2 - box tells web when completed
+            //nerfing for now - just gets to answer
             document.getElementById("admin-btn").style.color = "white";
             if (data === "completed") {
                 slide();
@@ -202,10 +205,10 @@ function doConnect() { // makes a connection and defines callbacks
 function onOpen(evt) { // when handshake is complete:
 	writeToScreen("Connected.");
 
-    skipPuzzle();
-    skipPuzzle();
-    skipPuzzle();
-    skipPuzzle();
+    // skipPuzzle();
+    // skipPuzzle();
+    // skipPuzzle();
+    // skipPuzzle();
 }
 
 function onClose(evt) { // when socket is closed:
@@ -342,7 +345,6 @@ passkey_completed = () => {
 
 passkey_txtbox.addEventListener("input", (event) => {
     if(event.target.value === passkey) {
-        // welcome_screen.style.opacity = 0;
         event.target.value = "";
         passkey_completed();
     }
@@ -451,4 +453,37 @@ function set_ldr_clue(light_ldr, dark_ldr) {
     console.log(walls[light_ldr], walls[dark_ldr]);
     document.getElementById("lightside-clue").innerHTML= light_phrases[light_ldr];
     document.getElementById("darkside-clue").innerHTML = dark_phrases[dark_ldr];
+}
+
+
+function pauseNeos() {
+    websocket.send(`info61`);
+    document.getElementById("pause-btn").disabled = true;
+    setTimeout(() => {
+        websocket.send(`info60`);
+        document.getElementById("pause-btn").disabled = false;
+    }, 3000);
+}
+
+function setKnobImage() {
+    let sol_image = document.getElementById("knob-img");
+    let image_choice = Math.floor(Math.random() * 2) + 1;
+    switch(image_choice) {
+        case 1:
+            sol_image.src = "sol1.png"
+            break;
+        case 2:
+            sol_image.src = "sol2.png"
+            break;
+        case 3:
+            sol_image.src = "sol3.png"
+            break;
+        default:
+            break;
+    }
+    return image_choice;
+}
+
+function unlockDoor() {
+    document.getElementById("center-door-div").style.height = 0;
 }

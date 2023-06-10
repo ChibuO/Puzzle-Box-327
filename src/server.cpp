@@ -28,6 +28,8 @@ bool start_weights2 = false;
 bool is_weights2_complete = false;
 bool should_skip_puzzle = false;
 bool recal_accelerometer = false;
+bool neopixels_paused = false;
+int which_knob = 0;
 
 void handleComplete(int current_puzzle, char* rest) {
   Serial.printf("curr: %d\r\n", current_puzzle);
@@ -130,6 +132,33 @@ void handleRecalibrate(int current_puzzle) {
   }
 }
 
+void handleInfo(int current_puzzle, char* rest) {
+  Serial.printf("info curr: %d\r\n", current_puzzle);
+  switch (current_puzzle) {
+    case 6:
+      //neos
+      int val = rest[0];
+      if (val == 1) {
+        neopixels_paused = true;
+      } else if (val == 0) {
+        neopixels_paused = false;
+      } else {
+        Serial.printf("val neo error\r\n");
+      }
+      
+      Serial.printf("info-ing %d\r\n", current_puzzle);
+      break;
+    case 7:
+      //neos
+      which_knob = rest[0];
+      
+      Serial.printf("info-ing %d\r\n", current_puzzle);
+      break;
+    default:
+      break;
+  }
+}
+
 char* substring(char *dest, const char *source, int beg, int n) {
   while (n > 0) {
     *dest = *(source + beg);
@@ -147,6 +176,7 @@ void handleWebSocketMessage(uint8_t num, WStype_t type, uint8_t * payload, size_
   char completed_char[10];
   char skip_char[5];
   char recal_char[12];
+  char info_char[5];
   char current_puzzle[2];
   char rest_msg[10];
   int char_len = 9;
@@ -182,8 +212,22 @@ void handleWebSocketMessage(uint8_t num, WStype_t type, uint8_t * payload, size_
   }
 
   char_len = 11;
+  substring(info_char, (char*) payload, 0, char_len); //modifies info_char
+  int info_compare = strcmp((char *) info_char, "recalibrate"); //1 is no, 0 is yes
+
+  if (!info_compare) {
+    Serial.printf("compare: %d\r\n", info_compare);
+    Serial.printf("len: %d\r\n", len);
+    
+    substring(current_puzzle, (char*) payload, char_len, 1); //modifies rest_msg
+    Serial.printf("num: %s\r\n", current_puzzle);
+
+    handleRecalibrate(atoi(current_puzzle));
+  }
+
+  char_len = 4;
   substring(recal_char, (char*) payload, 0, char_len); //modifies recal_char
-  int recal_compare = strcmp((char *) recal_char, "recalibrate"); //1 is no, 0 is yes
+  int recal_compare = strcmp((char *) recal_char, "info"); //1 is no, 0 is yes
 
   if (!recal_compare) {
     Serial.printf("compare: %d\r\n", recal_compare);
@@ -192,7 +236,10 @@ void handleWebSocketMessage(uint8_t num, WStype_t type, uint8_t * payload, size_
     substring(current_puzzle, (char*) payload, char_len, 1); //modifies rest_msg
     Serial.printf("num: %s\r\n", current_puzzle);
 
-    handleRecalibrate(atoi(current_puzzle));
+    substring(rest_msg, (char*) payload, char_len+1, len-(char_len+1));
+    Serial.printf("rest: %s\r\n", rest_msg);
+
+    handleComplete(atoi(current_puzzle), rest_msg);
   }
 }
 

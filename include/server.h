@@ -27,6 +27,8 @@ extern bool is_weights2_complete;
 extern bool is_dial_completed;
 extern bool should_skip_puzzle;
 extern bool recal_accelerometer;
+extern bool neopixels_paused; 
+extern int which_knob;
 
 bool wifi_conn_status();
 String get_mac_address();

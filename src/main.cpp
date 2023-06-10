@@ -9,8 +9,8 @@ bool door_open = 0;
 int current_puzzle = 1; //website starts at zero
 bool start_neos_task = true;
 
+
 char password[6] = {'1', '2', '3', '3', '#', '*'};
-int sequence[3] = {};
 
 int light_ldr, dark_ldr;
 String light_dark_str;
@@ -112,6 +112,7 @@ void start_puzzles() {
   send_to_socket("");
 
   // lights puzzle
+  int sequence[3] = {};
   get_sequence(sequence, light_order);
   // String out_str = String(sequence[0]) + " " + String(sequence[1]) + " " + String(sequence[2]) + " " + String(sequence[3]);
   String light_solution_str = String(sequence[0]) + " " + String(sequence[1]) + " " + String(sequence[2]);
@@ -191,12 +192,11 @@ void start_puzzles() {
   int freqs_password[7];
   getFreqs(freqs_password);
   while (!getPressed(7, freqs_password) && !should_skip_puzzle) {
+    pause_lights = neopixels_paused;
     delay(100);
   }
   
   puzzle_complete();
-
-  delay(3000);
 
   //knob
   puzzle_complete();

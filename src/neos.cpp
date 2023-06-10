@@ -43,8 +43,7 @@ uint32_t rainbow_colors[] = {
 uint32_t full_color_list[63];
 // int freqs[7] = {};
 int color_sum = 0;
-// bool pause_lights = false;
-// bool lights_solved = false;
+bool pause_lights = false;
 
 void looping_neos( void *pvParameters );
 
@@ -220,31 +219,33 @@ void neopixel_puzzle(int wait) {
 
 void looping_neos( void *pvParameters ) {
   while(1) {
-    for(int d = strip.numPixels()-1; d > -1; d--) {
-      pix_index = pix_count + color_index;
+    if (!pause_lights) {
+      for(int d = strip.numPixels()-1; d > -1; d--) {
+        pix_index = pix_count + color_index;
 
-      if (pix_index > color_sum-1) {
-        pix_index = pix_index - color_sum;
+        if (pix_index > color_sum-1) {
+          pix_index = pix_index - color_sum;
+        }
+
+        uint32_t color = full_color_list[pix_index];
+        color = strip.gamma32(color);
+        strip.setPixelColor(d, color);
+
+        color_index++;
+        if (color_index == strip.numPixels()) {
+          color_index = 0;
+        }
       }
 
-      uint32_t color = full_color_list[pix_index];
-      color = strip.gamma32(color);
-      strip.setPixelColor(d, color);
+      strip.show();
+      vTaskDelay(600 / portTICK_PERIOD_MS);
+      // delay(600);
 
-      color_index++;
-      if (color_index == strip.numPixels()) {
-        color_index = 0;
-      }
-    }
-
-    strip.show();
-    vTaskDelay(600 / portTICK_PERIOD_MS);
-    // delay(600);
-
-    if (pix_count == color_sum-1) {
-      pix_count = 0;
-    } else {
-      pix_count++;
+      if (pix_count == color_sum-1) {
+        pix_count = 0;
+      } else {
+        pix_count++;
+      } 
     }
   }
 }

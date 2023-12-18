@@ -424,7 +424,7 @@ function set_light_order() {
     }    
 }
 
-slide = (direction = 1, skip = 1) => {
+const slide = (direction = 1, skip = 1) => {
     if(direction === 1) {
         translate -= translateAmount * skip;
     } else if (direction === -1) {

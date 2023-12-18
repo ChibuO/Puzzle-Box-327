@@ -31,7 +31,7 @@ void keypad_setup()
     msg = "";
 }
 
-int getPressed(int n, char *code) {
+int getPressed(int n, int *code) {
     if (kpd.getKeys()) {
         for (int i = 0; i < LIST_MAX; i++) {
             if (kpd.key[i].stateChanged) {

@@ -43,7 +43,6 @@ uint32_t rainbow_colors[] = {
 uint32_t full_color_list[63];
 // int freqs[7] = {};
 int color_sum = 0;
-bool pause_lights = false;
 
 void looping_neos( void *pvParameters );
 
@@ -51,16 +50,11 @@ void setColors();
 void setFrequencies();
 int freqs[7];
 
+bool pause_lights = false;
+
 // setup() function -- runs once at startup --------------------------------
 
 void neopixel_setup() {
-  // These lines are specifically to support the Adafruit Trinket 5V 16 MHz.
-  // Any other board, you can remove this part (but no harm leaving it):
-#if defined(__AVR_ATtiny85__) && (F_CPU == 16000000)
-  clock_prescale_set(clock_div_1);
-#endif
-  // END of Trinket-specific code.
-
   strip.begin();           // INITIALIZE NeoPixel strip object (REQUIRED)
   strip.show();            // Turn OFF all pixels ASAP
   strip.setBrightness(100); // Set BRIGHTNESS to about 1/5 (max = 255)

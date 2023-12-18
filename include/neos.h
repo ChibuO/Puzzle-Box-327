@@ -1,10 +1,10 @@
 #ifndef NEOS_H_
 #define NEOS_H_
     #include <Adafruit_NeoPixel.h>
-    #include <Arduino_FreeRTOS.h>
-    #ifdef __AVR__
-        #include <avr/power.h> // Required for 16 MHz Adafruit Trinket
-    #endif
+    // #include <Arduino_FreeRTOS.h>
+    // #ifdef __AVR__
+    //     #include <avr/power.h> // Required for 16 MHz Adafruit Trinket
+    // #endif
     
     // Which pin on the Arduino is connected to the NeoPixels?
     // On a Trinket or Gemma we suggest changing this to 1:
@@ -31,12 +31,12 @@
     void rainbow(Adafruit_NeoPixel strip, int wait);
     void theaterChaseRainbow(Adafruit_NeoPixel strip, int wait);
     void neos_main();
-    
-    bool pause_lights;
 
     void neopixel_puzzle(int wait);
     bool neos_plus_keypad(int wait);
     void getFreqs(int * p);
     void looping_neos(  void *pvParameters );
+
+    extern bool pause_lights;
 
 #endif /* NEOS_H */

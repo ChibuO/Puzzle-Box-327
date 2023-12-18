@@ -8,5 +8,5 @@
     char keypad_check_password(int n, char* code);
     bool is_getKeys();
     Key getKeypadKey(int i);
-    int getPressed(int n, char *code);
+    int getPressed(int n, int *code);
 #endif /* PASSWORD_H */

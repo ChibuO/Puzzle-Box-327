@@ -134,29 +134,29 @@ void handleRecalibrate(int current_puzzle) {
 
 void handleInfo(int current_puzzle, char* rest) {
   Serial.printf("info curr: %d\r\n", current_puzzle);
-  switch (current_puzzle) {
-    case 6:
-      //neos
-      int val = rest[0];
-      if (val == 1) {
-        neopixels_paused = true;
-      } else if (val == 0) {
-        neopixels_paused = false;
-      } else {
-        Serial.printf("val neo error\r\n");
-      }
+  // switch (current_puzzle) {
+  //   case 6:
+  //     //neos
+  //     int val = rest[0];
+  //     if (val == 1) {
+  //       neopixels_paused = true;
+  //     } else if (val == 0) {
+  //       neopixels_paused = false;
+  //     } else {
+  //       Serial.printf("val neo error\r\n");
+  //     }
       
-      Serial.printf("info-ing %d\r\n", current_puzzle);
-      break;
-    case 7:
-      //neos
-      which_knob = rest[0];
+  //     Serial.printf("info-ing %d\r\n", current_puzzle);
+  //     break;
+  //   case 7:
+  //     //neos
+  //     which_knob = rest[0];
       
-      Serial.printf("info-ing %d\r\n", current_puzzle);
-      break;
-    default:
-      break;
-  }
+  //     Serial.printf("info-ing %d\r\n", current_puzzle);
+  //     break;
+  //   default:
+  //     break;
+  // }
 }
 
 char* substring(char *dest, const char *source, int beg, int n) {

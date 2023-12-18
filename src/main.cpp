@@ -10,7 +10,7 @@ int current_puzzle = 1; //website starts at zero
 bool start_neos_task = true;
 
 
-char password[6] = {'1', '2', '3', '3', '#', '*'};
+int password[6] = {'1', '2', '3', '3', '#', '*'};
 
 int light_ldr, dark_ldr;
 String light_dark_str;
@@ -59,7 +59,7 @@ void setup() {
   Serial.println(light_dark_str);
 
   //task scheduler for neos
-  xTaskCreate(looping_neos, "looping neos", 50, NULL, 1, NULL);
+  // xTaskCreate(looping_neos, "looping neos", 50, NULL, 1, NULL);
 }
 
 void send_to_socket(String data) {
@@ -91,6 +91,21 @@ void puzzle_complete() {
   }
   should_skip_puzzle = false;
   send_to_socket("");
+}
+
+void start_puzzle() {
+  //maze puzzle
+  while(!is_maze_completed) {
+    // if(recal_accelerometer) {
+    //   calculate_IMU_error();
+    //   recal_accelerometer = false;
+    // }
+    String imu_data = read_imu();
+    send_to_socket(imu_data);
+    delay(100);
+  }
+
+  Serial.println("!!!! " + String(current_puzzle));
 }
 
 
@@ -186,8 +201,8 @@ void start_puzzles() {
 
   //neo
   if (start_neos_task) {
-    vTaskStartScheduler();
-    start_neos_task = false;
+    // vTaskStartScheduler();
+    // start_neos_task = false;
   }
   int freqs_password[7];
   getFreqs(freqs_password);
@@ -208,7 +223,7 @@ void start_puzzles() {
 
 
 void loop() {
-  digitalWrite(BUILTIN_LED, !digitalRead(BUILTIN_LED));
+  // digitalWrite(BUILTIN_LED, !digitalRead(BUILTIN_LED));
 
   //todo: check for box down
 
@@ -218,7 +233,7 @@ void loop() {
     calculate_IMU_error(); //wait 5 seconds and calibrate
 
     //then start
-    start_puzzles();
+    start_puzzle();
   }
 
   delay(100);

@@ -1,6 +1,7 @@
 #ifndef MAIN_H
 #define MAIN_H
     #include <Arduino.h>
+    #include "utilities.h"
     #include "opening.h"
     #include "password.h"
     #include "light_knobs.h"

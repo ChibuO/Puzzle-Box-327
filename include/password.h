@@ -3,11 +3,12 @@
     #include <Arduino.h>
     #include <Keypad.h>
     #include "neos.h"
+    #include "utilities.h"
 
     void keypad_setup();
     void read_keypad();
     char keypad_check_password(int n, char* code);
     bool is_getKeys();
     Key getKeypadKey(int i);
-    int getPressed(int n, char *code);
+    int getPressed(int n, char *code, bool should_send);
 #endif /* PASSWORD_H */

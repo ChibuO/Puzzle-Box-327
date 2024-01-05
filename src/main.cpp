@@ -62,18 +62,9 @@ void setup() {
   // xTaskCreate(looping_neos, "looping neos", 50, NULL, 1, NULL);
 }
 
-void send_to_socket(String data) {
-  String json = "{\"completed\":\"";
-  json += (String) current_puzzle;
-  json += "\",\"data\":\"";
-  json += data;
-  json += "\"}";
-  ws.broadcastTXT(json);
-}
-
 void puzzle_complete() {
   if(should_skip_puzzle) {
-    send_to_socket("completed");
+    send_to_socket(current_puzzle, "completed");
   }
   Serial.println("!!!! " + String(current_puzzle));
   current_puzzle++;
@@ -87,27 +78,11 @@ void puzzle_complete() {
   // delay(1500);
   colorWipe(rgb_to_binary(  0, 0,   0), 50); // dark
   if(!should_skip_puzzle) {
-    send_to_socket("completed");
+    send_to_socket(current_puzzle, "completed");
   }
   should_skip_puzzle = false;
-  send_to_socket("");
+  send_to_socket(current_puzzle, "");
 }
-
-void start_puzzle() {
-  //maze puzzle
-  while(!is_maze_completed) {
-    // if(recal_accelerometer) {
-    //   calculate_IMU_error();
-    //   recal_accelerometer = false;
-    // }
-    String imu_data = read_imu();
-    send_to_socket(imu_data);
-    delay(100);
-  }
-
-  Serial.println("!!!! " + String(current_puzzle));
-}
-
 
 void start_puzzles() {
   //maze puzzle
@@ -117,14 +92,14 @@ void start_puzzles() {
       recal_accelerometer = false;
     }
     String imu_data = read_imu();
-    send_to_socket(imu_data);
+    send_to_socket(current_puzzle, imu_data);
     delay(100);
   }
 
   Serial.println("!!!! " + String(current_puzzle));
   current_puzzle++;
   while (!open()) {};
-  send_to_socket("");
+  send_to_socket(current_puzzle, "");
 
   // lights puzzle
   int sequence[3] = {};
@@ -148,7 +123,7 @@ void start_puzzles() {
   
   //weight
   // code for keypad, returns 0 if complete
-  while (!getPressed(6, password) && !should_skip_puzzle) {
+  while (!getPressed(6, password, false) && !should_skip_puzzle) {
     if(recal_accelerometer) {
       recal_accelerometer = false;
     }
@@ -166,7 +141,7 @@ void start_puzzles() {
     }
     String imu_data = read_imu();
     // Serial.println(imu_data);
-    send_to_socket(imu_data);
+    send_to_socket(current_puzzle, imu_data);
     delay(300);
   }
 
@@ -174,7 +149,7 @@ void start_puzzles() {
 
   //dark/light
   //get numbers to send for dark/light
-  send_to_socket(light_dark_str);
+  send_to_socket(current_puzzle, light_dark_str);
 
   while (!light_ldr_correct(light_ldr) && !should_skip_puzzle) {
     update_ldr_status(1);
@@ -182,7 +157,7 @@ void start_puzzles() {
     delay(300);
   }
 
-  send_to_socket("halfway");
+  send_to_socket(current_puzzle, "halfway");
 
   while (!dark_ldr_correct(light_ldr, dark_ldr) && !should_skip_puzzle) {
     update_ldr_status(1);
@@ -190,7 +165,7 @@ void start_puzzles() {
     delay(300);
   }
 
-  send_to_socket("continue");
+  send_to_socket(current_puzzle, "continue");
 
   while(!are_knobs_off()) {
     update_led_status();
@@ -204,7 +179,7 @@ void start_puzzles() {
   Serial.println(color_solution_str);
   // int freqs_password[7];
   // getFreqs(freqs_password);
-  while (!getPressed(4, color_order) && !should_skip_puzzle) {
+  while (!getPressed(4, color_order, true) && !should_skip_puzzle) {
     delay(100);
   }
   
@@ -214,7 +189,7 @@ void start_puzzles() {
   puzzle_complete();
 
   Serial.println("box complete");
-  send_to_socket("");
+  send_to_socket(current_puzzle, "");
   while(1) {}
 }
 

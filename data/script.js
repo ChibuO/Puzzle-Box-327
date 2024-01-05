@@ -137,6 +137,10 @@ function update_list(num, data) {
                 slide();
                 let sol_num = setKnobImage(); //for next puzzle
                 websocket.send(`info7${sol_num}`);
+            } else if (Number.isInteger(Number(data)) && Number(data) <= colorList.length) {
+                if (Number(data)-1 >= 0) {
+                    neopixel_screen_neosText.innerHTML = colorList[Number(data)-1] + " - " + String(Number(data));
+                }  
             }
             break;
         case 7:

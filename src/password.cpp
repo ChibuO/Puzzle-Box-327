@@ -31,7 +31,7 @@ void keypad_setup()
     msg = "";
 }
 
-int getPressed(int n, char *code) {
+int getPressed(int n, char *code, bool should_send) {
     if (kpd.getKeys()) {
         for (int i = 0; i < LIST_MAX; i++) {
             if (kpd.key[i].stateChanged) {
@@ -48,6 +48,12 @@ int getPressed(int n, char *code) {
                             n_temp = 0;
                         }
                         msg = " PRESSED";
+                        if (should_send) {
+                            char key_str[2] = "\0"; /* gives {\0, \0} */
+                            key_str[0] = kpd.key[i].kchar;
+                            send_to_socket(6, key_str);
+                            lightNeos(kpd.key[i].kchar);
+                        }
                         break;
                     case HOLD:
                         break;
@@ -72,7 +78,6 @@ int getPressed(int n, char *code) {
                             n_temp = 0;
                         }
                         msg = " RELEASED";
-                        lightNeos(kpd.key[i].kchar);
                         break;
                     case IDLE:
                         msg = " IDLE";

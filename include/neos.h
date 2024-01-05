@@ -36,6 +36,7 @@
     bool neos_plus_keypad(int wait);
     void getFreqs(int * p);
     void looping_neos(  void *pvParameters );
+    void lightNeos(char key);
 
     extern bool pause_lights;
 

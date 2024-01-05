@@ -19,7 +19,7 @@
                 <input autofocus type="text" id="passkey_txtbox" name="passkey">
             </div>
 
-            <div id="box-down-screen" class="screen">
+            <div class="box-down-screen screen">
                 <h1>SET BOX DOWN</h1>
             </div>
 
@@ -158,8 +158,10 @@
             </div>
 
             <div id="neopixel-screen" class="screen">
-                <h1>It's too bright...turn it off</h1>
-                <input class="btn_class" id="pause-btn" type="button" onclick="pauseNeos()" value="STOP" />
+                <h1 id="color-list">~</h1>
+                <div id="neos-div">
+                    <h3 id="neos-color">~</h3>
+                </div>
             </div>
 
             <div id="door-screen" class="screen">
@@ -182,7 +184,7 @@
             <div id="end-screen" class="screen">
                 <h1>Congratulations!</h1>
 
-                <iframe src="https://www.youtube.com/embed/TsaDzekhPMw?autoplay=1&mute=1&loop=1&playlist=TsaDzekhPMw" frameborder="0"></iframe>
+                <iframe id="victory-vid" src="https://www.youtube.com/embed/TsaDzekhPMw?autoplay=0&mute=0&loop=1&playlist=TsaDzekhPMw" frameborder="0"></iframe>
                 
             </div>
 

@@ -11,7 +11,9 @@ var d_tilt;
 var maze_completed = false;
 var maze_interval_id;
 var maze_wall_color = "white";
-
+var colorList = ['red', 'orange', 'yellow', 'green', 'blue', 'indigo', 'violet', 'white']
+var colorOrder = setColorOrder();
+var colorNum = 4; //must also change this in server.cpp
 
 var websocket = null;
 var localhost = "";
@@ -26,15 +28,22 @@ const pages = document.querySelectorAll(".screen");
 const translateAmount = 100;
 let translate = 0;
 
+var isConnectedToBox = false;
+
 const passkey_txtbox = document.getElementById("passkey_txtbox");
 let welcome_screen = document.getElementById("welcome-screen");
-let box_down_screen = document.getElementById("box-down-screen");
+let neopixel_screen = document.getElementById("neopixel-screen")
+let neopixel_screen_text = document.getElementById("color-list")
+let neopixel_screen_neosText = document.getElementById("neos-color")
+let victory_vid = document.getElementById("victory-vid")
+// let box_down_screen = document.getElementById("box-down-screen");
 
 var light_order = [];
 
 var completed_puzzles = [];
 
-var current_puzzle = 0;
+var box_curr_puzz = 0;
+var current_puzzle = 0; //box starts at 1
 
 let walls = ["graveyard", "twilight", "stairs"];
 let light_phrases = ["It's too dark to see the name on the coffin", "I can barely see what's howling", "I need more light to see what's on the stairs"];
@@ -58,7 +67,7 @@ function update_list(num, data) {
         document.getElementById(i).classList.add("strike");
     });
 
-    console.log(`list puzzle ${num}`);
+    console.log(`from box: puzzle ${num}`);
 
     //num comes from the box itself
     switch(num) {
@@ -102,6 +111,18 @@ function update_list(num, data) {
                 document.getElementById("darkside").style.background = "black";
             } else if (data === "completed") {
                  //box then tells web when all potentiometers turned down
+                colorOrder = setColorOrder();
+                let [css_gradient, htmlText] = createGradient(colorNum);
+                neopixel_screen.style.background = css_gradient;
+                neopixel_screen_text.innerHTML = htmlText;
+                //jank way
+                let colorOrderString = ""
+                for(i = 0; i < colorNum; i++) {
+                    colorOrderString += (colorOrder[i]+1).toString();
+                }
+                console.log("sending", colorOrderString);
+                // let colorOrderString = colorOrder.slice(0, colorNum).toString().replace(/,/g, "") 
+                websocket.send(`info6${colorOrderString}`);
                 slide();
             } else {
                 //the clue numbers
@@ -124,6 +145,7 @@ function update_list(num, data) {
             document.getElementById("admin-btn").style.color = "white";
             if (data === "completed") {
                 slide();
+                victory_vid.play();
             }
             break;
         case 8:
@@ -141,34 +163,88 @@ function update_list(num, data) {
 function skipPuzzle() {
     document.getElementById("skipBtn").disabled = true;
     websocket.send(`skip${current_puzzle}`);
+    console.log("skipping", current_puzzle);
 
     switch(current_puzzle) {
         case 0:
             //password
             passkey_completed();
+            console.log("skipping password");
             break;
         case 1:
             //maze
+            console.log("skipping maze");
             setMazeComplete();
             break;
         case 2:
-            //lights
-            // slide();
-            // current_puzzle++;
+            console.log("skipping lights");
+            if (!isConnectedToBox) {
+                slide();
+                puzzle_complete();
+            }
             break;
+            //lights
         case 3:
+            console.log("skipping weight");
+            if (!isConnectedToBox) {
+                slide();
+                puzzle_complete();
+            }
+            break;
         case 4:
+            console.log("skipping tilt");
+            if (!isConnectedToBox) {
+                slide();
+                puzzle_complete();
+            }
+            break;
         case 5:
+            console.log("skipping dark/light");
+            document.getElementById("lightside").style.background = "white";
+            document.getElementById("lightside-clue").style.color = "black";
+            document.getElementById("lightside-clue").style.color = "white";
+            document.getElementById("darkside").style.background = "black";
+            colorOrder = setColorOrder();
+            let [css_gradient, htmlText] = createGradient(colorNum);
+            console.log(css_gradient);
+            neopixel_screen.style.background = css_gradient;
+            neopixel_screen_text.innerHTML = htmlText;
+            if (!isConnectedToBox) {
+                slide();
+                puzzle_complete();
+            }
+            break;
         case 6:
+            console.log("skipping neos");
+            if (!isConnectedToBox) {
+                slide();
+                puzzle_complete();
+            }
+            break;
         case 7:
+            console.log("skipping weight 2");
+            if (!isConnectedToBox) {
+                slide();
+                puzzle_complete();
+                victory_vid.play();
+            }
+            break;
         case 8:
             //finale - box tells web when completed
-            // slide();
-            // current_puzzle++;
+            console.log("skipping finale");
+            if (!isConnectedToBox) {
+                slide();
+                puzzle_complete();
+            }
             break;
         default:
             break;
     }
+
+    let element_ids = ["key_lbl", "maze_lbl", "knobs_lbl", "weights_lbl", "tilt_lbl", "dark_lbl", "neo_lbl", "door_lbl","final_lbl"];
+    element_ids.slice(0, current_puzzle).map((i) => {
+        document.getElementById(i).classList.add("strike");
+    });
 }
 
 function onRecalibrate() {
@@ -181,12 +257,14 @@ function init() {
 		localhost = window.location.hostname;
 	}
 
-	doConnect();
+    doConnect();
 }
 
 function doConnect() { // makes a connection and defines callbacks
     writeToScreen("Connecting to ws://" + localhost + ":81/ ...");
+    
     websocket = new WebSocket("ws://" + localhost + ":81/");
+    
     websocket.onopen = function(evt) {
         onOpen(evt)
     };
@@ -204,11 +282,16 @@ function doConnect() { // makes a connection and defines callbacks
 
 function onOpen(evt) { // when handshake is complete:
 	writeToScreen("Connected.");
+    isConnectedToBox = true;
 
-    // skipPuzzle();
-    // skipPuzzle();
-    // skipPuzzle();
-    // skipPuzzle();
+    skipPuzzle(); // skip passkey, curr_puzz = 0
+    skipPuzzle(); // skip maze, curr_puzz = 1
+    skipPuzzle(); // skip lights, curr_puzz = 2
+    
+    // skipPuzzle(); // weight
+    // skipPuzzle(); // tilt
+    // skipPuzzle(); // light/dark
+    // skipPuzzle(); // neos
 }
 
 function onClose(evt) { // when socket is closed:
@@ -217,6 +300,7 @@ function onClose(evt) { // when socket is closed:
 
 function onMessage(msg) {
     var obj = JSON.parse(msg.data);
+    box_curr_puzz = Number(obj.completed)
     update_list(Number(obj.completed), obj.data);
 }
 
@@ -229,8 +313,8 @@ window.onload = function () {
     let viewbox = document.querySelector("#maze_box");
     let viewWidth = viewbox.offsetWidth;
     let viewHeight = viewbox.offsetHeight;
-    console.log(viewHeight);
-    console.log(viewWidth);
+    // console.log(viewHeight);
+    // console.log(viewWidth);
     if (viewHeight < viewWidth) {
         ctx.canvas.width = viewHeight - viewHeight / 100;
         ctx.canvas.height = viewHeight - viewHeight / 100;
@@ -245,7 +329,6 @@ window.onload = function () {
 
     var isComplete = () => {
         if (completeOne === true && completeTwo === true) {
-            console.log("Runs");
             setTimeout(function () {
                 makeMaze();
             }, 500);
@@ -260,7 +343,6 @@ window.onload = function () {
     ballSprite.setAttribute("crossOrigin", " ");
     ballSprite.onload = function () {
         completeOne = true;
-        console.log("Sprite 1 loaded");
         isComplete();
     };
 
@@ -271,7 +353,6 @@ window.onload = function () {
     goalSprite.setAttribute("crossOrigin", " ");
     goalSprite.onload = function () {
         completeTwo = true;
-        console.log("Sprite 2 loaded");
         isComplete();
     };
     
@@ -299,16 +380,16 @@ window.onresize = function () {
 
 function setMazeComplete() {
     slide(-1);
-    maze_completed = true;
     setTimeout(() => {
         slide();
+        maze_completed = true;
         if(maze_completed) {
             let light_num_divs = Array.from(document.getElementsByClassName("light-num-divs"));
             light_num_divs.forEach((div) => {
                 div.style.opacity = "1";
             });
         }
-    }, 3000);
+    }, 1000);
     clearInterval(maze_interval_id);
     let light_string = `${light_order.indexOf(1)}${light_order.indexOf(2)}${light_order.indexOf(3)}`;
     puzzle_complete(light_string, true);
@@ -333,13 +414,13 @@ function writeToScreen(message)
 // Open Websocket as soon as page loads
 window.addEventListener("load", init, false);
 
-passkey_completed = () => {
+const passkey_completed = () => {
     set_light_order();
     slide();
     setTimeout(() => {
         // box_down_screen.style.opacity = 1;
         slide();
-    }, 3000);
+    }, 1000);
     puzzle_complete("", true);
 }
 
@@ -443,10 +524,11 @@ function random_item(items) {
 }
 
 function puzzle_complete(data = "", should_send = false) {
-    if (should_send) {
+    if (should_send && isConnectedToBox) {
         websocket.send(`completed${current_puzzle}${data}`);
     }
     current_puzzle++;
+    console.log("Now on puzzle ", current_puzzle);
 }
 
 function set_ldr_clue(light_ldr, dark_ldr) {
@@ -486,4 +568,40 @@ function setKnobImage() {
 
 function unlockDoor() {
     document.getElementById("center-door-div").style.height = 0;
+}
+
+function setColorOrder() {
+    let colorIndexes = new Set();
+    while(colorIndexes.size < colorList.length) {
+        let randomIndex = Math.floor(Math.random() * colorList.length);
+        if (!colorIndexes.has(randomIndex)) {
+            colorIndexes.add(randomIndex);
+        }
+    }
+    return [...colorIndexes];
+}
+
+function createGradient(num_colors = 4) {
+    let css = "linear-gradient(90deg,";
+    let percent_inc = 100 / (num_colors - 1);
+    let percent = 0
+    let htmlText = ""
+
+    firstFour = colorOrder.slice(0, num_colors)
+    
+    firstFour.forEach((colorIndex, index) => {
+        css += colorList[colorIndex] + " " + percent;
+        percent += percent_inc;
+        htmlText += colorList[colorIndex];
+        if (index === firstFour.length - 1) {
+            css += "%";
+        } else {
+            css += "%,";
+            htmlText += " | "
+        }
+    })
+
+    css += ")";
+    console.log(htmlText);
+    return [css, htmlText];
 }

@@ -179,7 +179,7 @@ void setColors() {
 }
 
 int color_index = 0;
-int pix_count = 0; //number to nount up to
+int pix_count = 0; //number to count up to
 int pix_index = 0; //number that's counting
 
 void neopixel_puzzle(int wait) {
@@ -248,6 +248,49 @@ void getFreqs(int * p) {
   for (int i = 0; i < 7; i++) {
     p[i] = freqs[i];
   }
+}
+
+void lightNeos(char key) {
+    uint32_t white_color = rgb_to_binary(255, 255, 255);
+    uint32_t clear_color = rgb_to_binary(0, 0, 0);
+
+    switch (key) {
+        case '1':
+            colorWipe(rainbow_colors[0], 100);
+            colorWipe(clear_color, 100);
+            break;
+        case '2':
+            colorWipe(rainbow_colors[1], 100);
+            colorWipe(clear_color, 100);
+            break;
+        case '3':
+            colorWipe(rgb_to_binary(255, 236, 64), 100);
+            colorWipe(clear_color, 100);
+            break;
+        case '4':
+            colorWipe(rainbow_colors[3], 100);
+            colorWipe(clear_color, 100);
+            break;
+        case '5':
+            colorWipe(rainbow_colors[4], 100);
+            colorWipe(clear_color, 100);
+            break;
+        case '6':
+            colorWipe(rainbow_colors[5], 100);
+            colorWipe(clear_color, 100);
+            break;
+        case '7':
+            colorWipe(rainbow_colors[6], 100);
+            colorWipe(clear_color, 100);
+            break;
+        case '8':
+            colorWipe(white_color, 100);
+            colorWipe(clear_color, 100);
+            break;
+        default:
+            // Code for an invalid option
+            break;
+    }
 }
 
 bool neos_plus_keypad(int wait) {

@@ -3,8 +3,8 @@
 const byte POT_PIN1 = 36;
 const byte POT_PIN2 = 39;
 const byte POT_PIN3 = 34;
-const byte POT_PIN4 = 35;
-const byte led_gpio = 32;
+// const byte POT_PIN4 = 35;
+// const byte led_gpio = 32;
 
 // int led_status[] = {midnight, midnight, midnight, midnight};
 int led_status[] = {def_light, def_light, def_light};

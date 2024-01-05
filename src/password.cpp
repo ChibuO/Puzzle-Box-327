@@ -31,7 +31,7 @@ void keypad_setup()
     msg = "";
 }
 
-int getPressed(int n, int *code) {
+int getPressed(int n, char *code) {
     if (kpd.getKeys()) {
         for (int i = 0; i < LIST_MAX; i++) {
             if (kpd.key[i].stateChanged) {
@@ -72,6 +72,7 @@ int getPressed(int n, int *code) {
                             n_temp = 0;
                         }
                         msg = " RELEASED";
+                        lightNeos(kpd.key[i].kchar);
                         break;
                     case IDLE:
                         msg = " IDLE";

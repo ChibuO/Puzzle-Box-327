@@ -1,7 +1,7 @@
 #include "main.h"
 
-const byte led_gpio = 32;
-const byte led_gpio2 = 33;
+// const byte led_gpio = 32;
+// const byte led_gpio2 = 33;
 bool lights_done = 0;
 bool keypad_done = 0;
 bool neos_done = 0;
@@ -10,7 +10,7 @@ int current_puzzle = 1; //website starts at zero
 bool start_neos_task = true;
 
 
-int password[6] = {'1', '2', '3', '3', '#', '*'};
+char password[6] = {'1', '2', '3', '3', '#', '*'};
 
 int light_ldr, dark_ldr;
 String light_dark_str;
@@ -28,10 +28,10 @@ int randInt(int lower, int upper) {
 void setup() {
   Serial.begin(115200);
   pinMode(LED_BUILTIN, OUTPUT);
-  pinMode(led_gpio, OUTPUT);
-  pinMode(led_gpio2, OUTPUT);
+  // pinMode(led_gpio, OUTPUT);
+  // pinMode(led_gpio2, OUTPUT);
   keypad_setup();
-  light_knobs_setup();
+  // light_knobs_setup();
   open_setup();
   imu_setup();
   neopixel_setup();
@@ -147,7 +147,7 @@ void start_puzzles() {
   puzzle_complete();
   
   //weight
-  // code for keypad
+  // code for keypad, returns 0 if complete
   while (!getPressed(6, password) && !should_skip_puzzle) {
     if(recal_accelerometer) {
       recal_accelerometer = false;
@@ -200,14 +200,11 @@ void start_puzzles() {
   puzzle_complete();
 
   //neo
-  if (start_neos_task) {
-    // vTaskStartScheduler();
-    // start_neos_task = false;
-  }
-  int freqs_password[7];
-  getFreqs(freqs_password);
-  while (!getPressed(7, freqs_password) && !should_skip_puzzle) {
-    pause_lights = neopixels_paused;
+  String color_solution_str = String(color_order[0]) + " " + String(color_order[1]) + " " + String(color_order[2]) + " " + String(color_order[3]);
+  Serial.println(color_solution_str);
+  // int freqs_password[7];
+  // getFreqs(freqs_password);
+  while (!getPressed(4, color_order) && !should_skip_puzzle) {
     delay(100);
   }
   
@@ -233,17 +230,17 @@ void loop() {
     calculate_IMU_error(); //wait 5 seconds and calibrate
 
     //then start
-    start_puzzle();
+    start_puzzles();
   }
 
   delay(100);
 }
 
-void lo6op() {
+void loo9p() {
   // print_weight();
   // delay(1000);
   while (!keypad_done) {
     keypad_done = neos_plus_keypad(400);
-    // digitalWrite(led_gpio2, HIGH);
   }
+  // neos_main();
 }

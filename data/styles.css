@@ -1,7 +1,7 @@
 @import url('https://fonts.googleapis.com/css2?family=Poppins&display=swap');
 
 :root {
-    --num_pages: 9;
+    --num_pages: 8;
 }
 
 
@@ -111,6 +111,55 @@ body {
     overflow: hidden;
 }
 
+.btn_class {
+    align-items: center;
+    appearance: none;
+    background-color: #FCFCFD;
+    border-radius: 4px;
+    border-width: 0;
+    box-shadow: rgba(45, 35, 66, 0.4) 0 2px 4px,rgba(45, 35, 66, 0.3) 0 7px 13px -3px,#D6D6E7 0 -3px 0 inset;
+    box-sizing: border-box;
+    color: #36395A;
+    cursor: pointer;
+    display: inline-flex;
+    height: 40px;
+    justify-content: center;
+    padding-left: 16px;
+    padding-right: 16px;
+    position: relative;
+    text-align: left;
+    text-decoration: none;
+    transition: box-shadow .15s,transform .15s;
+    user-select: none;
+    -webkit-user-select: none;
+    touch-action: manipulation;
+    white-space: nowrap;
+    will-change: box-shadow,transform;
+    font-size: 18px;
+  }
+  
+  .btn_class:focus {
+    box-shadow: #D6D6E7 0 0 0 1.5px inset, rgba(45, 35, 66, 0.4) 0 2px 4px, rgba(45, 35, 66, 0.3) 0 7px 13px -3px, #D6D6E7 0 -3px 0 inset;
+  }
+  
+  .btn_class:hover {
+    box-shadow: rgba(45, 35, 66, 0.4) 0 4px 8px, rgba(45, 35, 66, 0.3) 0 7px 13px -3px, #D6D6E7 0 -3px 0 inset;
+    transform: translateY(-2px);
+  }
+  
+  .btn_class:active {
+    box-shadow: #D6D6E7 0 3px 7px inset;
+    transform: translateY(2px);
+  }
+
+  .btn_class:disabled {
+    background-color: gray;
+  }
+
+/*
+* passkey screen
+*/
+
 #welcome-screen  {
     background: rgb(2,0,36);
     background: radial-gradient(circle, rgba(2,0,36,1) 0%, rgba(9,9,121,1) 35%, rgba(0,212,255,1) 100%);
@@ -154,6 +203,10 @@ body {
     color: white;
 }
 
+/*
+* weight screen
+*/
+
 #weight-screen {
     flex-direction: row;
 }
@@ -190,12 +243,20 @@ body {
     opacity: .4;
 }
 
+/*
+* tilt screen
+*/
+
 #tilt-screen {
     background: rgb(228,70,210);
     background: linear-gradient(90deg, rgba(228,70,210,1) 0%, rgba(22,255,90,1) 100%);
     display: flex;
     flex-direction: column;
 }
+
+/*
+* light/dark screen
+*/
 
 #light-screen {
     flex-direction: row;
@@ -225,61 +286,68 @@ body {
     transition: color 1s, background-color 1s;
 }
 
+/*
+* neopixel screen
+*/
+
 #neopixel-screen {
-    background: white;
+    background: rgb(2,0,36);
+    background: radial-gradient(circle, rgb(0, 36, 12) 0%, rgb(31, 121, 9) 35%, rgb(4, 189, 35) 100%);
     display: flex;
     flex-direction: column;
     justify-content: space-evenly;
     align-items: center;
     color: black;
-    transition: color 1s, background-color 1s;
-    /* background: linear-gradient(90deg, red 0%, yellow 19%, blue 45%, violet 75%, black 100%); */
 }
 
-#color-list {
-    color: white;
-}
-
-#neos-div {
-    border: 3px solid white;
-    border-radius: 10px;
-    color: white;
-    padding: 20px;
-}
-
-#door-screen {
-    flex-direction: row;
-}
-
-.door-div {
-    height: 100%;
+.strip-container {
+    width: 90%;
+    height: 80%;
     display: flex;
-    align-items: center;
+    flex-direction: column;
     justify-content: space-evenly;
-    width: 100%;
-    flex-direction: column;
 }
 
-#rightside, #leftside {
-    background-color: blueviolet;
-}
-
-#center-door-div {
-    position: relative;
-    /* border: 3px solid green; */
-}
-
-#doorside {
-    height: 100%;
+.strip {
     display: flex;
+    height: 60px;
+    border: 3px solid white;
+    border-radius: 100px 100px 100px 100px;
+    color: black;
+    text-shadow: 1px 1px 5px white;
+    font-size: 20px;
+    font-weight: bold;
     align-items: center;
-    width: 100%;
-    flex-direction: column;
-    position: absolute;
-    bottom: 0;
-    background-color: brown;
-    transition: height 2s;
+    justify-content: center;
 }
+
+#first-strip {
+    background: linear-gradient(
+        to right,
+        #FF5733 33%, 
+        #FFB533 33% 66%, 
+        #33FF57 66%);
+}
+
+#second-strip {
+    background: linear-gradient(
+        to right, 
+        #33B5FF 33%, 
+        #8E44AD 33% 66%, 
+        #FF5733 66%);
+}
+
+#third-strip {
+    background: linear-gradient(
+        to right, 
+        #33FF57 33%, 
+        #FFB533 33% 66%, 
+        #33B5FF 66%);
+}
+
+/*
+*  other
+*/
 
 #reset-btn {
     position: absolute;

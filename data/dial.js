@@ -88,9 +88,10 @@ function dial_rotate(angle) {
   set_rotations(rotations);
 }
 
-function updateRotation(data) {
+function updateRotation(boxData) {
+  let accelDict = {'accX': 0.0, 'accY': 0.0, 'accZ': 0.0};
   //on tilt puzzle
-  let accelArray = data.split(" ").map(parseFloat);
+  const accelArray = boxData.split(" ").map(parseFloat);
   // console.log(accelArray);
   accelDict['accX'] = accelArray[0];
   accelDict['accY'] = accelArray[1];

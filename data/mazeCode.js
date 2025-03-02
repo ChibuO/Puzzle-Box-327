@@ -1,3 +1,63 @@
+const mazeCanvas = document.getElementById("mazeCanvas");
+const mazeCtx = mazeCanvas.getContext("2d");
+let ballSprite;
+let goalSprite;
+let maze, draw, player;
+let cellSize;
+let difficulty;
+let d_tilt;
+let maze_completed = false;
+let maze_interval_id;
+const maze_wall_color = "white";
+
+const setupMaze = () => {
+    let viewbox = document.querySelector("#maze_box");
+    let viewWidth = viewbox.offsetWidth;
+    let viewHeight = viewbox.offsetHeight;
+    // console.log(viewHeight);
+    // console.log(viewWidth);
+    if (viewHeight < viewWidth) {
+        mazeCtx.canvas.width = viewHeight - viewHeight / 100;
+        mazeCtx.canvas.height = viewHeight - viewHeight / 100;
+    } else {
+        mazeCtx.canvas.width = viewWidth - viewWidth / 100;
+        mazeCtx.canvas.height = viewWidth - viewWidth / 100;
+    }
+
+    //Load and edit sprites
+    var completeOne = false;
+    var completeTwo = false;
+
+    var isComplete = () => {
+        if (completeOne === true && completeTwo === true) {
+            setTimeout(function () {
+                makeMaze();
+            }, 500);
+        }
+    };
+
+    ballSprite = new Image();
+    ballSprite.src =
+        "./key.png" +
+        "?" +
+        new Date().getTime();
+    ballSprite.setAttribute("crossOrigin", " ");
+    ballSprite.onload = function () {
+        completeOne = true;
+        isComplete();
+    };
+
+    goalSprite = new Image();
+    goalSprite.src = "./home.png" +
+        "?" +
+        new Date().getTime();
+    goalSprite.setAttribute("crossOrigin", " ");
+    goalSprite.onload = function () {
+        completeTwo = true;
+        isComplete();
+    };
+}
+
 function shuffle(a) {
     //fisher-yates algorithm
     for (let i = a.length - 1; i > 0; i--) {
@@ -9,6 +69,33 @@ function shuffle(a) {
 
 function rand(max) {
     return Math.floor(Math.random() * max);
+}
+
+function updateDirection(boxData) {
+    let accelDict = {'accX': 0.0, 'accY': 0.0, 'accZ': 0.0};
+    const accelArray = boxData.split(" ").map(parseFloat);
+    // console.log(accelArray);
+    accelDict['accX'] = accelArray[0];
+    accelDict['accY'] = accelArray[1];
+    accelDict['accZ'] = accelArray[2];
+    // console.log(accelDict);
+    setDTilt(accelDict);
+}
+
+function setDTilt(accelDict) {
+    if (accelDict['accY'] < -40.0) {
+        d_tilt = "west";
+    } else if (accelDict['accY'] > 30.0) {
+        d_tilt = "east";
+    } else if (accelDict['accX'] < -30.0) {
+        d_tilt = "north";
+    } else if (accelDict['accX'] > 45.0) {
+        d_tilt = "south";
+    } else {
+        d_tilt = "none";
+    }
+
+    //console.log(d_tilt);
 }
 
 function makeMaze() {
@@ -24,7 +111,7 @@ function makeMaze() {
     maze.defineStartEnd(); //chooses where the start and end coords are
     maze.defineMaze(); //defines the valid directions from each cell
 
-    draw = new DrawMaze(maze, ctx, cellSize, goalSprite);
+    draw = new DrawMaze(maze, mazeCtx, cellSize, goalSprite);
     draw.clear(); //clear canvas
     draw.drawMap(); //loop through cells and draw lines
     draw.drawEndMethod(); //draw end flag or sprite
@@ -36,6 +123,16 @@ function makeMaze() {
     if (document.getElementById("mazeContainer").style.opacity < "100") {
         document.getElementById("mazeContainer").style.opacity = "100";
     }
+}
+
+function setMazeComplete() {
+    setNeoPixelScreen();
+    slide(-1);
+    setTimeout(() => {
+        slide(1, 2);
+    }, 1000);
+    clearInterval(maze_interval_id);
+    puzzle_complete();
 }
 
 class Maze {

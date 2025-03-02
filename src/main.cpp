@@ -36,7 +36,7 @@ void setup() {
   imu_setup();
   neopixel_setup();
   photosensors_setup();
-  weight_setup();
+  // weight_setup();
 
   // Initialize SPIFFS - for saving data in flash memory
   uint8_t spiffs_check = startSPIFFS();
@@ -101,6 +101,19 @@ void start_puzzles() {
   while (!open()) {};
   send_to_socket(current_puzzle, "");
 
+  //neo
+  String color_solution_str = String(color_order[0]) + " " + String(color_order[1]) + " " + String(color_order[2]) + " " + String(color_order[3]);
+  String color_solution_str2 = String(color_order[4]) + " " + String(color_order[5]) + " " + String(color_order[6]) + " " + String(color_order[7]);
+  Serial.println(color_solution_str);
+  Serial.println(color_solution_str2);
+  // int freqs_password[7];
+  // getFreqs(freqs_password);
+  while (!getPressed(8, color_order, true) && !should_skip_puzzle) {
+    delay(100);
+  }
+  
+  puzzle_complete();
+
   // lights puzzle
   int sequence[3] = {};
   get_sequence(sequence, light_order);
@@ -132,21 +145,6 @@ void start_puzzles() {
 
   puzzle_complete();
 
-  //tilt
-  calculate_IMU_error(); //wait 5 seconds and calibrate
-  while (!is_dial_completed && !should_skip_puzzle) {
-    if(recal_accelerometer) {
-      calculate_IMU_error();
-      recal_accelerometer = false;
-    }
-    String imu_data = read_imu();
-    // Serial.println(imu_data);
-    send_to_socket(current_puzzle, imu_data);
-    delay(300);
-  }
-
-  puzzle_complete();
-
   //dark/light
   //get numbers to send for dark/light
   send_to_socket(current_puzzle, light_dark_str);
@@ -174,15 +172,19 @@ void start_puzzles() {
 
   puzzle_complete();
 
-  //neo
-  String color_solution_str = String(color_order[0]) + " " + String(color_order[1]) + " " + String(color_order[2]) + " " + String(color_order[3]);
-  Serial.println(color_solution_str);
-  // int freqs_password[7];
-  // getFreqs(freqs_password);
-  while (!getPressed(4, color_order, true) && !should_skip_puzzle) {
-    delay(100);
+  //tilt
+  calculate_IMU_error(); //wait 5 seconds and calibrate
+  while (!is_dial_completed && !should_skip_puzzle) {
+    if(recal_accelerometer) {
+      calculate_IMU_error();
+      recal_accelerometer = false;
+    }
+    String imu_data = read_imu();
+    // Serial.println(imu_data);
+    send_to_socket(current_puzzle, imu_data);
+    delay(300);
   }
-  
+
   puzzle_complete();
 
   //knob

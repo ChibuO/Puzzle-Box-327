@@ -40,6 +40,16 @@ uint32_t rainbow_colors[] = {
     rgb_to_binary(144, 0, 255),
     rgb_to_binary(221, 53, 240)};
 
+
+uint32_t rainbow_keypad_colors[] = {
+  rgb_to_binary(221, 53, 240),
+  rgb_to_binary(255, 0, 0),
+  rgb_to_binary(255, 128, 0),
+  rgb_to_binary(255, 236, 64),
+  rgb_to_binary(3, 136, 51),
+  rgb_to_binary(3, 113, 136),
+  rgb_to_binary(144, 0, 255)};
+
 uint32_t full_color_list[63];
 // int freqs[7] = {};
 int color_sum = 0;
@@ -256,31 +266,31 @@ void lightNeos(char key) {
 
     switch (key) {
         case '1':
-            colorWipe(rainbow_colors[0], 100);
+            colorWipe(rainbow_keypad_colors[0], 100);
             colorWipe(clear_color, 100);
             break;
         case '2':
-            colorWipe(rainbow_colors[1], 100);
+            colorWipe(rainbow_keypad_colors[1], 100);
             colorWipe(clear_color, 100);
             break;
         case '3':
-            colorWipe(rgb_to_binary(255, 236, 64), 100);
+            colorWipe(rainbow_keypad_colors[2], 100);
             colorWipe(clear_color, 100);
             break;
         case '4':
-            colorWipe(rainbow_colors[3], 100);
+            colorWipe(rainbow_keypad_colors[3], 100);
             colorWipe(clear_color, 100);
             break;
         case '5':
-            colorWipe(rainbow_colors[4], 100);
+            colorWipe(rainbow_keypad_colors[4], 100);
             colorWipe(clear_color, 100);
             break;
         case '6':
-            colorWipe(rainbow_colors[5], 100);
+            colorWipe(rainbow_keypad_colors[5], 100);
             colorWipe(clear_color, 100);
             break;
         case '7':
-            colorWipe(rainbow_colors[6], 100);
+            colorWipe(rainbow_keypad_colors[6], 100);
             colorWipe(clear_color, 100);
             break;
         case '8':

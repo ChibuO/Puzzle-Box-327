@@ -33,27 +33,30 @@
 }
 
 #maze_box {
-    position: absolute;
+    /* position: absolute;
     bottom: 30px;
     left: 0;
-    right: 0;
-    width: 100%;
-    height: auto;
-    margin-bottom: 20px;
+    right: 0; */
+    /* width: 100%; */
+    /* margin-bottom: 20px; */
     display: flex;
     flex-direction: column;
     /* border: 3px solid orange; */
+    flex: 1;
 }
 
 #mazeContainer {
     opacity: 0;
     display: flex;
     margin: auto;
+    border-radius: 5px;
+    border: 1px solid white;
+    overflow: hidden;
 }
 
 #mazeCanvas {
     margin: 0;
-    display: block;
+    /* display: block; */
     background-color: rgb(158, 14, 69);
 }
 

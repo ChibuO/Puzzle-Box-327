@@ -22,7 +22,7 @@ bool is_maze_completed = false;
 bool is_dial_completed = false;
 bool should_start_puzzles = false;
 char light_order[3];
-char color_order[4];
+char color_order[8];
 bool start_photoresistors = false;
 bool is_prs_complete = false;
 bool start_weights2 = false;
@@ -131,9 +131,9 @@ void handleInfo(int current_puzzle, char *rest)
   Serial.printf("info curr: %d\r\n", current_puzzle);
   switch (current_puzzle)
   {
-  case 3:
+  case 2:
     // neos
-    for (int i = 0; i < 4; i++)
+    for (int i = 0; i < 8; i++)
     {
       Serial.printf("info- %c ", *(rest + i));
       color_order[i] = *(rest + i);

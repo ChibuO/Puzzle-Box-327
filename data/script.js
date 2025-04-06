@@ -30,7 +30,7 @@ const passkey = "jo";
 var adminPanelEnabled = true;
 let showAdmin = false;
 
-const colorList = ['red', 'orange', 'yellow', 'green', 'blue', 'purple', 'pink', 'white'];
+const colorList = ['pink', 'red', 'orange', 'yellow', 'green', 'blue', 'purple', 'white'];
 var colorOrderNum = 0;
 const colorNum = 4; //must also change this in server.cpp
 
@@ -90,7 +90,7 @@ const passkey_completed = () => {
         // box_down_screen.style.opacity = 1;
         slide();
     }, 1000);
-    puzzle_complete("", true);
+    puzzle_complete("");
 }
 
 function toggleAdminPanel() {
@@ -112,8 +112,9 @@ function toggleAdminPanel() {
         showAdmin = false;
     } else {
         //if not, show
-        document.getElementById("puzzles-container").style.width = "28vw";
-        document.getElementById("main-game").style.marginLeft = "28vw";
+        const move = "300px";
+        document.getElementById("puzzles-container").style.width = move;
+        document.getElementById("main-game").style.marginLeft = move;
         showAdmin = true;
     }
 }
@@ -157,12 +158,13 @@ function updatePage(num, data) {
             if (data === "completed") {
                 showLightNums(); // don't want to slide
                 let light_string = `${light_order.indexOf(1)}${light_order.indexOf(2)}${light_order.indexOf(3)}`;
-                puzzle_complete(light_string, true); // for knob puzzle
+                puzzle_complete(light_string); // for knob puzzle
             }
             break;
         case 'knobs_lbl':
             // lights - box tells web that it's completed
             if (data === "completed") {
+                setupSkyline();
                 slide();
                 puzzle_complete();
             }
@@ -243,13 +245,14 @@ function skipPuzzle() {
             if (!isConnectedToBox) {
                 puzzle_complete();
             } else {
-                puzzle_complete(light_string, true); // for knob puzzle
+                puzzle_complete(light_string); // for knob puzzle
             }
             document.getElementById("skipBtn").disabled = false;
             break;
         case 'knobs_lbl':
             console.log("skipping lights");
             if (!isConnectedToBox) {
+                setupSkyline();
                 slide();
                 puzzle_complete();
             }
@@ -337,7 +340,7 @@ function setKnobImage() {
     return image_choice;
 }
 
-function setNeoPixelScreen(isSkipping = false) {
+function setNeoPixelScreen() {
     const colorOrder1 = setColorOrder();
     const colorOrder2 = setColorOrder();
     const colorOrder3 = setColorOrder();
@@ -352,7 +355,6 @@ function setNeoPixelScreen(isSkipping = false) {
     first_strip.innerHTML = htmlText1;
     second_strip.innerHTML = htmlText2;
     third_strip.innerHTML = htmlText3;
-    // if (!isSkipping) {
     //jank way
     let colorOrderString = "";
     const colorOrdersList = [colorOrder1, colorOrder2, colorOrder3];
@@ -361,8 +363,8 @@ function setNeoPixelScreen(isSkipping = false) {
     }
     console.log("sending", colorOrderString);
     // let colorOrderString = colorOrder.slice(0, colorNum).toString().replace(/,/g, "")
-    sendMessage('info', 6, colorOrderString);
-    // }
+    const neoPuzzleNum = Object.values(puzzleOrder).indexOf('neo_lbl'); // 2
+    sendMessage('info', neoPuzzleNum, colorOrderString);
 }
 
 function showLightNums() {
@@ -372,14 +374,17 @@ function showLightNums() {
 }
 
 function setColorOrder() {
-    let colorIndexes = new Set();
-    while (colorIndexes.size < colorList.length) {
+    // let colorIndexes = new Set();
+    let colorIndexes = [];
+    while (colorIndexes.length < colorList.length) {
         let randomIndex = Math.floor(Math.random() * colorList.length);
         // if (!colorIndexes.has(randomIndex)) {
-            colorIndexes.add(randomIndex);
+            // colorIndexes.add(randomIndex);
+            colorIndexes.push(randomIndex);
         // }
     }
-    return [...colorIndexes]; //return list
+    // return [...colorIndexes]; //return list
+    return colorIndexes;
 }
 
 function createGradient(colorOrder) {
@@ -408,6 +413,12 @@ function createGradient(colorOrder) {
 
 function onRecalibrate() {
     sendMessage('recalibrate', current_puzzle);
+}
+
+// used in maze and skyline
+// gets random int
+function rand(max, includesZero=0) {
+    return Math.floor(Math.random() * max) + includesZero*1;
 }
 
 // function toggleVisibility(id) {

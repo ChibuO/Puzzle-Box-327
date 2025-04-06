@@ -51,7 +51,6 @@ int getPressed(int n, char *code, bool should_send) {
                         if (should_send) {
                             char key_str[2] = "\0"; /* gives {\0, \0} */
                             key_str[0] = kpd.key[i].kchar;
-                            send_to_socket(6, key_str);
                             lightNeos(kpd.key[i].kchar);
                         }
                         break;
@@ -88,10 +87,10 @@ int getPressed(int n, char *code, bool should_send) {
                 Serial.println(msg);
                 Serial.print("n_temp: ");
                 Serial.print(n_temp);
-                Serial.print(" pressed: ");
-                Serial.print(pressed);
-                Serial.print(" released: ");
-                Serial.println(released);
+                // Serial.print(" pressed: ");
+                // Serial.print(pressed);
+                // Serial.print(" released: ");
+                // Serial.println(released);
             }
         }
     }

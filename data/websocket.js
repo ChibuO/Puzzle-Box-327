@@ -42,9 +42,9 @@ function onClose(evt) { // when socket is closed:
 function onMessage(msg) { // when socket receives a message
     var obj = JSON.parse(msg.data);
     box_curr_puzz = Number(obj.completed)
-    if (box_curr_puzz == 4 || box_curr_puzz == 7) {
-        skipPuzzle();
-    } 
+    // if (box_curr_puzz == 4 || box_curr_puzz == 7) {
+    //     skipPuzzle();
+    // } 
     updatePage(Number(obj.completed), obj.data);
 }
 
@@ -53,6 +53,8 @@ function onError(evt) { // when an error occurs
 	updateStatusLabel("Websocket error");
     skipPuzzle(); // skip passkey, curr_puzz = 0
     skipPuzzle(); // skip maze, curr_puzz = 1
+    skipPuzzle(); // skip freqs
+    skipPuzzle(); // skip intensities
 }
 
 // Function to display to the message box
@@ -61,10 +63,8 @@ function updateStatusLabel(message)
   document.getElementById("status_lbl").innerHTML = message;
 }
 
-function puzzle_complete(data = "", should_send = false) {
-    if (should_send) {
-        sendMessage('completed', current_puzzle, data);
-    }
+function puzzle_complete(data = "") {
+    sendMessage('completed', current_puzzle, data);
     current_puzzle++;
     console.log("Now on puzzle ", current_puzzle);
 }

@@ -1,28 +1,28 @@
-const mazeCanvas = document.getElementById("mazeCanvas");
-const mazeCtx = mazeCanvas.getContext("2d");
-let ballSprite;
-let goalSprite;
-let maze, draw, player;
-let cellSize;
-let difficulty;
 let d_tilt;
 let maze_completed = false;
 let maze_interval_id;
 const maze_wall_color = "white";
 
 const setupMaze = () => {
+    const mazeCanvas = document.getElementById("mazeCanvas");
+    const mazeCtx = mazeCanvas.getContext("2d");
+    let ballSprite;
+    let goalSprite;
     let viewbox = document.querySelector("#maze_box");
     let viewWidth = viewbox.offsetWidth;
     let viewHeight = viewbox.offsetHeight;
     // console.log(viewHeight);
     // console.log(viewWidth);
+    // I think this checks if laptop or phone
     if (viewHeight < viewWidth) {
-        mazeCtx.canvas.width = viewHeight - viewHeight / 100;
-        mazeCtx.canvas.height = viewHeight - viewHeight / 100;
+        mazeCtx.canvas.width = viewHeight - viewHeight / 10;
+        mazeCtx.canvas.height = viewHeight - viewHeight / 10;
     } else {
-        mazeCtx.canvas.width = viewWidth - viewWidth / 100;
-        mazeCtx.canvas.height = viewWidth - viewWidth / 100;
+        mazeCtx.canvas.width = viewWidth - viewWidth / 10;
+        mazeCtx.canvas.height = viewWidth - viewWidth / 10;
     }
+    // console.log(mazeCtx.canvas.height);
+    // console.log(mazeCtx.canvas.width);
 
     //Load and edit sprites
     var completeOne = false;
@@ -31,7 +31,7 @@ const setupMaze = () => {
     var isComplete = () => {
         if (completeOne === true && completeTwo === true) {
             setTimeout(function () {
-                makeMaze();
+                makeMaze(ballSprite, goalSprite, mazeCtx);
             }, 500);
         }
     };
@@ -67,10 +67,6 @@ function shuffle(a) {
     return a;
 }
 
-function rand(max) {
-    return Math.floor(Math.random() * max);
-}
-
 function updateDirection(boxData) {
     let accelDict = {'accX': 0.0, 'accY': 0.0, 'accZ': 0.0};
     const accelArray = boxData.split(" ").map(parseFloat);
@@ -98,13 +94,17 @@ function setDTilt(accelDict) {
     //console.log(d_tilt);
 }
 
-function makeMaze() {
+function makeMaze(ballSprite, goalSprite, mazeCtx) {
+    let maze, draw, player;
+    let cellSize;
+    let difficulty;
+
     if (player != undefined) {
         // player.unbindKeyDown();
         player = null;
     }
 
-    difficulty = 4;
+    difficulty = 14;
     cellSize = mazeCanvas.width / difficulty; //difficulty x difficulty grid
     maze = new Maze(difficulty);
     maze.genMap(); //initialzes empty map
@@ -116,7 +116,7 @@ function makeMaze() {
     draw.drawMap(); //loop through cells and draw lines
     draw.drawEndMethod(); //draw end flag or sprite
 
-    player = new Player(maze, mazeCanvas, cellSize, setMazeComplete, ballSprite);
+    player = new MazePlayer(maze, mazeCanvas, cellSize, setMazeComplete, ballSprite);
     player.drawBallSprite(maze.startCoord());
     // player.bindKeyDown();
 
@@ -175,6 +175,7 @@ class Maze {
             return endCoord;
         };
 
+        // generate empty length x length map
         this.genMap = function () {
             mazeMap = new Array(height);
             for (let y = 0; y < height; y++) {
@@ -255,6 +256,7 @@ class Maze {
             }
         }
 
+        // choose which of the 4 corners the start and end are in
         this.defineStartEnd = function () {
             switch (rand(4)) {
                 case 0:
@@ -418,7 +420,7 @@ class DrawMaze {
     }
 }
 
-class Player {
+class MazePlayer {
     constructor(maze, c, _cellsize, onComplete, sprite = null) {
         var ctx = c.getContext("2d");
         

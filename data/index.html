@@ -11,6 +11,7 @@
     <title>Maze</title>
     <link rel="stylesheet" href="./styles.css">
     <link rel="stylesheet" href="./mazeStyles.css">
+    <link rel="stylesheet" href="./skylineStyles.css">
     <link rel="stylesheet" href="./dial.css">
 </head>
 
@@ -31,7 +32,7 @@
 
             <div id="maze_box">
                 <div id="mazeContainer">
-                    <canvas id="mazeCanvas" height="300" width="300"></canvas>
+                    <canvas id="mazeCanvas" height="400" width="400"></canvas>
                 </div>
             </div>
         </div>
@@ -45,18 +46,15 @@
         </div>
 
         <div id="weight-screen" class="screen">
-            <div class="frac-div" id="frac-div1">
-                <h2>~</h2>
+            <div class="recal-container">
+                <input class="btn_class recal-btn" type="button" onclick="onRecalibrate()" value="Recalibrate" />
             </div>
-            <div class="frac-div" id="frac-div2">
-                <h2>~</h2>
-            </div>
-            <div class="frac-div" id="frac-div3">
-                <h2>~</h2>
-            </div>
-            <div class="frac-div" id="frac-div4">
-                <h2>~</h2>
-            </div>
+
+            <div id="skyline_box">
+                <div id="skylineContainer">
+                    <canvas id="skylineCanvas" height="100" width="100"></canvas>
+                </div>
+            </div>  
         </div>
 
         <div id="light-screen" class="screen">
@@ -181,6 +179,7 @@
     <script src="./websocket.js"></script>
     <script src="./script.js"></script>
     <script src="./mazeCode.js"></script>
+    <script src="./skylineCode.js"></script>
     <script src="./dial.js"></script>
 </body>
 

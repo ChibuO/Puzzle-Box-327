@@ -11,15 +11,12 @@
 }
 
 html, body {
-    width: 100vw;
-    height: 100vh;
-
-    overflow: hidden;
-
     font-family: 'Poppins', sans-serif;
 }
 
 body {
+    height: 100vh;
+    overflow: hidden;
     background: rgb(131,58,180);
     background: linear-gradient(22deg, rgba(131,58,180,1) 0%, rgba(81,29,253,1) 29%, rgba(252,176,69,1) 89%);
 }
@@ -35,7 +32,7 @@ body {
 }
 
 .screen {
-    height: 100vh;
+    height: 100%;
     width: 100%;
     position: relative;
     transition: all 1s ease;
@@ -54,10 +51,10 @@ body {
 .recal-container {
     text-align: center;
     margin: 0;
+    /* border: 3px solid yellow; */
 }
 
 .recal-btn {
-    /* border: 3px solid yellow; */
     align-items: center;
     height: 50px;
     margin-bottom: 5px;
@@ -68,6 +65,7 @@ body {
 #puzzles-container {
     height: 100%;
     width: 45px;
+    max-width: 300px;
     position: fixed;
     z-index: 1;
     top: 0;
@@ -83,6 +81,8 @@ body {
     cursor: pointer;
     color: white;
     padding: 0px 10px;
+    /* border: 2px solid red; */
+    height: min-content;
 }
 
 .strike {
@@ -204,46 +204,6 @@ body {
 }
 
 /*
-* weight screen
-*/
-
-#weight-screen {
-    flex-direction: row;
-}
-
-.frac-div {
-    height: 100%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: 100%;
-}
-
-.frac-div h2 {
-    font-size: 60px;
-}
-
-#frac-div1 {
-    background-color: red;
-    opacity: .4;
-}
-
-#frac-div2 {
-    background-color: yellow;
-    opacity: .4;
-}
-
-#frac-div3 {
-    background-color: blueviolet;
-    opacity: .4;
-}
-
-#frac-div4 {
-    background-color: gray;
-    opacity: .4;
-}
-
-/*
 * tilt screen
 */
 
@@ -315,7 +275,7 @@ body {
     border-radius: 100px 100px 100px 100px;
     color: black;
     text-shadow: 1px 1px 5px white;
-    font-size: 20px;
+    font-size: 18px;
     font-weight: bold;
     align-items: center;
     justify-content: center;

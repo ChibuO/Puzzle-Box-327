@@ -96,6 +96,8 @@ void start_puzzles() {
     delay(100);
   }
 
+  // pull out from puzzle_complete() bc 
+  // need to wait for box to open
   Serial.println("!!!! " + String(current_puzzle));
   current_puzzle++;
   while (!open()) {};
@@ -114,7 +116,7 @@ void start_puzzles() {
   
   puzzle_complete();
 
-  // lights puzzle
+  // knobs puzzle
   int sequence[3] = {};
   get_sequence(sequence, light_order);
   // String out_str = String(sequence[0]) + " " + String(sequence[1]) + " " + String(sequence[2]) + " " + String(sequence[3]);

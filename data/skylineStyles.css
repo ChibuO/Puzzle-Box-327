@@ -15,7 +15,7 @@
     /* height: auto; */
     /* margin-bottom: 20px; */
     display: flex;
-    flex-direction: column;
+    /* flex-direction: column; */
     /* border: 3px solid orange; */
     flex: 1;
 }
@@ -24,13 +24,13 @@
     opacity: 0;
     display: flex;
     margin: auto;
-    border-radius: 5px;
-    border: 1px solid rgb(0, 0, 0);
-    overflow: hidden;
+    gap: 10px;
 }
 
 #skylineCanvas {
     margin: 0;
-    /* display: block; */
+    border: 1px solid rgb(0, 0, 0);
+    border-radius: 5px;
+    overflow: hidden;
     background-color: rgb(10, 101, 94);
 }

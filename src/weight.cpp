@@ -9,10 +9,7 @@ long calibration_factor = -14241.6;
 void weight_setup() {
   Serial.begin(115200);
   //rtc_clk_cpu_freq_set(RTC_CPU_FREQ_80M);
-  Serial.println("HX711 Demo");
-
   Serial.println("Initializing the scale");
-
   scale.begin(LOADCELL_DOUT_PIN, LOADCELL_SCK_PIN);
 
   Serial.println("Before setting up the scale:");
@@ -46,8 +43,6 @@ void weight_setup() {
   Serial.print("get units: \t\t");
   Serial.println(scale.get_units(5), 1);        // print the average of 5 readings from the ADC minus tare weight, divided
             // by the SCALE parameter set with set_scale
-
-  Serial.println("Readings:");
 }
 
 // dont use
@@ -80,6 +75,11 @@ void print_weight() {
 void calibrate_setup() {
     Serial.begin(115200);
     scale.begin(LOADCELL_DOUT_PIN, LOADCELL_SCK_PIN);
+}
+
+void reset_scale() {
+  scale.tare();
+  Serial.println("Tare done...");
 }
 
 //for calibration

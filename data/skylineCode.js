@@ -1,6 +1,8 @@
 let skyline_completed = false;
 let skyline_interval_id;
 let skyline_ball_direction = 1;
+let skyline_ball_weight = 0;
+const skyline_num_buildings = 10; // square canvas
 const skyline_wall_color = "white";
 
 const setupSkyline = () => {
@@ -49,15 +51,14 @@ const setupSkyline = () => {
 function makeSkyline(wingSprite, exitSprite, skylineCtx) {
     let skyline, draw, player;
     let cellSize;
-    let numBuildings = 10;
 
     if (player != undefined) {
         player = null;
     }
 
-    cellSize = skylineCanvas.width / numBuildings; //numBuildings x numBuildings grid
+    cellSize = skylineCanvas.width / skyline_num_buildings; //numBuildings x numBuildings grid
 
-    skyline = new Skyline(numBuildings, skylineCtx, cellSize, exitSprite);
+    skyline = new Skyline(skyline_num_buildings, skylineCtx, cellSize, exitSprite);
     skyline.clear(); //clear canvas
     skyline.drawBuildings(); //loop through map and draw buildings
     skyline.drawCoins();
@@ -74,9 +75,17 @@ function makeSkyline(wingSprite, exitSprite, skylineCtx) {
     skyline_interval_id = setInterval(() => startSkylineGame(skyline, player), 200);
 }
 
-// function redrawSkylinePuzzle() {
-
-// }
+function updateWeight(boxData) {
+    const newWeight = parseFloat(boxData);
+    // weight: 0 < newWeight < numBuildings - 1
+    if (newWeight < skyline_num_buildings - 1 && newWeight > 0) {
+        skyline_ball_weight = newWeight;
+    } else if (newWeight >= skyline_num_buildings) {
+        skyline_ball_weight = skyline_num_buildings - 1;
+    } else if (newWeight <= 0) {
+        skyline_ball_weight = 0;
+    }
+}
 
 function setSkylineComplete() {
     clearInterval(skyline_interval_id);
@@ -150,7 +159,7 @@ class Skyline {
 
     //loop through map and draw building
     drawBuildings() {
-        console.log("map", this.skylineMap);
+        // console.log("map", this.skylineMap);
         this.ctx.fillStyle = skyline_wall_color;
         this.ctx.strokeStyle = 'gray';
         this.ctx.lineWidth = .5;
@@ -393,7 +402,7 @@ const startSkylineGame = (skyline, skylinePlayer) => {
     if(skylinePlayer.checkCoinCollision(skyline.coinArray, currentBuildingNum)) {
         skylinePlayer.score++;
         skyline.coinArray[currentBuildingNum] = 0;
-        console.log(skylinePlayer.score);
+        // console.log(skylinePlayer.score);
     }
 
     if(skylinePlayer.score >= width - 1) {

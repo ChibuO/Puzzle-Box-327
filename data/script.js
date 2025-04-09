@@ -171,10 +171,7 @@ function updatePage(num, data) {
             break;
         case 'weights_lbl':
             // weights1/keypad - box tells web that it's completed
-            if (data === "completed") {
-                slide();
-                puzzle_complete();
-            }
+            updateWeight(data);
             break;
         case 'dark_lbl':
             // photoresistors  - box tells web that it's completed
@@ -259,10 +256,7 @@ function skipPuzzle() {
             break;
         case 'weights_lbl':
             console.log("skipping weight");
-            if (!isConnectedToBox) {
-                slide();
-                puzzle_complete();
-            }
+            setSkylineComplete();
             break;
         case 'dark_lbl':
             console.log("skipping dark/light");

@@ -23,11 +23,12 @@ extern char light_order[];
 extern char color_order[];
 extern bool start_photoresistors;
 extern bool ais_prs_complete;
-extern bool start_weights2;
-extern bool is_weights2_complete;
+extern bool start_weights;
+extern bool is_weights_complete;
 extern bool is_dial_completed;
 extern bool should_skip_puzzle;
 extern bool recal_accelerometer;
+extern bool recal_scale;
 extern bool neopixels_paused; 
 extern int which_knob;
 

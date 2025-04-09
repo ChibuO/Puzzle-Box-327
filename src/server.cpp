@@ -25,10 +25,11 @@ char light_order[3];
 char color_order[8];
 bool start_photoresistors = false;
 bool is_prs_complete = false;
-bool start_weights2 = false;
-bool is_weights2_complete = false;
+bool start_weights = false;
+bool is_weights_complete = false;
 bool should_skip_puzzle = false;
 bool recal_accelerometer = false;
+bool recal_scale = false;
 bool neopixels_paused = false;
 int which_knob = 0;
 
@@ -53,18 +54,19 @@ void handleComplete(int current_puzzle, char *rest)
       light_order[i] = *(rest + i);
     }
     break;
-  case 6:
-    // tilt completed
-    
+  // case 3 is knobs
+  case 4:
+    // weights completed
+    start_photoresistors = true;
+    is_weights_complete = true;
     break;
   case 5:
     // photoresistors completed
     is_prs_complete = true;
     break;
-  case 4:
-    // weights completed
-    start_photoresistors = true;
-    is_weights2_complete = true;
+  case 6:
+    // tilt completed
+    
     break;
   default:
     break;
@@ -114,6 +116,11 @@ void handleRecalibrate(int current_puzzle)
   case 1:
     // maze
     recal_accelerometer = true;
+    Serial.printf("recal-ing %d\r\n", current_puzzle);
+    break;
+  case 4:
+    // weights
+    recal_scale = true;
     Serial.printf("recal-ing %d\r\n", current_puzzle);
     break;
   case 6:

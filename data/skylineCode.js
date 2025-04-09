@@ -62,7 +62,6 @@ function makeSkyline(wingSprite, exitSprite, skylineCtx) {
     skyline.drawBuildings(); //loop through map and draw buildings
     skyline.drawCoins();
     skyline.drawOcean();
-    skyline.drawEndMethod(); //draw end flag or sprite
 
     player = new SkylinePlayer(skyline, skylineCanvas, cellSize, setSkylineComplete, wingSprite);
     player.drawPlayerSprite(skyline.startCoord);
@@ -80,12 +79,11 @@ function makeSkyline(wingSprite, exitSprite, skylineCtx) {
 // }
 
 function setSkylineComplete() {
-    setNeoPixelScreen();
-    slide(-1);
-    setTimeout(() => {
-        slide(1, 2);
-    }, 1000);
     clearInterval(skyline_interval_id);
+    setNeoPixelScreen();
+    setTimeout(() => {
+        slide();
+    }, 2000);
     puzzle_complete();
 }
 
@@ -195,63 +193,9 @@ class Skyline {
         this.ctx.fillRect(0, (this.width - 1) * this.cellSize, this.width * this.cellSize, this.cellSize);
     }
 
-    //checkered flag in case there's a problem with end sprite 
-    drawEndFlag() {
-        var coord = this.endCoord;
-        var gridSize = 4;
-        var fraction = this.cellSize / gridSize - 2;
-        var colorSwap = true;
-        for (let y = 0; y < gridSize; y++) {
-            if (gridSize % 2 == 0) {
-                colorSwap = !colorSwap;
-            }
-            for (let x = 0; x < gridSize; x++) {
-                this.ctx.beginPath();
-                this.ctx.rect(
-                    coord.x * cellSize + x * fraction + 4.5,
-                    coord.y * cellSize + y * fraction + 4.5,
-                    fraction,
-                    fraction
-                );
-                if (colorSwap) {
-                    this.ctx.fillStyle = "rgba(0, 0, 0, 0.8)";
-                } else {
-                    this.ctx.fillStyle = "rgba(255, 255, 255, 0.8)";
-                }
-                this.ctx.fill();
-                colorSwap = !colorSwap;
-            }
-        }
-    }
-
-    drawEndSprite() {
-        var offsetLeft = this.cellSize / 50;
-        var offsetRight = this.cellSize / 25;
-        var coord = this.endCoord;
-        this.ctx.drawImage(
-            this.endSprite,
-            2,
-            2,
-            this.endSprite.width,
-            this.endSprite.height,
-            coord.x * this.cellSize + offsetLeft,
-            coord.y * this.cellSize + offsetLeft,
-            this.cellSize - offsetRight,
-            this.cellSize - offsetRight
-        );
-    }
-
     clear() {
         var canvasSize = this.cellSize * this.length;
         this.ctx.clearRect(0, 0, canvasSize, canvasSize);
-    }
-
-    drawEndMethod() {
-        if (this.endSprite != null) {
-            this.drawEndSprite();
-        } else {
-            this.drawEndFlag();
-        }
     }
 }
 
@@ -370,9 +314,10 @@ class SkylinePlayer {
         this.drawPlayerSprite(this.cellCoords);
         this.weight = 0;
         this.score = 0;
-        this.skyline.resetSkyline();
         this.yPos = 0;
+        skyline_ball_direction = 1;
         this.nextBuildingNum = 1;
+        this.skyline.resetSkyline();
     };
 
     drawWeight() {
@@ -394,6 +339,7 @@ class SkylinePlayer {
 
     //clear cell
     removeSprite(coord) {
+        // console.log("removing", coord);
         let offsetLeft = this.cellSize / 50;
         let offsetRight = this.cellSize / 25;
         this.ctx.clearRect(
@@ -409,6 +355,11 @@ class SkylinePlayer {
         return this.yPos >= oceanYPos;
     }
 
+    checkCoinCollision(coinArray, currentBuildingNum) {
+        const x_check = this.cellCoords.x > 0 && this.cellCoords.x == currentBuildingNum;
+        return coinArray[currentBuildingNum] && x_check && this.cellCoords.y == this.map[currentBuildingNum];
+    }
+
     moveSprite(x_pos, y_pos) {
         this.removeSprite(this.playerCoords);
         this.playerCoords = {
@@ -421,19 +372,41 @@ class SkylinePlayer {
 
 const startSkylineGame = (skyline, skylinePlayer) => {
     const width = skylinePlayer.width;
-    const yPos = skylinePlayer.yPos;
+    let yPos = skylinePlayer.yPos;
     const map = skyline.map;
     const weight = skylinePlayer.weight;
     let currentBuildingNum;
 
+    if (skyline_ball_direction == 1) {
+        currentBuildingNum = skylinePlayer.nextBuildingNum - 1;
+    } else {
+        currentBuildingNum = skylinePlayer.nextBuildingNum + 1;
+    }
+
     if(skylinePlayer.checkOceanCollision()) {
         skylinePlayer.resetPlayer();
+        return;
     }
     skylinePlayer.drawWeight();
     let x_pos = skylinePlayer.playerCoords.x;
+
+    if(skylinePlayer.checkCoinCollision(skyline.coinArray, currentBuildingNum)) {
+        skylinePlayer.score++;
+        skyline.coinArray[currentBuildingNum] = 0;
+        console.log(skylinePlayer.score);
+    }
+
+    if(skylinePlayer.score >= width - 1) {
+        setSkylineComplete();
+    }
+
+    // move sprite up if weight it lighter than y position
+    if (skylinePlayer.yPos > map[currentBuildingNum] && skylinePlayer.yPos > weight) {
+        skylinePlayer.moveSprite(x_pos, skylinePlayer.yPos--);
+        yPos = skylinePlayer.yPos;
+    }
     
     if (skyline_ball_direction == 1) {
-        currentBuildingNum = skylinePlayer.nextBuildingNum - 1;
         // move vertically if weight changes
         if (x_pos < skylinePlayer.nextBuildingNum && yPos < width) {
             skylinePlayer.moveSprite(x_pos, yPos);
@@ -447,7 +420,6 @@ const startSkylineGame = (skyline, skylinePlayer) => {
         }
     } else {
         // reverse
-        currentBuildingNum = skylinePlayer.nextBuildingNum + 1
         if (x_pos > skylinePlayer.nextBuildingNum && yPos < width && x_pos >= 0) {
             skylinePlayer.moveSprite(x_pos, yPos);
         }
@@ -460,5 +432,5 @@ const startSkylineGame = (skyline, skylinePlayer) => {
             skylinePlayer.nextBuildingNum--;
         }
     }
-    console.log(skylinePlayer.playerCoords, currentBuildingNum, skylinePlayer.nextBuildingNum);
+    // console.log(skylinePlayer.playerCoords, currentBuildingNum, skylinePlayer.nextBuildingNum);
 }

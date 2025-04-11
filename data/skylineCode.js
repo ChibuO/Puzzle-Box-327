@@ -77,19 +77,19 @@ function makeSkyline(wingSprite, exitSprite, skylineCtx) {
 
 function updateWeight(boxData) {
     const newWeight = parseFloat(boxData);
+    console.log(newWeight);
     // weight: 0 < newWeight < numBuildings - 1
-    if (newWeight < skyline_num_buildings - 1 && newWeight > 0) {
-        skyline_ball_weight = newWeight;
-    } else if (newWeight >= skyline_num_buildings) {
-        skyline_ball_weight = skyline_num_buildings - 1;
-    } else if (newWeight <= 0) {
-        skyline_ball_weight = 0;
-    }
+    // if (newWeight < skyline_num_buildings - 1 && newWeight > 0) {
+    //     skyline_ball_weight = newWeight;
+    // } else if (newWeight >= skyline_num_buildings) {
+    //     skyline_ball_weight = skyline_num_buildings - 1;
+    // } else if (newWeight <= 0) {
+    //     skyline_ball_weight = 0;
+    // }
 }
 
 function setSkylineComplete() {
     clearInterval(skyline_interval_id);
-    setNeoPixelScreen();
     setTimeout(() => {
         slide();
     }, 2000);

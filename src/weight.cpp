@@ -4,7 +4,8 @@ const int LOADCELL_DOUT_PIN = 14;
 const int LOADCELL_SCK_PIN = 13;
 
 HX711 scale;
-long calibration_factor = -14241.6;
+// long calibration_factor = -14241.6;
+long calibration_factor = 70284;
 
 void weight_setup() {
   Serial.begin(115200);

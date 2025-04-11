@@ -104,7 +104,7 @@ function makeMaze(ballSprite, goalSprite, mazeCtx) {
         player = null;
     }
 
-    difficulty = 14;
+    difficulty = 5;
     cellSize = mazeCanvas.width / difficulty; //difficulty x difficulty grid
     maze = new Maze(difficulty);
     maze.genMap(); //initialzes empty map

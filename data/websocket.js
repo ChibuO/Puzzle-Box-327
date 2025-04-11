@@ -23,9 +23,9 @@ function onOpen(evt) { // when handshake is complete:
 	updateStatusLabel("Connected.");
     isConnectedToBox = true;
 
-    // skipPuzzle(); // skip passkey, curr_puzz = 0
-    // skipPuzzle(); // skip maze, curr_puzz = 1
-    // skipPuzzle(); // skip lights, curr_puzz = 2
+    skipPuzzle(); // skip passkey, curr_puzz = 0
+    skipPuzzle(); // skip maze, curr_puzz = 1
+    // skipPuzzle(); // skip neos, curr_puzz = 2
     
     // skipPuzzle(); // weight
     // skipPuzzle(); // tilt
@@ -51,9 +51,9 @@ function onMessage(msg) { // when socket receives a message
 function onError(evt) { // when an error occurs
 	websocket.close();
 	updateStatusLabel("Websocket error");
-    // skipPuzzle(); // skip passkey, curr_puzz = 0
-    // skipPuzzle(); // skip maze, curr_puzz = 1
-    // skipPuzzle(); // skip freqs
+    skipPuzzle(); // skip passkey, curr_puzz = 0
+    skipPuzzle(); // skip maze, curr_puzz = 1
+    skipPuzzle(); // skip freqs
     // skipPuzzle(); // skip intensities
 }
 

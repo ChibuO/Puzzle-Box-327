@@ -31,12 +31,12 @@ void setup() {
   // pinMode(led_gpio, OUTPUT);
   // pinMode(led_gpio2, OUTPUT);
   keypad_setup();
-  // light_knobs_setup();
+  light_knobs_setup();
   open_setup();
   imu_setup();
   neopixel_setup();
   photosensors_setup();
-  // weight_setup();
+  weight_setup();
 
   // Initialize SPIFFS - for saving data in flash memory
   uint8_t spiffs_check = startSPIFFS();
@@ -57,9 +57,6 @@ void setup() {
   light_dark_str = String(light_ldr) + "" + String(dark_ldr);
   Serial.print("ld: ");
   Serial.println(light_dark_str);
-
-  //task scheduler for neos
-  // xTaskCreate(looping_neos, "looping neos", 50, NULL, 1, NULL);
 }
 
 void puzzle_complete() {
@@ -67,7 +64,6 @@ void puzzle_complete() {
     send_to_socket(current_puzzle, "completed");
   }
   Serial.println("!!!! " + String(current_puzzle));
-  current_puzzle++;
   colorWipe(rgb_to_binary(  0, 255,   0), 100); // Green
   colorWipe(rgb_to_binary(  0, 0,   0), 50); // dark
   // delay(500);
@@ -80,6 +76,7 @@ void puzzle_complete() {
   if(!should_skip_puzzle) {
     send_to_socket(current_puzzle, "completed");
   }
+  current_puzzle++;
   should_skip_puzzle = false;
   send_to_socket(current_puzzle, "");
 }
@@ -99,7 +96,7 @@ void start_puzzles() {
   // pull out from puzzle_complete() bc 
   // need to wait for box to open
   Serial.println("!!!! " + String(current_puzzle));
-  current_puzzle++;
+  current_puzzle++; // 2
   while (!open()) {};
   send_to_socket(current_puzzle, "");
 
@@ -114,7 +111,7 @@ void start_puzzles() {
     delay(100);
   }
   
-  puzzle_complete();
+  puzzle_complete(); // 3
 
   // knobs puzzle
   int sequence[3] = {};
@@ -137,12 +134,15 @@ void start_puzzles() {
   puzzle_complete();
   
   //weight
-  // code for keypad, returns 0 if complete
-  while (!getPressed(6, password, false) && !should_skip_puzzle) {
-    if(recal_accelerometer) {
-      recal_accelerometer = false;
+  while(!is_weights_complete && !should_skip_puzzle) {
+    if(recal_scale) {
+      calibrate_loop();
+      recal_scale = false;
     }
-    delay(100);
+    long weight = get_weight();
+    send_to_socket(current_puzzle, (String) weight);
+    Serial.println(weight);
+    delay(1000);
   }
 
   puzzle_complete();
@@ -215,11 +215,16 @@ void loop() {
   delay(100);
 }
 
-void loo9p() {
-  // print_weight();
-  // delay(1000);
-  while (!keypad_done) {
-    keypad_done = neos_plus_keypad(400);
+void lo9op() {
+  if(recal_scale) {
+    calibrate_loop();
+    recal_scale = false;
   }
+  // calibrate_loop();
+  print_weight();
+  delay(100);
+  // while (!keypad_done) {
+  //   keypad_done = neos_plus_keypad(400);
+  // }
   // neos_main();
 }

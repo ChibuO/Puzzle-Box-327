@@ -141,7 +141,7 @@ function updatePage(num, data) {
 
     const puzzleLbl = puzzleOrder[num];
 
-    console.log(`from box: puzzle ${num}, ${puzzleLbl}`);
+    console.log(`from box: puzzle ${num}, ${puzzleLbl}`, data);
 
     // const puzzleOrder = {0: 'key_lbl', 1: 'maze_lbl', 2: 'neo_lbl', 3: 'knobs_lbl', 4: 'weights_lbl', 5: 'dark_lbl', 6: 'tilt_lbl', 7: 'final_lbl'};
     // num comes from the box itself, 0 would be the password
@@ -158,19 +158,21 @@ function updatePage(num, data) {
             if (data === "completed") {
                 showLightNums(); // don't want to slide
                 let light_string = `${light_order.indexOf(1)}${light_order.indexOf(2)}${light_order.indexOf(3)}`;
-                puzzle_complete(light_string); // for knob puzzle
+                console.log(light_string);
+                // puzzle_complete(light_string);
+                sendMessage('info', 3, light_string); // send data for knob puzzle (3)
             }
             break;
         case 'knobs_lbl':
             // lights - box tells web that it's completed
             if (data === "completed") {
                 setupSkyline();
+                // puzzle_complete();
                 slide();
-                puzzle_complete();
             }
             break;
         case 'weights_lbl':
-            // weights1/keypad - box tells web that it's completed
+            // weights/keypad - box tells web that it's completed
             updateWeight(data);
             break;
         case 'dark_lbl':
@@ -298,15 +300,13 @@ function skipPuzzle() {
 function set_light_order() {
     //get numbers for sides of box
     for (i = 0; i < 3; i++) {
-        // Returns a random integer from 1 to 4 (inclusive):
-        let r_int = Math.floor(Math.random() * 4) + 1;
+        // Returns a random integer from 1 to 3 (inclusive):
+        let r_int = Math.floor(Math.random() * 3) + 1;
         while (light_order.includes(r_int)) {
-            r_int = Math.floor(Math.random() * 4) + 1;
+            r_int = Math.floor(Math.random() * 3) + 1;
         }
         light_order.push(r_int);
     }
-
-    console.log(light_order.toString());
 }
 
 function set_ldr_clue(light_ldr, dark_ldr) {

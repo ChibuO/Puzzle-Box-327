@@ -24,6 +24,7 @@ bool should_start_puzzles = false;
 char light_order[3];
 char color_order[8];
 bool start_photoresistors = false;
+bool start_lights = false;
 bool is_prs_complete = false;
 bool start_weights = false;
 bool is_weights_complete = false;
@@ -52,7 +53,9 @@ void handleComplete(int current_puzzle, char *rest)
     for (int i = 0; i < 3; i++)
     {
       light_order[i] = *(rest + i);
+      Serial.printf("comp- %c ", *(rest + i));
     }
+    start_lights = true;
     break;
   // case 3 is knobs
   case 4:

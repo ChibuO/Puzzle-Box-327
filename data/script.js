@@ -1,8 +1,8 @@
 // var gyroDict = {'gyroX': 0.0, 'gyroY': 0.0, 'gyroZ': 0.0};
-var websocket = null;
-var localhost = "";
+let websocket = null;
+let localhost = "";
 // const status_line = document.getElementById('status_lbl');
-var isConnectedToBox = false;
+let isConnectedToBox = false;
 
 const pages = document.querySelectorAll(".screen");
 const translateAmount = 100;
@@ -19,22 +19,24 @@ const neopixel_screen_neosText = document.getElementById("neos-color");
 const victory_vid = document.getElementById("victory-vid");
 // const box_down_screen = document.getElementById("box-down-screen");
 
-var completed_puzzles = [];
+let completed_puzzles = [];
 
-var box_curr_puzz = 0;
-var current_puzzle = 0; //box starts at 1
+let box_curr_puzz = 0;
+let current_puzzle = 0; //box starts at 1
 const puzzleOrder = { 0: 'key_lbl', 1: 'maze_lbl', 2: 'neo_lbl', 3: 'knobs_lbl', 4: 'weights_lbl', 5: 'dark_lbl', 6: 'tilt_lbl', 7: 'final_lbl' };
 const element_ids = ["key_lbl", "maze_lbl", "knobs_lbl", "weights_lbl", "tilt_lbl", "dark_lbl", "neo_lbl", "door_lbl", "final_lbl"];
 
 const passkey = "jo";
-var adminPanelEnabled = true;
+let adminPanelEnabled = true;
 let showAdmin = false;
 
 const colorList = ['pink', 'red', 'orange', 'yellow', 'green', 'blue', 'purple', 'white'];
-var colorOrderNum = 0;
+let colorOrderNum = 0;
 const colorNum = 4; //must also change this in server.cpp
 
-var light_order = [];
+let light_order = [];
+let light_string = "";
+
 
 let walls = ["graveyard", "twilight", "stairs"];
 let light_phrases = ["It's too dark to see the name on the coffin", "I can barely see what's howling", "I need more light to see what's on the stairs"];
@@ -157,17 +159,16 @@ function updatePage(num, data) {
             document.getElementById("admin-btn").style.color = "black";
             if (data === "completed") {
                 showLightNums(); // don't want to slide
-                let light_string = `${light_order.indexOf(1)}${light_order.indexOf(2)}${light_order.indexOf(3)}`;
                 console.log(light_string);
-                // puzzle_complete(light_string);
-                sendMessage('info', 3, light_string); // send data for knob puzzle (3)
+                // sendMessage('info', 3, light_string); // send data for knob puzzle (3)
+                puzzle_complete(light_string);
             }
             break;
         case 'knobs_lbl':
             // lights - box tells web that it's completed
             if (data === "completed") {
                 setupSkyline();
-                // puzzle_complete();
+                puzzle_complete();
                 slide();
             }
             break;
@@ -240,7 +241,6 @@ function skipPuzzle() {
         case 'neo_lbl':
             console.log("skipping neos");
             showLightNums(); // don't want to slide
-            let light_string = `${light_order.indexOf(1)}${light_order.indexOf(2)}${light_order.indexOf(3)}`;
             if (!isConnectedToBox) {
                 puzzle_complete();
             } else {
@@ -307,6 +307,7 @@ function set_light_order() {
         }
         light_order.push(r_int);
     }
+    light_string = `${light_order.indexOf(1)}${light_order.indexOf(2)}${light_order.indexOf(3)}`;
 }
 
 function set_ldr_clue(light_ldr, dark_ldr) {

@@ -47,7 +47,7 @@ void setup() {
 
   start_web_services();
 
-  servo_reset();
+  // servo_reset();
 
   light_ldr = randInt(0, 2);
   dark_ldr = randInt(0, 2);
@@ -114,6 +114,12 @@ void start_puzzles() {
   puzzle_complete(); // 3
 
   // knobs puzzle
+  while (!start_lights || should_skip_puzzle)
+  {
+    Serial.println("waiting for lights");
+    delay(1000);
+  }
+
   int sequence[3] = {};
   get_sequence(sequence, light_order);
   // String out_str = String(sequence[0]) + " " + String(sequence[1]) + " " + String(sequence[2]) + " " + String(sequence[3]);

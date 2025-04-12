@@ -25,7 +25,7 @@ function onOpen(evt) { // when handshake is complete:
 
     skipPuzzle(); // skip passkey, curr_puzz = 0
     skipPuzzle(); // skip maze, curr_puzz = 1
-    // skipPuzzle(); // skip neos, curr_puzz = 2
+    skipPuzzle(); // skip neos, curr_puzz = 2
     
     // skipPuzzle(); // weight
     // skipPuzzle(); // tilt

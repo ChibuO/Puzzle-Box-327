@@ -61,9 +61,9 @@ void setup() {
 
 void puzzle_complete() {
   if(should_skip_puzzle) {
-    send_to_socket(current_puzzle, "completed");
+    send_to_socket(current_puzzle, "skipped");
+    Serial.println(">>>> " + String(current_puzzle));
   }
-  Serial.println("!!!! " + String(current_puzzle));
   colorWipe(rgb_to_binary(  0, 255,   0), 100); // Green
   colorWipe(rgb_to_binary(  0, 0,   0), 50); // dark
   // delay(500);
@@ -75,6 +75,7 @@ void puzzle_complete() {
   colorWipe(rgb_to_binary(  0, 0,   0), 50); // dark
   if(!should_skip_puzzle) {
     send_to_socket(current_puzzle, "completed");
+    Serial.println("!!!! " + String(current_puzzle));
   }
   current_puzzle++;
   should_skip_puzzle = false;
@@ -117,7 +118,7 @@ void start_puzzles() {
   while (!start_lights || should_skip_puzzle)
   {
     Serial.println("waiting for lights");
-    delay(1000);
+    delay(500);
   }
 
   int sequence[3] = {};
@@ -221,16 +222,17 @@ void loop() {
   delay(100);
 }
 
-void lo9op() {
-  if(recal_scale) {
-    calibrate_loop();
-    recal_scale = false;
-  }
+void loo9p() {
+  // if(recal_scale) {
+  //   calibrate_loop();
+  //   recal_scale = false;
+  // }
   // calibrate_loop();
-  print_weight();
-  delay(100);
+  // print_weight();
+  // delay(100);
   // while (!keypad_done) {
   //   keypad_done = neos_plus_keypad(400);
   // }
   // neos_main();
+  ldr_main();
 }

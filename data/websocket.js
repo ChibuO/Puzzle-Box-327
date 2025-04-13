@@ -66,7 +66,7 @@ function updateStatusLabel(message)
 function puzzle_complete(data = "") {
     sendMessage('completed', current_puzzle, data);
     current_puzzle++;
-    console.log("Now on puzzle ", current_puzzle);
+    console.log("finished", current_puzzle-1, "Now on puzzle ", current_puzzle);
 }
 
 function sendMessage(type, num, data='') {

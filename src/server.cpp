@@ -60,8 +60,8 @@ void handleComplete(int current_puzzle, char *rest)
   // case 3 is knobs
   case 4:
     // weights completed
-    start_photoresistors = true;
     is_weights_complete = true;
+    start_photoresistors = true;
     break;
   case 5:
     // photoresistors completed

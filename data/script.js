@@ -92,7 +92,7 @@ const passkey_completed = () => {
         // box_down_screen.style.opacity = 1;
         slide();
     }, 1000);
-    puzzle_complete("");
+    puzzle_complete(""); // 0 -> 1
 }
 
 function toggleAdminPanel() {
@@ -151,7 +151,7 @@ function updatePage(num, data) {
         case 'maze_lbl':
             // maze - web tells box that it's completed
             // box gives acceleration data
-            updateDirection(data);
+            updateDirection(data); // 1 -> 2
             break;
             // neopixel screen set when completed
         case 'neo_lbl':
@@ -161,20 +161,22 @@ function updatePage(num, data) {
                 showLightNums(); // don't want to slide
                 console.log(light_string);
                 // sendMessage('info', 3, light_string); // send data for knob puzzle (3)
-                puzzle_complete(light_string);
+                puzzle_complete(light_string); // 2 -> 3
+                console.log("neos completed")
             }
             break;
         case 'knobs_lbl':
             // lights - box tells web that it's completed
             if (data === "completed") {
                 setupSkyline();
-                puzzle_complete();
+                console.log("knobs completed");
+                puzzle_complete(); // 3 -> 4
                 slide();
             }
             break;
         case 'weights_lbl':
             // weights/keypad - box tells web that it's completed
-            updateWeight(data);
+            updateWeight(data); // 4 -> 5
             break;
         case 'dark_lbl':
             // photoresistors  - box tells web that it's completed
@@ -230,13 +232,13 @@ function skipPuzzle() {
 
     switch (puzzleLbl) {
         case 'key_lbl':
-            passkey_completed();
+            passkey_completed(); // 0 -> 1
             console.log("skipping password");
             break;
         case 'maze_lbl':
             console.log("skipping maze");
             // neo pixel screen set when maze complete
-            setMazeComplete();
+            setMazeComplete(); // 1 -> 2
             break;
         case 'neo_lbl':
             console.log("skipping neos");
@@ -244,7 +246,7 @@ function skipPuzzle() {
             if (!isConnectedToBox) {
                 puzzle_complete();
             } else {
-                puzzle_complete(light_string); // for knob puzzle
+                puzzle_complete(light_string); // for knob puzzle, 2 -> 3
             }
             document.getElementById("skipBtn").disabled = false;
             break;
@@ -291,7 +293,7 @@ function skipPuzzle() {
             break;
     }
 
-    console.log(puzzleOrder);
+    // console.log(puzzleOrder);
     Object.keys(puzzleOrder).slice(0, current_puzzle).map((i) => {
         document.getElementById(puzzleOrder[i]).classList.add("strike");
     });

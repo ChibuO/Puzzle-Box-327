@@ -89,6 +89,7 @@ function updateWeight(boxData) {
 }
 
 function setSkylineComplete() {
+    console.log("skyline complete");
     clearInterval(skyline_interval_id);
     setTimeout(() => {
         slide();

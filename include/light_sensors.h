@@ -4,7 +4,7 @@
 
     #define dark 140
     #define normal 200
-    #define light 2000
+    #define light 1500
 
     void photosensors_setup();
     void print_ldr_status();

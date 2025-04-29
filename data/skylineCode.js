@@ -2,7 +2,7 @@ let skyline_completed = false;
 let skyline_interval_id;
 let skyline_ball_direction = 1;
 let skyline_ball_weight = 0;
-const skyline_num_buildings = 10; // square canvas
+const skyline_num_buildings = 5; // square canvas
 const skyline_wall_color = "white";
 
 const setupSkyline = () => {
@@ -78,14 +78,14 @@ function makeSkyline(wingSprite, exitSprite, skylineCtx) {
 function updateWeight(boxData) {
     const newWeight = parseFloat(boxData);
     console.log(newWeight);
-    // weight: 0 < newWeight < numBuildings - 1
-    // if (newWeight < skyline_num_buildings - 1 && newWeight > 0) {
-    //     skyline_ball_weight = newWeight;
-    // } else if (newWeight >= skyline_num_buildings) {
-    //     skyline_ball_weight = skyline_num_buildings - 1;
-    // } else if (newWeight <= 0) {
-    //     skyline_ball_weight = 0;
-    // }
+    // weight: 0 < newWeight < skyline_num_buildings - 1
+    if (newWeight < skyline_num_buildings - 1 && newWeight > 0) {
+        skyline_ball_weight = newWeight;
+    } else if (newWeight >= skyline_num_buildings) {
+        skyline_ball_weight = skyline_num_buildings - 1;
+    } else if (newWeight <= 0) {
+        skyline_ball_weight = 0;
+    }
 }
 
 function setSkylineComplete() {
@@ -228,10 +228,11 @@ class SkylinePlayer {
         this.yPos = 0;
         this.width = this.map.length;
         this.score = 0;
+        this.shouldMoveSprite = false;
 
         document.addEventListener('keydown', (event) => {
             let currentBuildingNum;
-            if(skyline_ball_direction > 0) {
+            if (skyline_ball_direction > 0) {
                 currentBuildingNum = this.nextBuildingNum - 1;
             } else {
                 currentBuildingNum = this.nextBuildingNum + 1;
@@ -246,17 +247,19 @@ class SkylinePlayer {
                     this.yPos--;
                 }
                 this.weight--;
+            } else if (event.key === 'b' || event.key === 'B') {
+                this.reverseDirection();
+            } else if (event.key === 'c' || event.key === 'C') {
+                this.runSprite();
             }
         });
 
         document.getElementById("reverse-btn").addEventListener('click', (event) => {
-            skyline_ball_direction = skyline_ball_direction * -1;
-            if (skyline_ball_direction < 0) {
-                this.nextBuildingNum = this.nextBuildingNum - 2;
-            } else {
-                this.nextBuildingNum = this.nextBuildingNum + 2;
-            }
-            console.log("reverse", this.nextBuildingNum);
+            this.reverseDirection();
+        });
+
+        document.getElementById("run-btn").addEventListener('click', (event) => {
+            this.runSprite();
         });
     }
 
@@ -328,6 +331,7 @@ class SkylinePlayer {
         skyline_ball_direction = 1;
         this.nextBuildingNum = 1;
         this.skyline.resetSkyline();
+        this.shouldMoveSprite = false;
     };
 
     drawWeight() {
@@ -378,14 +382,31 @@ class SkylinePlayer {
         };
         this.drawPlayerSprite(this.playerCoords);
     }
+
+    reverseDirection() {
+        skyline_ball_direction = skyline_ball_direction * -1;
+        if (skyline_ball_direction < 0) {
+            this.nextBuildingNum = this.nextBuildingNum - 2;
+        } else {
+            this.nextBuildingNum = this.nextBuildingNum + 2;
+        }
+        console.log("reverse", this.nextBuildingNum);
+    }
+
+    runSprite() {
+        this.shouldMoveSprite = true;
+        console.log("run", this.shouldMoveSprite);
+    }
 }
 
 const startSkylineGame = (skyline, skylinePlayer) => {
+    skylinePlayer.weight = skyline_ball_weight;
+    skylinePlayer.yPos = skyline_ball_weight;
     const width = skylinePlayer.width;
     let yPos = skylinePlayer.yPos;
     const map = skyline.map;
-    const weight = skylinePlayer.weight;
     let currentBuildingNum;
+    skyline.drawOcean(); // to reset ocean
 
     if (skyline_ball_direction == 1) {
         currentBuildingNum = skylinePlayer.nextBuildingNum - 1;
@@ -393,40 +414,43 @@ const startSkylineGame = (skyline, skylinePlayer) => {
         currentBuildingNum = skylinePlayer.nextBuildingNum + 1;
     }
 
-    if(skylinePlayer.checkOceanCollision()) {
-        skylinePlayer.resetPlayer();
-        return;
+    if (skylinePlayer.checkOceanCollision()) {
+        if (skylinePlayer.shouldMoveSprite) {
+            skylinePlayer.resetPlayer();
+        }
     }
     skylinePlayer.drawWeight();
     let x_pos = skylinePlayer.playerCoords.x;
 
-    if(skylinePlayer.checkCoinCollision(skyline.coinArray, currentBuildingNum)) {
+    if (skylinePlayer.checkCoinCollision(skyline.coinArray, currentBuildingNum)) {
         skylinePlayer.score++;
         skyline.coinArray[currentBuildingNum] = 0;
         // console.log(skylinePlayer.score);
     }
 
-    if(skylinePlayer.score >= width - 1) {
+    if (skylinePlayer.score >= width - 1) {
         setSkylineComplete();
     }
 
-    // move sprite up if weight it lighter than y position
-    if (skylinePlayer.yPos > map[currentBuildingNum] && skylinePlayer.yPos > weight) {
+    // move sprite up if weight is lighter than y position
+    if (skylinePlayer.yPos > map[currentBuildingNum] && skylinePlayer.yPos > skylinePlayer.weight) {
         skylinePlayer.moveSprite(x_pos, skylinePlayer.yPos--);
         yPos = skylinePlayer.yPos;
     }
-    
+
     if (skyline_ball_direction == 1) {
         // move vertically if weight changes
         if (x_pos < skylinePlayer.nextBuildingNum && yPos < width) {
             skylinePlayer.moveSprite(x_pos, yPos);
         }
-        
+
         // move forward if free to
         // console.log(currentBuildingNum, width);
-        if (yPos >= map[skylinePlayer.nextBuildingNum] && currentBuildingNum < width) {
+        if (yPos >= map[skylinePlayer.nextBuildingNum] && currentBuildingNum < width && skylinePlayer.shouldMoveSprite) {
             skylinePlayer.moveSprite(x_pos + skyline_ball_direction, yPos);
             skylinePlayer.nextBuildingNum++;
+        } else {
+            skylinePlayer.shouldMoveSprite = false;
         }
     } else {
         // reverse
@@ -437,10 +461,13 @@ const startSkylineGame = (skyline, skylinePlayer) => {
         // console.log(x_pos, yPos, skylinePlayer.nextBuildingNum);
         // console.log(yPos, map[skylinePlayer.nextBuildingNum], x_pos, skylinePlayer.nextBuildingNum);
         // console.log(yPos >= map[skylinePlayer.nextBuildingNum], x_pos > 0, skylinePlayer.nextBuildingNum + 1 > 0);
-        if (yPos >= map[skylinePlayer.nextBuildingNum] && x_pos > 0 && currentBuildingNum >= 0) {
+        if (yPos >= map[skylinePlayer.nextBuildingNum] && x_pos > 0 && currentBuildingNum >= 0 && skylinePlayer.shouldMoveSprite) {
             skylinePlayer.moveSprite(x_pos + skyline_ball_direction, yPos);
             skylinePlayer.nextBuildingNum--;
+        } else {
+            skylinePlayer.shouldMoveSprite = false;
         }
     }
+    // console.log("run", skylinePlayer.shouldMoveSprite);
     // console.log(skylinePlayer.playerCoords, currentBuildingNum, skylinePlayer.nextBuildingNum);
 }

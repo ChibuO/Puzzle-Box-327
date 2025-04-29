@@ -1,10 +1,10 @@
 #include "server.h"
 #include "filesystem.h"
 
-const char *ota_name = "esp32-webcam";
-const char *ota_password = "esp32-webcam";
+const char *ota_name = "puzzle-box";
+const char *ota_password = "puzzle-box";
 
-const char *mdns_name = "esp32-webcam";
+const char *mdns_name = "puzzle-box";
 
 // Create AsyncWebServer object on port 80
 WebServer server(80);

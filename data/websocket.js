@@ -25,12 +25,12 @@ function onOpen(evt) { // when handshake is complete:
 
     skipPuzzle(); // skip passkey, curr_puzz = 0
     skipPuzzle(); // skip maze, curr_puzz = 1
-    skipPuzzle(); // skip neos, curr_puzz = 2
+    skipPuzzle(); // skip freqs, curr_puzz = 2
     
-    // skipPuzzle(); // weight
-    // skipPuzzle(); // tilt
+    // skipPuzzle(); // intensities
+    // skipPuzzle(); // weights
     // skipPuzzle(); // light/dark
-    // skipPuzzle(); // neos
+    // skipPuzzle(); // tilt
 }
 
 function onClose(evt) { // when socket is closed:
@@ -54,7 +54,9 @@ function onError(evt) { // when an error occurs
     skipPuzzle(); // skip passkey, curr_puzz = 0
     skipPuzzle(); // skip maze, curr_puzz = 1
     skipPuzzle(); // skip freqs
-    // skipPuzzle(); // skip intensities
+    skipPuzzle(); // skip intensities
+    skipPuzzle(); // skip weights
+    skipPuzzle(); // skip light/dark
 }
 
 // Function to display to the message box

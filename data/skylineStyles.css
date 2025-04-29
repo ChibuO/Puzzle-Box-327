@@ -35,6 +35,18 @@
     background-color: rgb(10, 101, 94);
 }
 
-#reverse-btn {
+#skylineContainer button {
+    width: 80px;
     cursor: pointer;
+    background-color: whitesmoke;
+    border-radius: 5px;
+    border: none;
+}
+
+#skylineContainer button:hover {
+    background-color: rgb(221, 221, 221);
+}
+
+#skylineContainer button:active {
+    background-color: rgb(219, 241, 240);
 }

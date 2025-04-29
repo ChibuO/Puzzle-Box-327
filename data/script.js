@@ -19,6 +19,12 @@ const neopixel_screen_neosText = document.getElementById("neos-color");
 const victory_vid = document.getElementById("victory-vid");
 // const box_down_screen = document.getElementById("box-down-screen");
 
+// light page
+const light_lightside = document.getElementById("lightside");
+const light_lightside_clue = document.getElementById("lightside-clue");
+const light_darkside = document.getElementById("darkside");
+const light_darkside_clue = document.getElementById("darkside-clue");
+
 let completed_puzzles = [];
 
 let box_curr_puzz = 0;
@@ -179,16 +185,16 @@ function updatePage(num, data) {
             updateWeight(data); // 4 -> 5
             break;
         case 'dark_lbl':
-            // photoresistors  - box tells web that it's completed
+            // photoresistors - box tells web that it's completed
             // box gives web photoresistor status
             // reveal first half
             if (data === "halfway") {
-                document.getElementById("lightside").style.background = "white";
-                document.getElementById("lightside-clue").style.color = "black";
-                document.getElementById("darkside-clue").style.color = "black";
+                light_lightside.style.background = "white";
+                light_lightside_clue.style.color = "black";
+                light_darkside_clue.style.color = "black";
             } else if (data === "continue") { // reveal second half
-                document.getElementById("lightside-clue").style.color = "white";
-                document.getElementById("darkside").style.background = "black";
+                light_lightside_clue.style.color = "white";
+                light_darkside.style.background = "black";
             } else if (data === "completed") {
                 // box then tells web when all potentiometers turned down
                 let sol_num = setKnobImage(); //for tilt puzzle
@@ -252,22 +258,23 @@ function skipPuzzle() {
             break;
         case 'knobs_lbl':
             console.log("skipping lights");
-            if (!isConnectedToBox) {
-                setupSkyline();
-                slide();
-                puzzle_complete();
-            }
+            setupSkyline();
+            slide();
+            puzzle_complete();
             break;
         case 'weights_lbl':
             console.log("skipping weight");
             setSkylineComplete();
+            if (!isConnectedToBox) {
+                set_ldr_clue(0, 1);
+            }
             break;
         case 'dark_lbl':
             console.log("skipping dark/light");
-            document.getElementById("lightside").style.background = "white";
-            document.getElementById("lightside-clue").style.color = "black";
-            document.getElementById("lightside-clue").style.color = "white";
-            document.getElementById("darkside").style.background = "black";
+            light_lightside.style.background = "white";
+            light_lightside_clue.style.color = "black";
+            light_lightside_clue.style.color = "white";
+            light_darkside.style.background = "black";
             if (!isConnectedToBox) {
                 slide();
                 puzzle_complete();
@@ -314,8 +321,8 @@ function set_light_order() {
 
 function set_ldr_clue(light_ldr, dark_ldr) {
     console.log(walls[light_ldr], walls[dark_ldr]);
-    document.getElementById("lightside-clue").innerHTML = light_phrases[light_ldr];
-    document.getElementById("darkside-clue").innerHTML = dark_phrases[dark_ldr];
+    light_lightside_clue.innerHTML = light_phrases[light_ldr];
+    light_darkside_clue.innerHTML = dark_phrases[dark_ldr];
 }
 
 function setKnobImage() {

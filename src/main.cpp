@@ -149,7 +149,7 @@ void start_puzzles() {
     long weight = get_weight();
     send_to_socket(current_puzzle, (String) weight);
     Serial.println(weight);
-    delay(1000);
+    delay(500);
   }
 
   puzzle_complete();

@@ -224,26 +224,27 @@ body {
 
 .light-div {
     height: 100%;
+    flex: 1;
     display: flex;
     align-items: center;
     justify-content: space-around;
-    width: 100%;
     flex-direction: column;
-
+    padding: 20px;
+    opacity: .8;
+    color: white;
+    transition: color 1s, background-color 1s;
+    /* no highlighting */
+    -webkit-user-select: none; /* Safari */
+    -ms-user-select: none; /* IE 10 and IE 11 */
+    user-select: none; /* Standard syntax */
 }
 
 #lightside {
     background-color: black;
-    opacity: .8;
-    color: white;
-    transition: color 1s, background-color 1s;
 }
 
 #darkside {
     background-color: white;
-    opacity: .8;
-    color: white;
-    transition: color 1s, background-color 1s;
 }
 
 /*

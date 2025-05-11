@@ -3,7 +3,12 @@ var min_rotations = -1 * Infinity;
 var rad = 0;
 var previous_rad = 0;
 var previous_rotations = 0;
-let knob_num = 1;
+let knob_num = 0; // 0 is all locked
+const DIAL_UNLOCKED = "Lock In";
+const DIAL_LOCKED = "Unlock";
+let dial_states = [DIAL_LOCKED, DIAL_LOCKED, DIAL_LOCKED];
+let curr_speed = 0;
+let speeds = [0,0,0];
 
 function speed_to_rotations(speed) {
   var sign = speed < 0 ? -1 : 1;
@@ -40,26 +45,14 @@ function rotations_to_speed(rotations) {
 }
 
 function set_rotations(rotations) {
-  let cur_speed = Math.round(Math.abs(rotations_to_speed(rotations)));
-
-  switch(knob_num) {
-    case 1:
-      foobar1.getElementsByClassName('knob_number')[0].textContent = cur_speed;
-      foobar1.getElementsByClassName('knob_gfx')[0].style.transform = 'rotate(' + (rotations * 360) + 'deg)';
-      break;
-    case 2:
-      foobar2.getElementsByClassName('knob_number')[0].textContent = cur_speed;
-      foobar2.getElementsByClassName('knob_gfx')[0].style.transform = 'rotate(' + (rotations * 360) + 'deg)';
-      break;
-    case 3:
-      foobar3.getElementsByClassName('knob_number')[0].textContent = cur_speed;
-      foobar3.getElementsByClassName('knob_gfx')[0].style.transform = 'rotate(' + (rotations * 360) + 'deg)';
-      break;
-    default:
-      foobar1.getElementsByClassName('knob_number')[0].textContent = cur_speed;
-      foobar1.getElementsByClassName('knob_gfx')[0].style.transform = 'rotate(' + (rotations * 360) + 'deg)';
-      break;
+  if (!knob_num) {
+    return;
   }
+  curr_speed = Math.round(Math.abs(rotations_to_speed(rotations)));
+  let dialDiv = document.getElementById('foobar'+ knob_num);
+
+  dialDiv.getElementsByClassName('knob_number')[0].textContent = curr_speed;
+  dialDiv.getElementsByClassName('knob_gfx')[0].style.transform = 'rotate(' + (rotations * 360) + 'deg)';
 }
 
 function set_dial_speed(speed) {
@@ -89,8 +82,8 @@ function dial_rotate(angle) {
 }
 
 function updateRotation(boxData) {
-  let accelDict = {'accX': 0.0, 'accY': 0.0, 'accZ': 0.0};
-  //on tilt puzzle
+  let accelDict = { 'accX': 0.0, 'accY': 0.0, 'accZ': 0.0 };
+  // on tilt puzzle
   const accelArray = boxData.split(" ").map(parseFloat);
   // console.log(accelArray);
   accelDict['accX'] = accelArray[0];
@@ -100,3 +93,110 @@ function updateRotation(boxData) {
   dial_rotate(accelDict['accY']);
 }
 
+function evaluateDials() {
+
+}
+
+function toggleDialLock(buttonElement, dialNum) {
+  let state = buttonElement.value;
+  if (state === DIAL_UNLOCKED) {
+    // if dial is unlocked
+    buttonElement.value = DIAL_LOCKED;
+    dial_states[dialNum-1] = DIAL_LOCKED;
+    speeds[knob_num-1] = curr_speed;
+  } else {
+    // if dial is locked
+    knob_num = dialNum;
+    buttonElement.value = DIAL_UNLOCKED;
+    // lock the other dials
+    dial_states.forEach((dstate, index) => {
+      if (index == dialNum-1) {
+        dial_states[index] = DIAL_UNLOCKED;
+      } else {
+        document.getElementById('dial' + (index+1) + '-btn').value = DIAL_LOCKED;
+        dial_states[index] = DIAL_LOCKED;
+      }
+    });
+  }
+
+  if(dial_states.every(dstate => dstate === DIAL_LOCKED)) {
+    console.log("done(?)");
+    knob_num = 0;
+  }
+}
+
+function createDials() {
+  const firstDialDiv = document.getElementById("dial-div1");
+  const secondDialDiv = document.getElementById("dial-div2");
+  const thirdDialDiv = document.getElementById("dial-div3");
+  firstDialDiv.appendChild(createDialSvg(1));
+  secondDialDiv.appendChild(createDialSvg(2));
+  thirdDialDiv.appendChild(createDialSvg(3));
+  set_dial_speed(1);
+}
+
+function createDialSvg(idNumber) {
+  // Create SVG element
+  const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+  svg.setAttribute('viewBox', '-6 -6 12 12');
+  svg.classList.add('dial');
+  svg.id = 'foobar'+idNumber;
+
+  // Create <defs> and gradient
+  const defs = document.createElementNS('http://www.w3.org/2000/svg', 'defs');
+  const radialGradient = document.createElementNS('http://www.w3.org/2000/svg', 'radialGradient');
+
+  const stop1 = document.createElementNS('http://www.w3.org/2000/svg', 'stop');
+  stop1.setAttribute('offset', '0');
+  stop1.setAttribute('stop-color', 'gray');
+
+  const stop2 = document.createElementNS('http://www.w3.org/2000/svg', 'stop');
+  stop2.setAttribute('offset', '1');
+  stop2.setAttribute('stop-color', 'silver');
+
+  radialGradient.appendChild(stop1);
+  radialGradient.appendChild(stop2);
+  defs.appendChild(radialGradient);
+  svg.appendChild(defs);
+
+  // Create g.knob group
+  const gKnob = document.createElementNS('http://www.w3.org/2000/svg', 'g');
+  gKnob.classList.add('knob');
+
+  // Center circle
+  const centerCircle = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+  centerCircle.classList.add('knob_center');
+  centerCircle.setAttribute('cx', '0');
+  centerCircle.setAttribute('cy', '0');
+  centerCircle.setAttribute('r', '0.015625');
+  gKnob.appendChild(centerCircle);
+
+  // Create knob_gfx group
+  const knobGfx = document.createElementNS('http://www.w3.org/2000/svg', 'g');
+  knobGfx.classList.add('knob_gfx');
+
+  const outerCircle = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+  outerCircle.setAttribute('cx', '0');
+  outerCircle.setAttribute('cy', '0');
+  outerCircle.setAttribute('r', '5');
+
+  const line = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+  line.setAttribute('x1', '0');
+  line.setAttribute('y1', '-2.5');
+  line.setAttribute('x2', '0');
+  line.setAttribute('y2', '-4.5');
+
+  knobGfx.appendChild(outerCircle);
+  knobGfx.appendChild(line);
+  gKnob.appendChild(knobGfx);
+
+  // Text element
+  const text = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+  text.classList.add('knob_number');
+  gKnob.appendChild(text);
+
+  // Append gKnob to SVG
+  svg.appendChild(gKnob);
+
+  return svg;
+}

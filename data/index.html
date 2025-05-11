@@ -76,82 +76,18 @@
             </div>
             <div id="dials-div">
                 <div class="dial-div" id="dial-div1">
-                    <svg viewBox="-6 -6 12 12" class="dial" id="foobar1">
-                        <defs>
-                            <radialGradient>
-                                <stop offset="0" stop-color="gray" />
-                                <stop offset="1" stop-color="silver" />
-                            </radialGradient>
-                        </defs>
-                        <g class="knob">
-                            <circle class="knob_center" cx="0" cy="0" r="0.015625" />
-                            <g class="knob_gfx">
-                                <circle cx="0" cy="0" r="5" />
-                                <line x1="0" y1="-2.5" x2="0" y2="-4.5" />
-                            </g>
-                            <text class="knob_number" />
-                        </g>
-                    </svg>
-                    <input class="btn_class" id="dial1-btn" type="button" onclick="" value="Lock In" />
+                    <h3>triangle</h3>
+                    <input class="btn_class" id="dial1-btn" type="button" onclick="toggleDialLock(this, 1)" value="Unlock" />
                 </div>
                 <div class="dial-div" id="dial-div2">
-                    <svg viewBox="-6 -6 12 12" class="dial" id="foobar2">
-                        <defs>
-                            <radialGradient>
-                                <stop offset="0" stop-color="gray" />
-                                <stop offset="1" stop-color="silver" />
-                            </radialGradient>
-                        </defs>
-                        <g class="knob">
-                            <circle class="knob_center" cx="0" cy="0" r="0.015625" />
-                            <g class="knob_gfx">
-                                <circle cx="0" cy="0" r="5" />
-                                <line x1="0" y1="-2.5" x2="0" y2="-4.5" />
-                            </g>
-                            <text class="knob_number" />
-                        </g>
-                    </svg>
-                    <input class="btn_class" id="dial2-btn" type="button" onclick="" value="Lock In" />
+                    <h3>square</h3>
+                    <input class="btn_class" id="dial2-btn" type="button" onclick="toggleDialLock(this, 2)" value="Unlock" />
                 </div>
                 <div class="dial-div" id="dial-div3">
-                    <svg viewBox="-6 -6 12 12" class="dial" id="foobar3">
-                        <defs>
-                            <radialGradient>
-                                <stop offset="0" stop-color="gray" />
-                                <stop offset="1" stop-color="silver" />
-                            </radialGradient>
-                        </defs>
-                        <g class="knob">
-                            <circle class="knob_center" cx="0" cy="0" r="0.015625" />
-                            <g class="knob_gfx">
-                                <circle cx="0" cy="0" r="5" />
-                                <line x1="0" y1="-2.5" x2="0" y2="-4.5" />
-                            </g>
-                            <text class="knob_number" />
-                        </g>
-                    </svg>
-                    <input class="btn_class" id="dial3-btn" type="button" onclick="" value="Lock In" />
+                    <h3>heptagon</h3>
+                    <input class="btn_class" id="dial3-btn" type="button" onclick="toggleDialLock(this, 3)" value="Unlock" />
                 </div>
             </div>
-
-            <!-- <div class="container">
-                    <svg viewBox="-6 -6 12 12" class="dial" id="foobar">
-                        <defs>
-                        <radialGradient id="knobgradient">
-                            <stop offset="0" stop-color="gray"/>
-                            <stop offset="1" stop-color="silver"/>
-                        </radialGradient>
-                        </defs>
-                        <g class="knob">
-                        <circle class="knob_center" cx="0" cy="0" r="0.015625"/>
-                        <g class="knob_gfx">
-                            <circle cx="0" cy="0" r="5"/>
-                            <line x1="0" y1="-2.5" x2="0" y2="-4.5"/>
-                        </g>
-                        <text class="knob_number"/>
-                        </g>
-                  </svg>
-                </div> -->
         </div>
 
         <div id="end-screen" class="screen">

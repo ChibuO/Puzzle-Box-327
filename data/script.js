@@ -64,7 +64,7 @@ window.addEventListener("load", init, false);
 
 window.onload = function () {
     setupMaze();
-    set_dial_speed(1);
+    createDials();
 };
 
 window.onresize = function () {
@@ -424,10 +424,10 @@ function rand(min, max, maxInclusive=false) {
 }
 
 function setCode() {
-    const firstNum = rand(1, 9, 1);
+    const firstNum = rand(10, 99, 1);
     const secondNum = rand(10, 99, 1);
-    const thirdNum = rand(100, 999, 1);
-    return firstNum + "" + secondNum + "" + thirdNum;
+    const thirdNum = rand(10, 99, 1);
+    return [firstNum, secondNum, thirdNum];
 }
 
 // function toggleVisibility(id) {

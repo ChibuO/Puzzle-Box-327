@@ -32,6 +32,7 @@ extern bool recal_accelerometer;
 extern bool recal_scale;
 extern bool neopixels_paused; 
 extern int which_knob;
+extern char code[];
 
 bool wifi_conn_status();
 String get_mac_address();

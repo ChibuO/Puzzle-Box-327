@@ -22,10 +22,11 @@ function doConnect() { // makes a connection and defines callbacks
 function onOpen(evt) { // when handshake is complete:
 	updateStatusLabel("Connected.");
     isConnectedToBox = true;
+    sendMessage("info", 0, code);
 
-    skipPuzzle(); // skip passkey, curr_puzz = 0
-    skipPuzzle(); // skip maze, curr_puzz = 1
-    skipPuzzle(); // skip freqs, curr_puzz = 2
+    // skipPuzzle(); // skip passkey, curr_puzz = 0
+    // skipPuzzle(); // skip maze, curr_puzz = 1
+    // skipPuzzle(); // skip freqs, curr_puzz = 2
     
     // skipPuzzle(); // intensities
     // skipPuzzle(); // weights
@@ -51,12 +52,12 @@ function onMessage(msg) { // when socket receives a message
 function onError(evt) { // when an error occurs
 	websocket.close();
 	updateStatusLabel("Websocket error");
-    skipPuzzle(); // skip passkey, curr_puzz = 0
-    skipPuzzle(); // skip maze, curr_puzz = 1
-    skipPuzzle(); // skip freqs
-    skipPuzzle(); // skip intensities
-    skipPuzzle(); // skip weights
-    skipPuzzle(); // skip light/dark
+    // skipPuzzle(); // skip passkey, curr_puzz = 0
+    // skipPuzzle(); // skip maze, curr_puzz = 1
+    // skipPuzzle(); // skip freqs
+    // skipPuzzle(); // skip intensities
+    // skipPuzzle(); // skip weights
+    // skipPuzzle(); // skip light/dark
 }
 
 // Function to display to the message box

@@ -33,6 +33,7 @@ const puzzleOrder = { 0: 'key_lbl', 1: 'maze_lbl', 2: 'neo_lbl', 3: 'knobs_lbl',
 const element_ids = ["key_lbl", "maze_lbl", "knobs_lbl", "weights_lbl", "tilt_lbl", "dark_lbl", "neo_lbl", "door_lbl", "final_lbl"];
 
 const passkey = "jo";
+const code = setCode();
 let adminPanelEnabled = true;
 let showAdmin = false;
 
@@ -53,6 +54,7 @@ function init() {
     if (window.location.hostname != "") {
         localhost = window.location.hostname;
     }
+    console.log(code);
 
     doConnect();
 }
@@ -275,17 +277,13 @@ function skipPuzzle() {
             light_lightside_clue.style.color = "black";
             light_lightside_clue.style.color = "white";
             light_darkside.style.background = "black";
-            if (!isConnectedToBox) {
-                slide();
-                puzzle_complete();
-            }
+            slide();
+            puzzle_complete();
             break;
         case 'tilt_lbl':
             console.log("skipping tilt");
-            if (!isConnectedToBox) {
-                slide();
-                puzzle_complete();
-            }
+            slide();
+            puzzle_complete();
             break;
         case 'final_lbl':
             //finale - box tells web when completed
@@ -421,8 +419,15 @@ function onRecalibrate() {
 
 // used in maze and skyline
 // gets random int
-function rand(max, includesZero=0) {
-    return Math.floor(Math.random() * max) + includesZero*1;
+function rand(min, max, maxInclusive=false) {
+    return Math.floor(Math.random() * (max - min + maxInclusive) + min);
+}
+
+function setCode() {
+    const firstNum = rand(1, 9, 1);
+    const secondNum = rand(10, 99, 1);
+    const thirdNum = rand(100, 999, 1);
+    return firstNum + "" + secondNum + "" + thirdNum;
 }
 
 // function toggleVisibility(id) {

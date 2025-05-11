@@ -85,7 +85,8 @@ void reset_scale() {
 
 //for calibration
 void calibrate_loop() {
-    // if (scale.is_ready()) {
+  scale.power_up();
+  if (scale.is_ready()) {
     scale.set_scale();    
     Serial.println("Tare... remove any weights from the scale.");
     delay(5000);
@@ -97,10 +98,10 @@ void calibrate_loop() {
     Serial.print("Result: ");
     Serial.println(reading);
     scale.set_scale(reading);
-  // } 
-  // else {
-  //   Serial.println("HX711 not found.");
-  // }
+  } 
+  else {
+    Serial.println("HX711 not found.");
+  }
   // delay(1000);
   Serial.println("Done.");
 }

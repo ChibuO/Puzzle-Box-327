@@ -127,7 +127,7 @@ class Skyline {
         let map = new Array(this.width);
         map[0] = 0; // no building on first
         for (let x = 1; x < this.width; x++) {
-            map[x] = rand(this.height - 2, 1);
+            map[x] = rand(1, this.height - 2, 1);
         }
         return map;
     }

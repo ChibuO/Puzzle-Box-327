@@ -212,7 +212,7 @@ class Maze {
 
                 if (numLoops >= maxLoops) {
                     shuffle(dirs);
-                    maxLoops = Math.round(rand(height / 8));
+                    maxLoops = Math.round(rand(0, height / 8));
                     numLoops = 0;
                 }
 
@@ -258,7 +258,7 @@ class Maze {
 
         // choose which of the 4 corners the start and end are in
         this.defineStartEnd = function () {
-            switch (rand(4)) {
+            switch (rand(0, 4)) {
                 case 0:
                     startCoord = {
                         x: 0,

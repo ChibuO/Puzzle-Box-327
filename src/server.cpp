@@ -33,6 +33,7 @@ bool recal_accelerometer = false;
 bool recal_scale = false;
 bool neopixels_paused = false;
 int which_knob = 0;
+char code[6];
 
 // cases where web sends message to box
 void handleComplete(int current_puzzle, char *rest)
@@ -141,6 +142,16 @@ void handleInfo(int current_puzzle, char *rest)
   Serial.printf("info curr: %d\r\n", current_puzzle);
   switch (current_puzzle)
   {
+  case 0:
+    // code
+    for (int i = 0; i < 6; i++)
+    {
+      Serial.printf("info- %c ", *(rest + i));
+      code[i] = *(rest + i);
+    }
+
+    Serial.printf("info-ing %d\r\n", current_puzzle);
+    break;
   case 2:
     // neos
     for (int i = 0; i < 8; i++)

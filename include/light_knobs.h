@@ -14,6 +14,7 @@
     bool led_is_correct(int sequence[]);
     void print_led_status();
     bool are_knobs_off();
+    bool is_knob_turned(int num);
     void get_sequence(int seq[], char light_string[]);
 
 #endif /* LIGHT_KNOBS_H */

@@ -44,7 +44,6 @@ const colorNum = 4; //must also change this in server.cpp
 let light_order = [];
 let light_string = "";
 
-
 let walls = ["graveyard", "twilight", "stairs"];
 let light_phrases = ["It's too dark to see the name on the coffin", "I can barely see what's howling", "I need more light to see what's on the stairs"];
 let dark_phrases = ["I can only visit the dead at night", "Protect the vampire from the sun", "Darkness can hide magic pumpkins"];
@@ -54,7 +53,6 @@ function init() {
     if (window.location.hostname != "") {
         localhost = window.location.hostname;
     }
-    console.log(code);
 
     doConnect();
 }
@@ -206,22 +204,18 @@ function updatePage(num, data) {
                 //the clue numbers
                 console.log(data);
                 set_ldr_clue(Number(data[0]), Number(data[1]));
-            }
+            } // 5 -> 6
             break;
         case 'tilt_lbl':
             // tilt - web tells box that it's completed
             // box gives acceleration data
-            if (data === "completed") {
-                slide();
-            } else {
-                updateRotation(data);
-            }
+            updateRotation(data); // 6 -> 7
             break;
         case 'final_lbl':
             //finale - box tells web when completed
             document.getElementById("skipBtn").disabled = true;
             if (data === "completed") {
-                // slide();
+                slide();
             }
             break;
         default:
@@ -277,13 +271,16 @@ function skipPuzzle() {
             light_lightside_clue.style.color = "black";
             light_lightside_clue.style.color = "white";
             light_darkside.style.background = "black";
+            let sol_num = setKnobImage(); //for tilt puzzle
+            if (isConnectedToBox) {
+                sendMessage('info', 6, sol_num); // send data for puzzle 6
+            }
             slide();
             puzzle_complete();
             break;
         case 'tilt_lbl':
             console.log("skipping tilt");
-            slide();
-            puzzle_complete();
+            setDialsComplete();
             break;
         case 'final_lbl':
             //finale - box tells web when completed
@@ -293,6 +290,8 @@ function skipPuzzle() {
             //     puzzle_complete();
             // }
             document.getElementById("skipBtn").disabled = true;
+            puzzle_complete();
+            slide();
             break;
         default:
             break;
@@ -325,16 +324,19 @@ function set_ldr_clue(light_ldr, dark_ldr) {
 
 function setKnobImage() {
     let sol_image = document.getElementById("knob-img");
-    let image_choice = Math.floor(Math.random() * 2) + 1;
+    let image_choice = rand(1, 3, 1);
     switch (image_choice) {
         case 1:
             sol_image.src = "sol1.png"
+            sol_image.alt = "knob 1";
             break;
         case 2:
             sol_image.src = "sol2.png"
+            sol_image.alt = "knob 2";
             break;
         case 3:
             sol_image.src = "sol3.png"
+            sol_image.alt = "knob 3";
             break;
         default:
             break;
@@ -424,9 +426,9 @@ function rand(min, max, maxInclusive=false) {
 }
 
 function setCode() {
-    const firstNum = rand(10, 99, 1);
-    const secondNum = rand(10, 99, 1);
-    const thirdNum = rand(10, 99, 1);
+    const firstNum = rand(1, 30, 1);
+    const secondNum = rand(1, 30, 1);
+    const thirdNum = rand(1, 30, 1);
     return [firstNum, secondNum, thirdNum];
 }
 

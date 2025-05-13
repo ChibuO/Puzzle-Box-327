@@ -66,6 +66,18 @@ bool are_knobs_off() {
   return led_status[0] == midnight && led_status[1] == midnight && led_status[2] == midnight;
 }
 
+bool is_knob_turned(int num) {
+  bool is_correct = true;
+  for (int i = 0; i < 3; i++) {
+    if (i+1 == num) {
+      is_correct = is_correct && led_status[i] >= dawn;
+    } else {
+      is_correct = is_correct && led_status[i] == midnight;
+    }
+  }
+  return is_correct;
+}
+
 void print_led_status() {
     // String out_str = String(led_status[0]) + " " + String(led_status[1]) + " " + String(led_status[2]) + " " + String(led_status[3]);
     String out_str = String(led_status[0]) + " " + String(led_status[1]) + " " + String(led_status[2]);

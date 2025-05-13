@@ -22,7 +22,7 @@ extern bool should_start_puzzles;
 extern char light_order[];
 extern char color_order[];
 extern bool start_photoresistors;
-extern bool ais_prs_complete;
+extern bool is_prs_complete;
 extern bool start_lights;
 extern bool start_weights;
 extern bool is_weights_complete;

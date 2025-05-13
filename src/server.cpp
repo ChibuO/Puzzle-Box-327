@@ -70,7 +70,7 @@ void handleComplete(int current_puzzle, char *rest)
     break;
   case 6:
     // tilt completed
-    
+    is_dial_completed = true;
     break;
   default:
     break;
@@ -173,8 +173,9 @@ void handleInfo(int current_puzzle, char *rest)
     Serial.printf("info-ing %d\r\n", current_puzzle);
     break;
   case 6:
-    // neos
-    which_knob = rest[0];
+    // post dials
+    // subtract '0' ascii codes, works for 0-9
+    which_knob = rest[0] - '0';
 
     Serial.printf("info-ing %d\r\n", current_puzzle);
     break;

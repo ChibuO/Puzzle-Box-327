@@ -71,3 +71,17 @@ svg.dial {
 #dial-div3 {
   background-color: rgba(137, 43, 226, 0.4);
 }
+
+#behind-dials-div {
+  height: 100%;
+  width: 100%;
+  position: relative;
+  display: none;
+  align-items: center;
+  justify-content: center;
+}
+
+#behind-dials-div img {
+  width: 25%;
+  height: auto;
+}

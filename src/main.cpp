@@ -197,6 +197,11 @@ void start_puzzles() {
   puzzle_complete();
 
   //knob
+  while(!is_knob_turned(which_knob) && !should_skip_puzzle) {
+    update_led_status();
+    delay(300);
+  }
+
   puzzle_complete();
 
   Serial.println("box complete");

@@ -37,10 +37,10 @@ function rotations_to_speed(rotations) {
     speed = Math.round(100 * abs_rotations - (Math.floor(abs_rotations) * 100));
   }
 
-  if (Math.round(speed * 0.40) === 0) {
+  if (Math.round(speed * 0.30) === 0) {
     return 0;
   } else {
-    return Math.round(speed * 0.40);
+    return Math.round(speed * 0.30);
   }
 }
 
@@ -85,16 +85,13 @@ function updateRotation(boxData) {
   let accelDict = { 'accX': 0.0, 'accY': 0.0, 'accZ': 0.0 };
   // on tilt puzzle
   const accelArray = boxData.split(" ").map(parseFloat);
-  // console.log(accelArray);
+  
   accelDict['accX'] = accelArray[0];
   accelDict['accY'] = accelArray[1];
   accelDict['accZ'] = accelArray[2];
 
+  // console.log('y=' + accelDict['accY']);
   dial_rotate(accelDict['accY']);
-}
-
-function evaluateDials() {
-
 }
 
 function toggleDialLock(buttonElement, dialNum) {
@@ -120,9 +117,26 @@ function toggleDialLock(buttonElement, dialNum) {
   }
 
   if(dial_states.every(dstate => dstate === DIAL_LOCKED)) {
-    console.log("done(?)");
     knob_num = 0;
+    if (evaluateDials()) {
+      setDialsComplete();
+    }
   }
+}
+
+function setDialsComplete() {
+  // slide(-1);
+  // setTimeout(() => {
+  //     slide(1, 2);
+  // }, 1000);
+  // hide dials and show image, don't slide
+  document.getElementById("dials-div").style.display = "none";
+  document.getElementById("behind-dials-div").style.display = "flex";
+  puzzle_complete();
+}
+
+function evaluateDials() {
+  return JSON.stringify(code) === JSON.stringify(speeds);
 }
 
 function createDials() {

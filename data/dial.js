@@ -132,6 +132,7 @@ function setDialsComplete() {
   // hide dials and show image, don't slide
   document.getElementById("dials-div").style.display = "none";
   document.getElementById("behind-dials-div").style.display = "flex";
+  isDialsCompleted = true;
   puzzle_complete();
 }
 

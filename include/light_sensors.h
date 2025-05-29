@@ -2,7 +2,7 @@
 #define LIGHT_SENSORS_H
     #include <Arduino.h>
 
-    #define dark 140
+    #define dark 100
     #define normal 200
     #define light 1500
 

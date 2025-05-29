@@ -30,13 +30,14 @@
     void theaterChase(uint32_t color, int wait);
     void rainbow(Adafruit_NeoPixel strip, int wait);
     void theaterChaseRainbow(Adafruit_NeoPixel strip, int wait);
+    void solidColor(uint32_t color);
+    void blinkColor(uint32_t color, int wait);
     void neos_main();
 
     void neopixel_puzzle(int wait);
-    bool neos_plus_keypad(int wait);
     void getFreqs(int * p);
     void looping_neos(  void *pvParameters );
-    void lightNeos(char key);
+    void showColorByNumber(char key);
 
     extern bool pause_lights;
 

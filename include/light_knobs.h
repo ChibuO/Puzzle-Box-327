@@ -4,12 +4,13 @@
 
     #define midnight 1860
     #define def_light 200
-    #define gloaming 2320
+    #define gloaming 2050
     #define dawn 2480
     #define noon 3800
 
     void light_knobs_setup();
     // int get_led_status(uint16_t ar);
+    void read_potentiometers();
     void update_led_status();
     bool led_is_correct(int sequence[]);
     void print_led_status();

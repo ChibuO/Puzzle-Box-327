@@ -3,7 +3,6 @@
 const byte LDR_PIN1 = 35;
 const byte LDR_PIN2 = 32;
 const byte LDR_PIN3 = 33;
-const byte LDR_PIN4 = 15;
 
 int ldr_status[] = {normal, normal, normal};
 
@@ -11,7 +10,6 @@ void photosensors_setup() {
     pinMode(LDR_PIN1, INPUT);
     pinMode(LDR_PIN2, INPUT);
     pinMode(LDR_PIN3, INPUT);
-    // pinMode(LDR_PIN4, INPUT);
 }
 
 int get_ldr_status(uint16_t ar) {
@@ -29,17 +27,14 @@ void update_ldr_status(int r) {
         ldr_status[0] = get_ldr_status(analogRead(LDR_PIN1));
         ldr_status[1] = get_ldr_status(analogRead(LDR_PIN2));
         ldr_status[2] = get_ldr_status(analogRead(LDR_PIN3));
-        // ldr_status[3] = get_ldr_status(analogRead(LDR_PIN4));
     } else {
         ldr_status[0] = analogRead(LDR_PIN1);
         ldr_status[1] = analogRead(LDR_PIN2);
         ldr_status[2] = analogRead(LDR_PIN3);
-        // ldr_status[3] = analogRead(LDR_PIN4);
     }
 }
 
 void print_ldr_status() {
-    // String out_str = String(ldr_status[0]) + " " + String(ldr_status[1]) + " " + String(ldr_status[2]) + " " + String(ldr_status[3]);
     String out_str = String(ldr_status[0]) + " " + String(ldr_status[1]) + " " + String(ldr_status[2]);
     Serial.println(out_str);
 }

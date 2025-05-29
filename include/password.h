@@ -7,8 +7,8 @@
 
     void keypad_setup();
     void read_keypad();
-    char keypad_check_password(int n, char* code);
+    void read_keypad_keys(char *shape_code);
     bool is_getKeys();
     Key getKeypadKey(int i);
-    int getPressed(int n, char *code, bool should_send);
+    int getPressedWithColor(int n, char *passcode);
 #endif /* PASSWORD_H */

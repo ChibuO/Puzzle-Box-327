@@ -30,7 +30,6 @@ extern bool is_dial_completed;
 extern bool should_skip_puzzle;
 extern bool recal_accelerometer;
 extern bool recal_scale;
-extern bool neopixels_paused; 
 extern int which_knob;
 extern char code[];
 

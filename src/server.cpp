@@ -31,7 +31,6 @@ bool is_weights_complete = false;
 bool should_skip_puzzle = false;
 bool recal_accelerometer = false;
 bool recal_scale = false;
-bool neopixels_paused = false;
 int which_knob = 0;
 char code[6];
 
@@ -140,6 +139,7 @@ void handleRecalibrate(int current_puzzle)
 void handleInfo(int current_puzzle, char *rest)
 {
   Serial.printf("info curr: %d\r\n", current_puzzle);
+  int dial_paused_info = 0;
   switch (current_puzzle)
   {
   case 0:
@@ -173,8 +173,8 @@ void handleInfo(int current_puzzle, char *rest)
     Serial.printf("info-ing %d\r\n", current_puzzle);
     break;
   case 6:
-    // post dials
-    // subtract '0' ascii codes, works for 0-9
+    // dials
+    // to get number, subtract '0' ascii codes, works for 0-9
     which_knob = rest[0] - '0';
 
     Serial.printf("info-ing %d\r\n", current_puzzle);

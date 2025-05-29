@@ -8,3 +8,13 @@ void send_to_socket(int current_puzzle, String data) {
   json += "\"}";
   ws.broadcastTXT(json);
 }
+
+int getRandInt(int lower, int upper) {
+  // int i;
+  // for (i = 0; i < count; i++) {
+  //     int num = (rand() %
+  //     (upper - lower + 1)) + lower;
+  // }
+  int num = (rand() % (upper - lower + 1)) + lower;
+  return num;
+}

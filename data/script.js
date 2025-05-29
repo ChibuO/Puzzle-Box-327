@@ -25,8 +25,6 @@ const light_lightside_clue = document.getElementById("lightside-clue");
 const light_darkside = document.getElementById("darkside");
 const light_darkside_clue = document.getElementById("darkside-clue");
 
-let completed_puzzles = [];
-
 let box_curr_puzz = 0;
 let current_puzzle = 0; //box starts at 1
 const puzzleOrder = { 0: 'key_lbl', 1: 'maze_lbl', 2: 'neo_lbl', 3: 'knobs_lbl', 4: 'weights_lbl', 5: 'dark_lbl', 6: 'tilt_lbl', 7: 'final_lbl' };
@@ -43,6 +41,8 @@ const colorNum = 4; //must also change this in server.cpp
 
 let light_order = [];
 let light_string = "";
+
+let isDialsCompleted = false;
 
 let walls = ["graveyard", "twilight", "stairs"];
 let light_phrases = ["It's too dark to see the name on the coffin", "I can barely see what's howling", "I need more light to see what's on the stairs"];
@@ -213,9 +213,12 @@ function updatePage(num, data) {
             break;
         case 'final_lbl':
             //finale - box tells web when completed
-            document.getElementById("skipBtn").disabled = true;
+            // if (isDialsCompleted) {
+            //     document.getElementById("skipBtn").disabled = true;
+            // }
             if (data === "completed") {
                 slide();
+                document.getElementById("skipBtn").disabled = true;
             }
             break;
         default:
@@ -228,7 +231,7 @@ function skipPuzzle() {
     // const puzzleOrder = {0: 'key_lbl', 1: 'maze_lbl', 2: 'neo_lbl', 
     // 3: 'knobs_lbl', 4: 'weights_lbl', 5: 'dark_lbl', 6: 'tilt_lbl', 7: 'final_lbl'};
     const puzzleLbl = puzzleOrder[current_puzzle];
-    document.getElementById("skipBtn").disabled = true;
+    document.getElementById("skipBtn").disabled = true; // gets set to true in slide()
     sendMessage('skip', current_puzzle);
     console.log("skipping", current_puzzle, puzzleLbl);
 
@@ -281,6 +284,7 @@ function skipPuzzle() {
         case 'tilt_lbl':
             console.log("skipping tilt");
             setDialsComplete();
+            document.getElementById("skipBtn").disabled = false;
             break;
         case 'final_lbl':
             //finale - box tells web when completed
@@ -289,9 +293,9 @@ function skipPuzzle() {
             //     slide();
             //     puzzle_complete();
             // }
-            document.getElementById("skipBtn").disabled = true;
             puzzle_complete();
             slide();
+            document.getElementById("skipBtn").disabled = true;
             break;
         default:
             break;
@@ -304,12 +308,12 @@ function skipPuzzle() {
 }
 
 function set_light_order() {
-    //get numbers for sides of box
+    //get numbers for sides of box, 3 nums
     for (i = 0; i < 3; i++) {
-        // Returns a random integer from 1 to 3 (inclusive):
-        let r_int = Math.floor(Math.random() * 3) + 1;
+        // Returns a random integer from 1 to 3 (exclusive):
+        let r_int = rand(0, 3, false);
         while (light_order.includes(r_int)) {
-            r_int = Math.floor(Math.random() * 3) + 1;
+            r_int = rand(0, 3, false);
         }
         light_order.push(r_int);
     }
@@ -411,7 +415,6 @@ function createGradient(colorOrder) {
     });
 
     css += ")";
-    console.log(htmlText);
     return [css, htmlText];
 }
 

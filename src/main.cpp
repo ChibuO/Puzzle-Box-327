@@ -7,23 +7,11 @@ bool keypad_done = 0;
 bool neos_done = 0;
 bool door_open = 0;
 int current_puzzle = 1; //website starts at zero
-bool start_neos_task = true;
 
-
-char password[6] = {'1', '2', '3', '3', '#', '*'};
+char example_password[6] = {'1', '2', '3', '3', '#', '*'};
 
 int light_ldr, dark_ldr;
 String light_dark_str;
-
-int randInt(int lower, int upper) {
-    // int i;
-    // for (i = 0; i < count; i++) {
-    //     int num = (rand() %
-    //     (upper - lower + 1)) + lower;
-    // }
-    int num = (rand() % (upper - lower + 1)) + lower;
-    return num;
-}
 
 void setup() {
   Serial.begin(115200);
@@ -49,10 +37,10 @@ void setup() {
 
   // servo_reset();
 
-  light_ldr = randInt(0, 2);
-  dark_ldr = randInt(0, 2);
+  light_ldr = getRandInt(0, 2);
+  dark_ldr = getRandInt(0, 2);
   while(light_ldr == dark_ldr) {
-    dark_ldr = randInt(0, 2);
+    dark_ldr = getRandInt(0, 2);
   }
   light_dark_str = String(light_ldr) + "" + String(dark_ldr);
   Serial.print("ld: ");
@@ -64,15 +52,10 @@ void puzzle_complete() {
     send_to_socket(current_puzzle, "skipped");
     Serial.println(">>>> " + String(current_puzzle));
   }
-  colorWipe(rgb_to_binary(  0, 255,   0), 100); // Green
-  colorWipe(rgb_to_binary(  0, 0,   0), 50); // dark
-  // delay(500);
-  colorWipe(rgb_to_binary(  0, 255,   0), 100); // Green
-  colorWipe(rgb_to_binary(  0, 0,   0), 50); // dark
-  // delay(500);
-  colorWipe(rgb_to_binary(  0, 255,   0), 100); // Green
-  // delay(1500);
-  colorWipe(rgb_to_binary(  0, 0,   0), 50); // dark
+  uint32_t green_color = rgb_to_binary(0, 255, 0);
+  uint32_t clear_color = rgb_to_binary(0, 0, 0);
+  colorWipe(green_color, 100);
+  colorWipe(clear_color, 50);
   if(!should_skip_puzzle) {
     send_to_socket(current_puzzle, "completed");
     Serial.println("!!!! " + String(current_puzzle));
@@ -108,7 +91,7 @@ void start_puzzles() {
   Serial.println(color_solution_str2);
   // int freqs_password[7];
   // getFreqs(freqs_password);
-  while (!getPressed(8, color_order, true) && !should_skip_puzzle) {
+  while (!getPressedWithColor(8, color_order) && !should_skip_puzzle) {
     delay(100);
   }
   
@@ -123,7 +106,6 @@ void start_puzzles() {
 
   int sequence[3] = {};
   get_sequence(sequence, light_order);
-  // String out_str = String(sequence[0]) + " " + String(sequence[1]) + " " + String(sequence[2]) + " " + String(sequence[3]);
   String light_solution_str = String(sequence[0]) + " " + String(sequence[1]) + " " + String(sequence[2]);
   Serial.println(light_solution_str);
   
@@ -149,7 +131,7 @@ void start_puzzles() {
     long weight = get_weight();
     send_to_socket(current_puzzle, (String) weight);
     Serial.println(weight);
-    delay(500);
+    delay(300);
   }
 
   puzzle_complete();
@@ -182,16 +164,32 @@ void start_puzzles() {
   puzzle_complete();
 
   //tilt
+  unsigned long lastIMUReadTime = 0;
+  unsigned long lastKeypadReadTime = 0;
   calculate_IMU_error(); //wait 5 seconds and calibrate
   while (!is_dial_completed && !should_skip_puzzle) {
+    unsigned long currentTime = millis();
+
+    // Read keypad every 100ms
+    if (currentTime - lastKeypadReadTime >= 100) {
+      read_keypad_keys(code);
+      lastKeypadReadTime = currentTime;
+    }
+
     if(recal_accelerometer) {
       calculate_IMU_error();
       recal_accelerometer = false;
     }
-    String imu_data = read_imu();
-    // Serial.println(imu_data);
-    send_to_socket(current_puzzle, imu_data);
-    delay(300);
+    
+    // send every 300 ms
+    if (currentTime - lastIMUReadTime >= 300) {
+      String imu_data = read_imu();
+      // Serial.println(imu_data);
+      send_to_socket(current_puzzle, imu_data);
+      lastIMUReadTime = currentTime;
+    }
+
+    delay(100);
   }
 
   puzzle_complete();
@@ -227,17 +225,36 @@ void loop() {
   delay(100);
 }
 
-void loo9p() {
+void setu9p() {
+  Serial.begin(115200);
+  pinMode(LED_BUILTIN, OUTPUT);
+  // pinMode(led_gpio, OUTPUT);
+  // pinMode(led_gpio2, OUTPUT);
+  // keypad_setup();
+  // light_knobs_setup();
+  // open_setup();
+  // imu_setup();
+  // neopixel_setup();
+  // photosensors_setup();
+  // weight_setup();
+}
+
+void lo8op() {
   // if(recal_scale) {
-  //   calibrate_loop();
-  //   recal_scale = false;
+    // calibrate_loop();
+    // recal_scale = false;
   // }
-  // calibrate_loop();
   // print_weight();
+  weight_loop();
   // delay(100);
-  // while (!keypad_done) {
-  //   keypad_done = neos_plus_keypad(400);
-  // }
   // neos_main();
-  ldr_main();
+  // read_potentiometers();
+  // char order[4] = {'3', '6', '9', '1'};
+  // while (!getPressedWithColor(4, order)) {
+  //   delay(100);
+  // }
+  // char order[6] = {'2', '3', '1', '5', '5', '7'};
+  // read_keypad_keys(order);
+  // delay(100);
+  // delay(300);
 }

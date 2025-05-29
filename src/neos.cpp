@@ -150,6 +150,19 @@ void theaterChaseRainbow(Adafruit_NeoPixel strip, int wait) {
   }
 }
 
+void solidColor(uint32_t color) {
+  for(int i=0; i<strip.numPixels(); i++) { // For each pixel in strip...
+    strip.setPixelColor(i, color);         //  Set pixel's color (in RAM)
+  }
+  strip.show();
+}
+
+void blinkColor(uint32_t color, int wait) {
+  solidColor(color);
+  delay(wait);
+  solidColor(rgb_to_binary(  0, 0,   0));
+}
+
 uint32_t rgb_to_binary(uint8_t r, uint8_t g, uint8_t b) {
   return ((uint32_t)r << 16) | ((uint32_t)g << 8) | b;
 }
@@ -260,122 +273,18 @@ void getFreqs(int * p) {
   }
 }
 
-void lightNeos(char key) {
+void showColorByNumber(char key) {
     uint32_t white_color = rgb_to_binary(255, 255, 255);
     uint32_t clear_color = rgb_to_binary(0, 0, 0);
 
-    switch (key) {
-        case '1':
-            colorWipe(rainbow_keypad_colors[0], 100);
-            colorWipe(clear_color, 100);
-            break;
-        case '2':
-            colorWipe(rainbow_keypad_colors[1], 100);
-            colorWipe(clear_color, 100);
-            break;
-        case '3':
-            colorWipe(rainbow_keypad_colors[2], 100);
-            colorWipe(clear_color, 100);
-            break;
-        case '4':
-            colorWipe(rainbow_keypad_colors[3], 100);
-            colorWipe(clear_color, 100);
-            break;
-        case '5':
-            colorWipe(rainbow_keypad_colors[4], 100);
-            colorWipe(clear_color, 100);
-            break;
-        case '6':
-            colorWipe(rainbow_keypad_colors[5], 100);
-            colorWipe(clear_color, 100);
-            break;
-        case '7':
-            colorWipe(rainbow_keypad_colors[6], 100);
-            colorWipe(clear_color, 100);
-            break;
-        case '8':
-            colorWipe(white_color, 100);
-            colorWipe(clear_color, 100);
-            break;
-        default:
-            // Code for an invalid option
-            break;
+    int key_int = key - '0'; // convert to int
+    int index = key_int - 1;
+    if (index == 7) { // 8 is pressed
+      blinkColor(white_color, 300);
+    } else if (index >= 0 && index < 8) {
+      blinkColor(rainbow_keypad_colors[index], 300);
     }
 }
-
-bool neos_plus_keypad(int wait) {
-  int n_temp = 0;
-  int pressed = 0;
-  int released = 0;
-  int done = 0;
-  int n = 7;
-  String msg;
-
-  while(!done) {
-    neopixel_puzzle(wait);
-
-    if (is_getKeys()) {
-      for (int i = 0; i < LIST_MAX; i++) {
-        if (getKeypadKey(i).stateChanged) {
-          switch (getKeypadKey(i).kstate) { 
-            // Report active key state : IDLE, PRESSED, HOLD, or RELEASED
-          case PRESSED:
-            char s[1];
-            sprintf(s, "%d", freqs[n_temp] );
-            if (s[0] == getKeypadKey(i).kchar) {
-              released = 0;
-              pressed = 1;
-            }
-            else {
-              released = 0;
-              pressed = 0;
-              n_temp = 0;
-            }
-            msg = " PRESSED";
-            break;
-          case HOLD:
-            break;
-            msg = " HOLD";
-          case RELEASED:
-            if (pressed) {
-              char s[1];
-              sprintf(s, "%d", freqs[n_temp] );
-              if (s[0] == getKeypadKey(i).kchar) {
-                pressed = 0;
-                released = 1;
-                n_temp++;
-                if (n_temp > n - 1)
-                  done = 1;
-              }
-              else {
-                pressed = 0;
-                released = 0;
-                n_temp = 0;
-              }
-            }
-            else {
-              pressed = 0;
-              released = 0;
-              n_temp = 0;
-            }
-            msg = " RELEASED";
-            break;
-          case IDLE:
-            msg = " IDLE";
-            break;
-          }
-        }
-      }
-    }
-  
-    // if(n_temp = n) {
-    //   return 1;
-    // }
-  }
-
-  return done;
-}
-
 
 void neos_main() {
   neopixel_puzzle(100);

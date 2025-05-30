@@ -13,8 +13,6 @@ char keys[ROWS][COLS] = {
 byte rowPins[ROWS] = {2, 5, 17, 4}; // connect to the row pinouts of the kpd, orientation 2
 byte colPins[COLS] = {0, 15, 16};     // connect to the column pinouts of the kpd, orientation 2
 
-
-
 Keypad kpd = Keypad(makeKeymap(keys), rowPins, colPins, ROWS, COLS);
 
 unsigned long loopCount;
@@ -23,6 +21,7 @@ String msg;
 int pressed = 0;
 int released = 0;
 int n_temp = 0;
+String text_to_display = "";
 
 void keypad_setup()
 {
@@ -153,13 +152,14 @@ void read_keypad_keys(char *shape_code) {
 
     if (kpd.getKeys()) {
         if (kpd.isPressed('3')) {
-            Serial.println(first);
+            text_to_display = first;
         } else if (kpd.isPressed('4')) {
-            Serial.println(second);
+            text_to_display = second;
         } else if (kpd.isPressed('7')) {
-            Serial.println(third);
+            text_to_display = third;
         } else if (isRestPressed()) {
-            Serial.println(String(getRandInt(1, 99)));
+            text_to_display = String(getRandInt(1, 99));
         }
     }
+    displayText(text_to_display, 5, 5, 2);
 }

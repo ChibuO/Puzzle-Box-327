@@ -9,6 +9,7 @@
 #include <ArduinoOTA.h>
 #include "esp_wpa2.h"
 #include <WiFiManager.h>
+#include "oled.h"
 
 // Create AsyncWebServer object on port 80
 extern WebServer server;
@@ -32,6 +33,7 @@ extern bool recal_accelerometer;
 extern bool recal_scale;
 extern int which_knob;
 extern char code[];
+extern String web_address;
 
 bool wifi_conn_status();
 String get_mac_address();

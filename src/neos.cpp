@@ -68,11 +68,11 @@ void neopixel_setup() {
   strip.begin();           // INITIALIZE NeoPixel strip object (REQUIRED)
   strip.show();            // Turn OFF all pixels ASAP
   strip.setBrightness(100); // Set BRIGHTNESS to about 1/5 (max = 255)
-  setFrequencies();
-  setColors();
-  for(int i=0; i < 7; i++) {
-    color_sum += freqs[i];
-  }
+  // setFrequencies();
+  // setColors();
+  // for(int i=0; i < 7; i++) {
+  //   color_sum += freqs[i];
+  // } not in use anymore
 }
 
 

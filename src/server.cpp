@@ -33,11 +33,14 @@ bool recal_accelerometer = false;
 bool recal_scale = false;
 int which_knob = 0;
 char code[6];
+String web_address;
 
 // cases where web sends message to box
 void handleComplete(int current_puzzle, char *rest)
 {
   Serial.printf("curr: %d\r\n", current_puzzle);
+  String complete_text = "curr: " + String(current_puzzle);
+  displayText(complete_text, 0, 2, 2);
   switch (current_puzzle)
   {
   case 0:
@@ -79,6 +82,8 @@ void handleComplete(int current_puzzle, char *rest)
 void handleSkip(int current_puzzle)
 {
   Serial.printf("skip curr: %d\r\n", current_puzzle);
+  String skip_text = "skip: " + String(current_puzzle);
+  displayText(skip_text, 0, 2, 2);
   switch (current_puzzle)
   {
   case 2:
@@ -114,6 +119,8 @@ void handleSkip(int current_puzzle)
 void handleRecalibrate(int current_puzzle)
 {
   Serial.printf("recal curr: %d\r\n", current_puzzle);
+  String recal_text = "recal: " + String(current_puzzle);
+  displayText(recal_text, 0, 2, 2);
   switch (current_puzzle)
   {
   case 1:
@@ -148,6 +155,7 @@ void handleInfo(int current_puzzle, char *rest)
     {
       Serial.printf("info- %c ", *(rest + i));
       code[i] = *(rest + i);
+      displayText(code, 0, 5, 2);
     }
 
     Serial.printf("info-ing %d\r\n", current_puzzle);
@@ -315,9 +323,11 @@ void startWebSocket()
 void startMDNS()
 {                        // Start the mDNS responder
   MDNS.begin(mdns_name); // start the multicast domain name server
+  web_address = "http://" + String(mdns_name) + ".local";
   Serial.print("mDNS responder started: http://");
   Serial.print(mdns_name);
   Serial.println(".local");
+  displayText(web_address, 0, 10, 1);
 }
 
 void startServer()
@@ -474,6 +484,8 @@ void start_web_services()
   char web_setup_ap_ssid[20];
   sprintf(web_setup_ap_ssid, "ESD1 %x%x", mac[4], mac[5]);
   Serial.printf("web setup AP: %s\r\n", web_setup_ap_ssid);
+  clearDisplay();
+  displayText(web_setup_ap_ssid, 0, 10, 2);
   bool res;
   res = wm.autoConnect(web_setup_ap_ssid);
 

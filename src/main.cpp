@@ -18,13 +18,14 @@ void setup() {
   pinMode(LED_BUILTIN, OUTPUT);
   // pinMode(led_gpio, OUTPUT);
   // pinMode(led_gpio2, OUTPUT);
+  oled_setup();
   keypad_setup();
   light_knobs_setup();
   open_setup();
-  imu_setup();
   neopixel_setup();
   photosensors_setup();
   weight_setup();
+  imu_setup();
 
   // Initialize SPIFFS - for saving data in flash memory
   uint8_t spiffs_check = startSPIFFS();
@@ -116,7 +117,7 @@ void start_puzzles() {
       lights_done = 1;
     }
 
-    print_led_status();
+    // print_led_status();
     delay(300);
   }
 
@@ -130,7 +131,7 @@ void start_puzzles() {
     }
     long weight = get_weight();
     send_to_socket(current_puzzle, (String) weight);
-    Serial.println(weight);
+    // Serial.println(weight);
     delay(300);
   }
 
@@ -225,7 +226,7 @@ void loop() {
   delay(100);
 }
 
-void setu9p() {
+void se3tup() {
   Serial.begin(115200);
   pinMode(LED_BUILTIN, OUTPUT);
   // pinMode(led_gpio, OUTPUT);
@@ -237,15 +238,16 @@ void setu9p() {
   // neopixel_setup();
   // photosensors_setup();
   // weight_setup();
+  oled_setup();
 }
 
-void lo8op() {
+void lo3op() {
   // if(recal_scale) {
     // calibrate_loop();
     // recal_scale = false;
   // }
   // print_weight();
-  weight_loop();
+  // weight_loop();
   // delay(100);
   // neos_main();
   // read_potentiometers();
@@ -257,4 +259,5 @@ void lo8op() {
   // read_keypad_keys(order);
   // delay(100);
   // delay(300);
+  oled_loop();
 }

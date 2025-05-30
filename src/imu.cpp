@@ -76,9 +76,6 @@ void imu_setup(void) {
     }
   }
   Serial.println("MPU6050 Found!");
-
-  Serial.println("");
-  delay(100);
   calculate_IMU_error();
 }
 

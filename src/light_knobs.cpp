@@ -5,6 +5,8 @@ const byte POT_PIN2 = 39;
 const byte POT_PIN3 = 36;
 
 int led_status[] = {def_light, def_light, def_light};
+int led_status_raw[] = {0, 0, 0};
+// bool final_knob_turned = false;
 
 void get_sequence(int seq[], char light_string[]) {
   for(int i = 0; i < 3; i++) {
@@ -52,6 +54,30 @@ void update_led_status() {
     led_status[2] = get_led_status(analogRead(POT_PIN3));
 }
 
+void update_led_status_raw() {
+  led_status_raw[0] = analogRead(POT_PIN1);
+  led_status_raw[1] = analogRead(POT_PIN2);
+  led_status_raw[2] = analogRead(POT_PIN3);
+}
+
+uint16_t readKnob(int knobNum) {
+  switch (knobNum)
+  {
+  case 1:
+    return analogRead(POT_PIN1);
+    break;
+  case 2:
+    return analogRead(POT_PIN2);
+    break;
+  case 3:
+    return analogRead(POT_PIN3);
+    break;
+  default:
+    return 0;
+    break;
+  }
+}
+
 bool led_is_correct(int sequence[]) {
   return led_status[0] == sequence[0] && led_status[1] == sequence[1] && led_status[2] == sequence[2];
 }
@@ -60,16 +86,25 @@ bool are_knobs_off() {
   return led_status[0] == midnight && led_status[1] == midnight && led_status[2] == midnight;
 }
 
-bool is_knob_turned(int num) {
+bool is_correct_knob_turned(int num) {
   bool is_correct = true;
+  // only the correct knob should be turned
+  // the others should stay zero
   for (int i = 0; i < 3; i++) {
     if (i+1 == num) {
-      is_correct = is_correct && led_status[i] >= dawn;
+      is_correct = is_correct && led_status_raw[i] > 0;
     } else {
-      is_correct = is_correct && led_status[i] == midnight;
+      is_correct = is_correct && led_status_raw[i] <= 500;
     }
   }
   return is_correct;
+}
+
+void check_knob_turned(int knobNum) {
+  if(led_status_raw[knobNum-1] > 3600) {
+    // final_knob_turned = true;
+    Serial.println("yes");
+  }
 }
 
 void print_led_status() {

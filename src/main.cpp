@@ -36,7 +36,7 @@ void setup() {
 
   start_web_services();
 
-  // servo_reset();
+  servo_reset();
 
   light_ldr = getRandInt(0, 2);
   dark_ldr = getRandInt(0, 2);
@@ -78,11 +78,12 @@ void start_puzzles() {
     delay(100);
   }
 
-  // pull out from puzzle_complete() bc 
+  // pull out from puzzle_complete() bc we
   // need to wait for box to open
   Serial.println("!!!! " + String(current_puzzle));
   current_puzzle++; // 2
-  while (!open()) {};
+  // while (!open()) {};
+  rotateQuarter();
   send_to_socket(current_puzzle, "");
 
   //neo
@@ -97,6 +98,7 @@ void start_puzzles() {
   }
   
   puzzle_complete(); // 3
+  rotateQuarter();
 
   // knobs puzzle
   while (!start_lights || should_skip_puzzle)
@@ -122,6 +124,7 @@ void start_puzzles() {
   }
 
   puzzle_complete();
+  rotateQuarter();
   
   //weight
   while(!is_weights_complete && !should_skip_puzzle) {
@@ -159,6 +162,7 @@ void start_puzzles() {
 
   while(!are_knobs_off()) {
     update_led_status();
+    displayText("Lights Out", 0, 3, 2);
     delay(300);
   }
 
@@ -196,22 +200,25 @@ void start_puzzles() {
   puzzle_complete();
 
   //knob
-  while(!is_knob_turned(which_knob) && !should_skip_puzzle) {
-    update_led_status();
-    delay(300);
+  while(!final_knob_turned && !should_skip_puzzle) {
+    if (is_correct_knob_turned(which_knob)) {
+      finalRotation(readKnob(which_knob));
+    }
+    update_led_status_raw();
+    read_potentiometers();
+    delay(200);
   }
 
   puzzle_complete();
 
   Serial.println("box complete");
+  displayText("COMPLETE", 0, 3, 2);
   send_to_socket(current_puzzle, "");
-  while(1) {}
+  while(1) {delay(2000);}
 }
 
 
 void loop() {
-  // digitalWrite(BUILTIN_LED, !digitalRead(BUILTIN_LED));
-
   //todo: check for box down
 
   if (should_start_puzzles) {
@@ -226,22 +233,24 @@ void loop() {
   delay(100);
 }
 
-void se3tup() {
+void set89up() {
   Serial.begin(115200);
   pinMode(LED_BUILTIN, OUTPUT);
   // pinMode(led_gpio, OUTPUT);
   // pinMode(led_gpio2, OUTPUT);
   // keypad_setup();
-  // light_knobs_setup();
-  // open_setup();
+  light_knobs_setup();
+  open_setup();
+  servo_reset();
+  setServoPos(135);
   // imu_setup();
   // neopixel_setup();
   // photosensors_setup();
   // weight_setup();
-  oled_setup();
+  // oled_setup();
 }
 
-void lo3op() {
+void looup() {
   // if(recal_scale) {
     // calibrate_loop();
     // recal_scale = false;
@@ -259,5 +268,18 @@ void lo3op() {
   // read_keypad_keys(order);
   // delay(100);
   // delay(300);
-  oled_loop();
+  // oled_loop();
+  // open();
+  // delay(2000);
+  which_knob = 2;
+  while(!final_knob_turned && !should_skip_puzzle) {
+    if (is_correct_knob_turned(which_knob) && !finalRotation(readKnob(which_knob))) {
+      Serial.println("turn");
+    }
+    update_led_status_raw();
+    read_potentiometers();
+    delay(200);
+  }
+  Serial.println("done");
+  delay(5000);
 }

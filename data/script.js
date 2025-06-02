@@ -31,6 +31,7 @@ const puzzleOrder = { 0: 'key_lbl', 1: 'maze_lbl', 2: 'neo_lbl', 3: 'knobs_lbl',
 const element_ids = ["key_lbl", "maze_lbl", "knobs_lbl", "weights_lbl", "tilt_lbl", "dark_lbl", "neo_lbl", "door_lbl", "final_lbl"];
 
 const passkey = "jo";
+let codeString = "";
 const code = setCode();
 let adminPanelEnabled = true;
 let showAdmin = false;
@@ -85,7 +86,7 @@ window.onresize = function () {
 };
 
 passkey_txtbox.addEventListener("input", (event) => {
-    if (event.target.value === passkey) {
+    if (event.target.value === codeString) {
         event.target.value = "";
         passkey_completed();
     }
@@ -432,7 +433,12 @@ function setCode() {
     const firstNum = rand(1, 30, 1);
     const secondNum = rand(1, 30, 1);
     const thirdNum = rand(1, 30, 1);
-    return [firstNum, secondNum, thirdNum];
+    const codeList = [firstNum, secondNum, thirdNum];
+    codeString = codeList.reduce((output, num) => {
+        const formattedNum = num < 10 ? `0${num}` : `${num}`;
+        return output + formattedNum;
+    }, '');
+    return codeList;
 }
 
 // function toggleVisibility(id) {

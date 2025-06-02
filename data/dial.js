@@ -130,7 +130,8 @@ function setDialsComplete() {
   //     slide(1, 2);
   // }, 1000);
   // hide dials and show image, don't slide
-  document.getElementById("dials-div").style.display = "none";
+  slideDialScreen();
+  // document.getElementById("dials-div").style.display = "none";
   document.getElementById("behind-dials-div").style.display = "flex";
   isDialsCompleted = true;
   puzzle_complete();
@@ -214,4 +215,11 @@ function createDialSvg(idNumber) {
   svg.appendChild(gKnob);
 
   return svg;
+}
+
+function slideDialScreen() {
+  const centerDialDiv = document.getElementById('dial-div2');
+  if (centerDialDiv) {
+    centerDialDiv.classList.add("slide-down");
+  }
 }

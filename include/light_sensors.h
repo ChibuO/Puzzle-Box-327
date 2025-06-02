@@ -2,8 +2,8 @@
 #define LIGHT_SENSORS_H
     #include <Arduino.h>
 
-    #define dark 100
-    #define normal 200
+    #define dark 50
+    #define normal 100
     #define light 1500
 
     void photosensors_setup();

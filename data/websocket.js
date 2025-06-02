@@ -22,14 +22,10 @@ function doConnect() { // makes a connection and defines callbacks
 function onOpen(evt) { // when handshake is complete:
 	updateStatusLabel("Connected.");
     isConnectedToBox = true;
-    const codeString = code.reduce((output, num) => {
-        const formattedNum = num < 10 ? `0${num}` : `${num}`;
-        return output + formattedNum;
-    }, '');
     sendMessage("info", 0, codeString);
 
-    skipPuzzle(); // skip passkey, curr_puzz = 0
-    skipPuzzle(); // skip maze, curr_puzz = 1
+    // skipPuzzle(); // skip passkey, curr_puzz = 0
+    // skipPuzzle(); // skip maze, curr_puzz = 1
     // skipPuzzle(); // skip freqs, curr_puzz = 2
     
     // skipPuzzle(); // intensities

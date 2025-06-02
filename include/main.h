@@ -2,7 +2,7 @@
 #define MAIN_H
     #include <Arduino.h>
     #include "utilities.h"
-    #include "opening.h"
+    #include "servos.h"
     #include "password.h"
     #include "light_knobs.h"
     #include "server.h"

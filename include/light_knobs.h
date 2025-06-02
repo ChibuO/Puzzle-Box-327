@@ -12,10 +12,15 @@
     // int get_led_status(uint16_t ar);
     void read_potentiometers();
     void update_led_status();
+    void update_led_status_raw();
     bool led_is_correct(int sequence[]);
     void print_led_status();
     bool are_knobs_off();
-    bool is_knob_turned(int num);
+    void check_knob_turned(int num);
+    bool is_correct_knob_turned(int num);
     void get_sequence(int seq[], char light_string[]);
+    uint16_t readKnob(int knobNum);
+    // extern bool final_knob_turned;
+    
 
 #endif /* LIGHT_KNOBS_H */

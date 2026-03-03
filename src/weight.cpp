@@ -60,9 +60,9 @@ void weight_loop() {
 
 // returns single reading
 long get_weight() {
-    scale.power_up();
+    // scale.power_up();
     float weight = scale.get_units(10);
-    scale.power_down();
+    // scale.power_down();
     return weight;
 }
 

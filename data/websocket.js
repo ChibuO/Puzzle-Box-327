@@ -57,7 +57,7 @@ function onError(evt) { // when an error occurs
     skipPuzzle(); // skip freqs
     skipPuzzle(); // skip intensities
     skipPuzzle(); // skip weights
-    skipPuzzle(); // skip light/dark
+    // skipPuzzle(); // skip light/dark
 }
 
 // Function to display to the message box

@@ -7,9 +7,6 @@ int servoPin = 27;
 int quarter = 45;
 int knob_ADC_max = 4000;
 bool final_knob_turned = false;
-int SERVO_STOP = 96; // 1.5ms pulse width, 96, 97
-int SERVO_CW = 90; // 2ms pulse width
-int SERVO_CCW = 105; // 1ms pulse width
 
 void servo_setup()
 {
@@ -25,14 +22,6 @@ void servo_setup()
                                          // for an accurate 0 to 180 sweep
 }
 
-//Position "90" (1.5ms pulse) is stop, "180" (2ms pulse) is full speed forward,
-// "0" (1ms pulse) is full speed backwards
-
-void servo_stop() {
-    myservo.write(SERVO_STOP);
-    delay(15);
-}
-
 void servo_reset() {
     myservo.write(0);
     delay(15);
@@ -46,15 +35,6 @@ void setServoPos(int pos) {
     }
     myservo.write(pos);
     delay(15);
-}
-
-int servo_num = 90; // for testing purposes
-void servo_loop() {
-    Serial.print("servo loop ");
-    Serial.println(servo_num);
-    myservo.write(servo_num);
-    delay(2000);
-    servo_num += 1;
 }
 
 bool open() {
@@ -103,9 +83,11 @@ void rotateQuarterLoop() {
 }
 
 void rotateQuarter() {
-    myservo.write(SERVO_CW);
-    delay(1000);
-    myservo.write(SERVO_STOP);
+    int servoPos = myservo.read();
+    if (servoPos + quarter < 180) {
+        myservo.write(servoPos + quarter);
+        delay(15);
+    }
 }
 
 void rotateFromKnob(uint16_t knobInput, int mapMin, int mapMax) {
@@ -116,9 +98,7 @@ void rotateFromKnob(uint16_t knobInput, int mapMin, int mapMax) {
     // String h = "in: " + String(knobInput) + " out: " + String(val);
     // Serial.println(h);
     if (val < 180) {
-        myservo.write(SERVO_CW);
-    } else {
-        myservo.write(SERVO_STOP);
+        myservo.write(val);
     }
 }
 

@@ -12,6 +12,10 @@ char example_password[6] = {'1', '2', '3', '3', '#', '*'};
 
 int light_ldr, dark_ldr;
 String light_dark_str;
+bool is_ldr_halfway_complete = false;
+bool is_ldr_complete = false;
+bool is_neos_complete = false;
+bool puzzle_box_complete = false;
 
 void setup() {
   Serial.begin(115200);
@@ -21,7 +25,7 @@ void setup() {
   oled_setup();
   keypad_setup();
   light_knobs_setup();
-  open_setup();
+  servo_setup();
   neopixel_setup();
   photosensors_setup();
   weight_setup();
@@ -36,7 +40,7 @@ void setup() {
 
   start_web_services();
 
-  servo_reset();
+  servo_stop();
 
   light_ldr = getRandInt(0, 2);
   dark_ldr = getRandInt(0, 2);
@@ -63,6 +67,8 @@ void puzzle_complete() {
   }
   current_puzzle++;
   should_skip_puzzle = false;
+  String dText = "P" + String(current_puzzle+1);
+  displayText(dText, 0, 3, 2);
   send_to_socket(current_puzzle, "");
 }
 
@@ -75,14 +81,13 @@ void start_puzzles() {
     }
     String imu_data = read_imu();
     send_to_socket(current_puzzle, imu_data);
-    delay(100);
+    delay(300);
   }
 
   // pull out from puzzle_complete() bc we
   // need to wait for box to open
   Serial.println("!!!! " + String(current_puzzle));
   current_puzzle++; // 2
-  // while (!open()) {};
   rotateQuarter();
   send_to_socket(current_puzzle, "");
 
@@ -93,9 +98,10 @@ void start_puzzles() {
   Serial.println(color_solution_str2);
   // int freqs_password[7];
   // getFreqs(freqs_password);
-  while (!getPressedWithColor(8, color_order) && !should_skip_puzzle) {
+  while (!is_neos_complete && !getPressedWithColor(8, color_order) && !should_skip_puzzle) {
     delay(100);
   }
+  is_neos_complete = true;
   
   puzzle_complete(); // 3
   rotateQuarter();
@@ -144,25 +150,34 @@ void start_puzzles() {
   //get numbers to send for dark/light
   send_to_socket(current_puzzle, light_dark_str);
 
-  while (!light_ldr_correct(light_ldr) && !should_skip_puzzle) {
+  while (!is_ldr_halfway_complete && !light_ldr_correct(light_ldr) && !should_skip_puzzle) {
     update_ldr_status(1);
     print_ldr_status();
     delay(300);
   }
+  is_ldr_halfway_complete = true;
 
   send_to_socket(current_puzzle, "halfway");
 
-  while (!dark_ldr_correct(light_ldr, dark_ldr) && !should_skip_puzzle) {
+  while (!is_ldr_complete && !dark_ldr_correct(light_ldr, dark_ldr) && !should_skip_puzzle) {
     update_ldr_status(1);
     print_ldr_status();
     delay(300);
   }
+  is_ldr_complete = true;
 
   send_to_socket(current_puzzle, "continue");
 
+  // in case ldr was skipped
+  if (should_skip_puzzle) {
+    should_skip_puzzle = false;
+  }
+
+  update_led_status_raw(); // so it doesn't start at 0
   while(!are_knobs_off()) {
-    update_led_status();
+    update_led_status_raw();
     displayText("Lights Out", 0, 3, 2);
+    Serial.println("waiting");
     delay(300);
   }
 
@@ -177,7 +192,7 @@ void start_puzzles() {
 
     // Read keypad every 100ms
     if (currentTime - lastKeypadReadTime >= 100) {
-      read_keypad_keys(code);
+      // read_keypad_keys(code); // until fixed
       lastKeypadReadTime = currentTime;
     }
 
@@ -214,35 +229,35 @@ void start_puzzles() {
   Serial.println("box complete");
   displayText("COMPLETE", 0, 3, 2);
   send_to_socket(current_puzzle, "");
-  while(1) {delay(2000);}
+  puzzle_box_complete = true;
 }
 
 
 void loop() {
   //todo: check for box down
 
-  if (should_start_puzzles) {
+  if (should_start_puzzles && !puzzle_box_complete) {
     Serial.println("lego");
-    delay(5000);
     calculate_IMU_error(); //wait 5 seconds and calibrate
 
     //then start
     start_puzzles();
   }
 
-  delay(100);
+  Serial.println("my eggo");
+  delay(5000);
 }
 
-void set89up() {
+void se6tup() {
   Serial.begin(115200);
   pinMode(LED_BUILTIN, OUTPUT);
   // pinMode(led_gpio, OUTPUT);
   // pinMode(led_gpio2, OUTPUT);
   // keypad_setup();
-  light_knobs_setup();
-  open_setup();
-  servo_reset();
-  setServoPos(135);
+  // light_knobs_setup();
+  servo_setup();
+  // servo_reset();
+  // setServoPos(135);
   // imu_setup();
   // neopixel_setup();
   // photosensors_setup();
@@ -250,7 +265,7 @@ void set89up() {
   // oled_setup();
 }
 
-void looup() {
+void loo7p() {
   // if(recal_scale) {
     // calibrate_loop();
     // recal_scale = false;
@@ -271,15 +286,16 @@ void looup() {
   // oled_loop();
   // open();
   // delay(2000);
-  which_knob = 2;
-  while(!final_knob_turned && !should_skip_puzzle) {
-    if (is_correct_knob_turned(which_knob) && !finalRotation(readKnob(which_knob))) {
-      Serial.println("turn");
-    }
-    update_led_status_raw();
-    read_potentiometers();
-    delay(200);
-  }
-  Serial.println("done");
-  delay(5000);
+  // which_knob = 2;
+  // while(!final_knob_turned && !should_skip_puzzle) {
+  //   if (is_correct_knob_turned(which_knob) && !finalRotation(readKnob(which_knob))) {
+  //     Serial.println("turn");
+  //   }
+  //   update_led_status_raw();
+  //   read_potentiometers();
+  //   delay(200);
+  // }
+  // Serial.println("done");
+  // delay(5000);
+  servo_loop();
 }

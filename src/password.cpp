@@ -10,8 +10,8 @@ char keys[ROWS][COLS] = {
     {'*', '0', '#'}};
 // byte rowPins[ROWS] = {17, 15, 2, 4}; // connect to the row pinouts of the kpd, orientation 1
 // byte colPins[COLS] = {16, 5, 0};     // connect to the column pinouts of the kpd, orientation 1
-byte rowPins[ROWS] = {2, 5, 17, 4}; // connect to the row pinouts of the kpd, orientation 2
-byte colPins[COLS] = {0, 15, 16};     // connect to the column pinouts of the kpd, orientation 2
+byte rowPins[ROWS] = {5, 17, 16, 4}; // connect to the row pinouts of the kpd, orientation 2
+byte colPins[COLS] = {0, 2, 15};     // connect to the column pinouts of the kpd, orientation 2
 
 Keypad kpd = Keypad(makeKeymap(keys), rowPins, colPins, ROWS, COLS);
 

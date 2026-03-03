@@ -79,13 +79,13 @@ function updateDirection(boxData) {
 }
 
 function setDTilt(accelDict) {
-    if (accelDict['accY'] < -20.0) {
+    if (accelDict['accY'] < -10.0) {
         d_tilt = "west";
-    } else if (accelDict['accY'] > 20.0) {
+    } else if (accelDict['accY'] > 10.0) {
         d_tilt = "east";
-    } else if (accelDict['accX'] < -20.0) {
+    } else if (accelDict['accX'] < -10.0) {
         d_tilt = "north";
-    } else if (accelDict['accX'] > 25.0) {
+    } else if (accelDict['accX'] > 15.0) {
         d_tilt = "south";
     } else {
         d_tilt = "none";

@@ -170,12 +170,12 @@ function updatePage(num, data) {
                 // sendMessage('info', 3, light_string); // send data for knob puzzle (3)
                 puzzle_complete(light_string); // 2 -> 3
                 console.log("neos completed")
+                setupSkyline();
             }
             break;
         case 'knobs_lbl':
             // lights - box tells web that it's completed
             if (data === "completed") {
-                setupSkyline();
                 console.log("knobs completed");
                 puzzle_complete(); // 3 -> 4
                 slide();
@@ -252,13 +252,14 @@ function skipPuzzle() {
             if (!isConnectedToBox) {
                 puzzle_complete();
             } else {
+                console.log(light_string);
                 puzzle_complete(light_string); // for knob puzzle, 2 -> 3
             }
             document.getElementById("skipBtn").disabled = false;
+            setupSkyline();
             break;
         case 'knobs_lbl':
             console.log("skipping lights");
-            setupSkyline();
             slide();
             puzzle_complete();
             break;
@@ -273,14 +274,21 @@ function skipPuzzle() {
             console.log("skipping dark/light");
             light_lightside.style.background = "white";
             light_lightside_clue.style.color = "black";
-            light_lightside_clue.style.color = "white";
-            light_darkside.style.background = "black";
-            let sol_num = setKnobImage(); //for tilt puzzle
-            if (isConnectedToBox) {
-                sendMessage('info', 6, sol_num); // send data for puzzle 6
+            // if connected to box, need to wait for knobs off
+            if (!isConnectedToBox) {
+                setKnobImage(); //for tilt puzzle
+                light_lightside_clue.style.color = "white";
+                light_darkside.style.background = "black";
+                slide();
+                puzzle_complete();
             }
-            slide();
-            puzzle_complete();
+            // if (isConnectedToBox) {
+                // let sol_num = setKnobImage(); //for tilt puzzle
+            //     sendMessage('info', 6, sol_num); // send data for puzzle 6
+            // } else {
+                
+            // }
+            
             break;
         case 'tilt_lbl':
             console.log("skipping tilt");
@@ -318,7 +326,7 @@ function set_light_order() {
         }
         light_order.push(r_int);
     }
-    light_string = `${light_order.indexOf(1)}${light_order.indexOf(2)}${light_order.indexOf(3)}`;
+    light_string = `${light_order.indexOf(0)}${light_order.indexOf(1)}${light_order.indexOf(2)}`;
 }
 
 function set_ldr_clue(light_ldr, dark_ldr) {

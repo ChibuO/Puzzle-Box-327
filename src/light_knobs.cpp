@@ -83,7 +83,8 @@ bool led_is_correct(int sequence[]) {
 }
 
 bool are_knobs_off() {
-  return led_status[0] == midnight && led_status[1] == midnight && led_status[2] == midnight;
+  int threshold = 10;
+  return led_status_raw[0] < threshold && led_status_raw[1] < threshold && led_status_raw[2] < threshold;
 }
 
 bool is_correct_knob_turned(int num) {

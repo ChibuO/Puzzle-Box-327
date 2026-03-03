@@ -153,18 +153,18 @@ void handleInfo(int current_puzzle, char *rest)
     // code
     for (int i = 0; i < 6; i++)
     {
-      Serial.printf("info- %c ", *(rest + i));
+      // Serial.printf("info- %c ", *(rest + i));
       code[i] = *(rest + i);
-      displayText(code, 0, 5, 2);
     }
 
+    displayText(code, 0, 5, 2);
     Serial.printf("info-ing %d\r\n", current_puzzle);
     break;
   case 2:
     // neos
     for (int i = 0; i < 8; i++)
     {
-      Serial.printf("info- %c ", *(rest + i));
+      // Serial.printf("info- %c ", *(rest + i));
       color_order[i] = *(rest + i);
     }
 
@@ -174,7 +174,7 @@ void handleInfo(int current_puzzle, char *rest)
     // knobs
     for (int i = 0; i < 3; i++)
     {
-      Serial.printf("info- %c ", *(rest + i));
+      // Serial.printf("info- %c ", *(rest + i));
       light_order[i] = *(rest + i);
     }
 

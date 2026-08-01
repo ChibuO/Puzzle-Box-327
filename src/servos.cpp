@@ -3,13 +3,18 @@
 Servo myservo;
 
 int pos = 0;
-int servoPin = 27;
+int servoPin = 26;
 int quarter = 45;
 int knob_ADC_max = 4000;
 bool final_knob_turned = false;
-int SERVO_STOP = 96; // 1.5ms pulse width, 96, 97
-int SERVO_CW = 90; // 2ms pulse width
+int SERVO_STOP = 91; // 1.5ms pulse width, 91-95
+// int SERVO_CW = 90; // 2ms pulse width
+int SERVO_CW = 76; // 2ms pulse width
 int SERVO_CCW = 105; // 1ms pulse width
+uint32_t quarter_delay = 350; // delay for quarter turn, in ms
+
+// this is for continuous rotation servos, 
+// so the values for CW and CCW are different than normal servos.
 
 void servo_setup()
 {
@@ -19,7 +24,8 @@ void servo_setup()
     ESP32PWM::allocateTimer(2);
     ESP32PWM::allocateTimer(3);
     myservo.setPeriodHertz(50);          // standard 50 hz servo
-    myservo.attach(servoPin, 500, 2400); // attaches the servo on pin 18 to the servo object
+    // myservo.attach(servoPin);
+    myservo.attach(servoPin, 500, 2400); // attaches the servo to the servo object
                                          // using default min/max of 1000us and 2000us
                                          // different servos may require different min/max settings
                                          // for an accurate 0 to 180 sweep
@@ -48,13 +54,24 @@ void setServoPos(int pos) {
     delay(15);
 }
 
-int servo_num = 90; // for testing purposes
+int servo_num = 80; // for testing purposes
 void servo_loop() {
     Serial.print("servo loop ");
-    Serial.println(servo_num);
-    myservo.write(servo_num);
+    // Serial.println(servo_num);
+    // myservo.write(servo_num);
+    rotateQuarterTest(quarter_delay);
+    delay(4000);
+    // servo_num += 2;
+}
+
+int servo_loop_delay = 600;
+void find_quarter_loop() {
+    Serial.println("servo delay: " + String(servo_loop_delay));
+    rotateQuarterTest(servo_loop_delay);
+    // int servoPos = myservo.read();
+    // Serial.println("servo pos: " + String(servoPos));
     delay(2000);
-    servo_num += 1;
+    servo_loop_delay += 20;
 }
 
 bool open() {
@@ -104,7 +121,13 @@ void rotateQuarterLoop() {
 
 void rotateQuarter() {
     myservo.write(SERVO_CW);
-    delay(1000);
+    delay(quarter_delay);
+    myservo.write(SERVO_STOP);
+}
+
+void rotateQuarterTest(uint32_t delayTime) {
+    myservo.write(SERVO_CW);
+    delay(delayTime);
     myservo.write(SERVO_STOP);
 }
 

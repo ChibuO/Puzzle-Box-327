@@ -27,8 +27,8 @@ const light_darkside_clue = document.getElementById("darkside-clue");
 
 let box_curr_puzz = 0;
 let current_puzzle = 0; //box starts at 1
-const puzzleOrder = { 0: 'key_lbl', 1: 'maze_lbl', 2: 'neo_lbl', 3: 'knobs_lbl', 4: 'weights_lbl', 5: 'dark_lbl', 6: 'tilt_lbl', 7: 'final_lbl' };
-const element_ids = ["key_lbl", "maze_lbl", "knobs_lbl", "weights_lbl", "tilt_lbl", "dark_lbl", "neo_lbl", "door_lbl", "final_lbl"];
+const puzzleOrder = { 0: 'key_lbl', 1: 'maze_lbl', 2: 'neo_lbl', 3: 'knobs_lbl', 4: 'weights_lbl', 5: 'dark_lbl', 6: 'tilt_lbl', 7: 'turn_lbl', 8: 'final_lbl' };
+const element_ids = ["key_lbl", "maze_lbl", "knobs_lbl", "weights_lbl", "tilt_lbl", "dark_lbl", "neo_lbl", "turn_lbl", "final_lbl"];
 
 const passkey = "jo";
 let codeString = "";
@@ -152,7 +152,7 @@ function updatePage(num, data) {
 
     console.log(`from box: puzzle ${num}, ${puzzleLbl}`, data);
 
-    // const puzzleOrder = {0: 'key_lbl', 1: 'maze_lbl', 2: 'neo_lbl', 3: 'knobs_lbl', 4: 'weights_lbl', 5: 'dark_lbl', 6: 'tilt_lbl', 7: 'final_lbl'};
+    // const puzzleOrder = {0: 'key_lbl', 1: 'maze_lbl', 2: 'neo_lbl', 3: 'knobs_lbl', 4: 'weights_lbl', 5: 'dark_lbl', 6: 'tilt_lbl', 7: 'turn_lbl', 8: 'final_lbl'};
     // num comes from the box itself, 0 would be the password
     switch (puzzleLbl) {
         case 'maze_lbl':
@@ -199,7 +199,8 @@ function updatePage(num, data) {
             } else if (data === "completed") {
                 // box then tells web when all potentiometers turned down
                 let sol_num = setKnobImage(); //for tilt puzzle
-                sendMessage('info', 6, sol_num); // send data for puzzle 6
+                // sendMessage('info', 6, sol_num); // send data for puzzle 6
+                puzzle_complete(sol_num); // 5 -> 6
                 slide();
             } else {
                 //the clue numbers
@@ -212,7 +213,7 @@ function updatePage(num, data) {
             // box gives acceleration data
             updateRotation(data); // 6 -> 7
             break;
-        case 'final_lbl':
+        case 'turn_lbl':
             //finale - box tells web when completed
             // if (isDialsCompleted) {
             //     document.getElementById("skipBtn").disabled = true;
@@ -230,7 +231,7 @@ function updatePage(num, data) {
 
 function skipPuzzle() {
     // const puzzleOrder = {0: 'key_lbl', 1: 'maze_lbl', 2: 'neo_lbl', 
-    // 3: 'knobs_lbl', 4: 'weights_lbl', 5: 'dark_lbl', 6: 'tilt_lbl', 7: 'final_lbl'};
+    // 3: 'knobs_lbl', 4: 'weights_lbl', 5: 'dark_lbl', 6: 'tilt_lbl', 7: 'turn_lbl', 8: 'final_lbl'};
     const puzzleLbl = puzzleOrder[current_puzzle];
     document.getElementById("skipBtn").disabled = true; // gets set to true in slide()
     sendMessage('skip', current_puzzle);
@@ -295,15 +296,15 @@ function skipPuzzle() {
             setDialsComplete();
             document.getElementById("skipBtn").disabled = false;
             break;
-        case 'final_lbl':
+        case 'turn_lbl':
             //finale - box tells web when completed
             // console.log("skipping finale");
             // if (!isConnectedToBox) {
             //     slide();
             //     puzzle_complete();
             // }
-            puzzle_complete();
             slide();
+            puzzle_complete();
             document.getElementById("skipBtn").disabled = true;
             break;
         default:
@@ -448,30 +449,3 @@ function setCode() {
     }, '');
     return codeList;
 }
-
-// function toggleVisibility(id) {
-//     if (document.getElementById(id).style.visibility == "visible") {
-//         document.getElementById(id).style.visibility = "hidden";
-//         makeMaze();
-//         websocket.send("completed");
-//     } else {
-//         document.getElementById(id).style.visibility = "visible";
-//     }
-// }
-
-// function random_item(items) {
-//     return items[Math.floor(Math.random() * items.length)];
-// }
-
-// function pauseNeos() {
-//     websocket.send(`info61`);
-//     document.getElementById("pause-btn").disabled = true;
-//     setTimeout(() => {
-//         websocket.send(`info60`);
-//         document.getElementById("pause-btn").disabled = false;
-//     }, 3000);
-// }
-
-// function unlockDoor() {
-//     document.getElementById("center-door-div").style.height = 0;
-// }

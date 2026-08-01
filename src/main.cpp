@@ -103,7 +103,7 @@ void start_puzzles() {
   }
   is_neos_complete = true;
   
-  puzzle_complete(); // 3
+  puzzle_complete(); // -> 3
   rotateQuarter();
 
   // knobs puzzle
@@ -129,7 +129,7 @@ void start_puzzles() {
     delay(300);
   }
 
-  puzzle_complete();
+  puzzle_complete(); // -> 4
   rotateQuarter();
   
   //weight
@@ -144,7 +144,7 @@ void start_puzzles() {
     delay(300);
   }
 
-  puzzle_complete();
+  puzzle_complete(); // -> 5
 
   //dark/light
   //get numbers to send for dark/light
@@ -181,7 +181,7 @@ void start_puzzles() {
     delay(300);
   }
 
-  puzzle_complete();
+  puzzle_complete(); // -> 6
 
   //tilt
   unsigned long lastIMUReadTime = 0;
@@ -212,7 +212,8 @@ void start_puzzles() {
     delay(100);
   }
 
-  puzzle_complete();
+  Serial.println("tilt done");
+  puzzle_complete(); // 7
 
   //knob
   while(!final_knob_turned && !should_skip_puzzle) {
@@ -224,6 +225,7 @@ void start_puzzles() {
     delay(200);
   }
 
+  Serial.println("turn done");
   puzzle_complete();
 
   Serial.println("box complete");
@@ -248,7 +250,7 @@ void loop() {
   delay(5000);
 }
 
-void se6tup() {
+void setu9p() {
   Serial.begin(115200);
   pinMode(LED_BUILTIN, OUTPUT);
   // pinMode(led_gpio, OUTPUT);
@@ -265,7 +267,8 @@ void se6tup() {
   // oled_setup();
 }
 
-void loo7p() {
+void loo8p() {
+  // Serial.println("starting loop");
   // if(recal_scale) {
     // calibrate_loop();
     // recal_scale = false;
@@ -298,4 +301,5 @@ void loo7p() {
   // Serial.println("done");
   // delay(5000);
   servo_loop();
+  // find_quarter_loop();
 }

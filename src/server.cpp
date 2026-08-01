@@ -69,6 +69,7 @@ void handleComplete(int current_puzzle, char *rest)
   case 5:
     // photoresistors completed
     is_prs_complete = true;
+    which_knob = rest[0] - '0';
     break;
   case 6:
     // tilt completed
@@ -111,6 +112,11 @@ void handleSkip(int current_puzzle)
     should_skip_puzzle = true;
     Serial.printf("skipping %d\r\n", current_puzzle);
     break;
+  case 7:
+    // knob turn completed
+    should_skip_puzzle = true;
+    Serial.printf("skipping %d\r\n", current_puzzle);
+    break;
   default:
     break;
   }
@@ -146,7 +152,6 @@ void handleRecalibrate(int current_puzzle)
 void handleInfo(int current_puzzle, char *rest)
 {
   Serial.printf("info curr: %d\r\n", current_puzzle);
-  int dial_paused_info = 0;
   switch (current_puzzle)
   {
   case 0:
@@ -183,9 +188,9 @@ void handleInfo(int current_puzzle, char *rest)
   case 6:
     // dials
     // to get number, subtract '0' ascii codes, works for 0-9
-    which_knob = rest[0] - '0';
+    // which_knob = rest[0] - '0';
 
-    Serial.printf("info-ing %d\r\n", current_puzzle);
+    // Serial.printf("info-ing %d\r\n", current_puzzle);
     break;
   default:
     break;

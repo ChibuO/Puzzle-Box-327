@@ -4,6 +4,7 @@
     margin: auto;
     display: flex;
     flex-direction: column;
+    background: radial-gradient(circle, rgb(46, 18, 255) 0%, rgb(17, 36, 156) 35%, rgb(13, 0, 112) 100%);;
 }
 
 #skyline_box {

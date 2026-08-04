@@ -4,6 +4,7 @@
     margin: auto;
     display: flex;
     flex-direction: column;
+    background: radial-gradient(circle, rgb(13, 13, 13) 40%, rgb(51, 4, 4) 90%);
     /* border: 3px solid red; */
 }
 
@@ -50,14 +51,14 @@
     display: flex;
     margin: auto;
     border-radius: 5px;
-    border: 1px solid white;
+    border: 1px solid #c43e00;
     overflow: hidden;
 }
 
 #mazeCanvas {
     margin: 0;
     /* display: block; */
-    background-color: rgb(158, 14, 69);
+    background-color: rgba(0, 0, 0, 0.202);
 }
 
 .lr-num-divs {

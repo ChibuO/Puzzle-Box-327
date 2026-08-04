@@ -23,6 +23,8 @@
 
         <div class="box-down-screen screen">
             <h1>SET BOX DOWN</h1>
+            <br />
+            <h1 id="box-down-timer">{5}</h1>
         </div>
 
         <div id="maze-screen" class="screen">
@@ -113,12 +115,12 @@
             <h3 id="dark_lbl">Dark/Light</h3>
             <h3 id="tilt_lbl">Tilt</h3>
             <h3 id="turn_lbl">Turn</h3>
-            <h3 id="final_lbl">Turn It</h3>
+            <h3 id="final_lbl">Completion</h3>
             <input class="btn_class" id="skipBtn" type="button" onclick="skipPuzzle()" value="Skip Puzzle" />
         </div>
     </div>
 
-    <h2 id="status_lbl">~</h2>
+    <h3 id="status_lbl">~</h3>
 
     <script src="./websocket.js"></script>
     <script src="./script.js"></script>

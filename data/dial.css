@@ -12,7 +12,6 @@
 svg.dial {
   width: 180px;
   height: 180px;
-  border: 1px gray dotted;
 }
 
 /* .dial .knob {
@@ -20,13 +19,13 @@ svg.dial {
 } */
 
 .dial .knob circle {
-  stroke: rgb(182, 0, 182);
+  stroke: white;
   stroke-width: 0.25px;
-  fill: black;
+  fill: rgb(27, 27, 27);
 }
 
 .dial .knob line {
-  stroke: rgb(182, 0, 182);
+  stroke: white;
   stroke-width: 0.5px;
   stroke-linecap: round;
 }
@@ -61,7 +60,7 @@ svg.dial {
 }
 
 #dial-div1 {
-  background-color: rgba(255, 0, 0, 0.4);
+  background: linear-gradient(180deg, rgb(67, 67, 67) 0%, rgb(114, 114, 114) 30%, rgb(74, 74, 74) 60%);
 }
 
 #dial-div2 {
@@ -71,13 +70,13 @@ svg.dial {
   align-items: center;
   justify-content: space-evenly;
   flex-direction: column;
-  background: linear-gradient(90deg, rgba(228,70,210,1) -20%, rgba(22,255,90,1) 150%);
+  background: linear-gradient(180deg, rgb(67, 67, 67) 0%, rgb(114, 114, 114) 30%, rgb(74, 74, 74) 60%);
   position: relative;
   z-index: 3;
 }
 
 #dial-div3 {
-  background-color: rgba(137, 43, 226, 0.4);
+  background: linear-gradient(180deg, rgb(67, 67, 67) 0%, rgb(114, 114, 114) 30%, rgb(74, 74, 74) 60%);
 }
 
 #center-dial-div {

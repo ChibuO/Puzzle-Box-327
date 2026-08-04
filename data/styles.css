@@ -17,8 +17,8 @@ html, body {
 body {
     height: 100vh;
     overflow: hidden;
-    background: rgb(131,58,180);
-    background: linear-gradient(22deg, rgba(131,58,180,1) 0%, rgba(81,29,253,1) 29%, rgba(252,176,69,1) 89%);
+    background: rgb(59, 48, 44);
+    /* background: linear-gradient(22deg, rgb(180, 145, 58) 0%, rgb(253, 111, 29) 29%, rgb(252, 151, 69) 89%); */
 }
 
 #main-game {
@@ -79,7 +79,7 @@ body {
 #admin-btn {
     font-size: 30px;
     cursor: pointer;
-    color: white;
+    color: black;
     padding: 0px 10px;
     /* border: 2px solid red; */
     height: min-content;
@@ -97,8 +97,9 @@ body {
     text-align: left;
     border-radius: 12px;
     backdrop-filter: blur(18px);
-    background: rgba(230, 235, 249, .7);
+    background: rgba(0, 0, 0, 0.4);
     border: 2px solid rgba(230, 235, 249, .7);
+    color: rgba(230, 235, 249, .7);
     box-shadow: 0 0 30px rgba(0, 0, 0, .05);
 }
 
@@ -162,7 +163,7 @@ body {
 
 #welcome-screen  {
     background: rgb(2,0,36);
-    background: radial-gradient(circle, rgba(2,0,36,1) 0%, rgba(9,9,121,1) 35%, rgba(0,212,255,1) 100%);
+    background: radial-gradient(circle, rgb(60, 2, 2) 0%, rgb(123, 3, 3) 40%, rgb(51, 4, 4) 80%);
     text-align: center;
     display: flex;
     justify-content: center;
@@ -171,10 +172,10 @@ body {
 }
 
 #passkey_txtbox {
-    color: white;
+    color: rgb(209, 0, 0);;
     width: 300px;
     height: 50px;
-    background-color: rgba(81, 150, 110, 0.3);
+    background-color: rgba(0, 0, 0, 0.3);
     font-size: 25px;
     padding-left: 10px;
     border: none;
@@ -186,21 +187,19 @@ body {
 
 #passkey_txtbox:focus, #passkey_txtbox:hover {
     outline-style: solid;
-    outline-color: rgba(81, 150, 110);
+    outline-color: rgb(209, 0, 0);
     outline-offset: 3px;
 }
 
 .box-down-screen {
     background: rgb(31,35,56);
-    background: radial-gradient(circle, rgba(31,35,56,1) 0%, rgba(61,48,80,1) 49%, rgba(120,107,110,1) 100%);
+    background: radial-gradient(circle, rgb(255, 255, 255) 0%, rgb(199, 199, 199) 49%, rgba(120,107,110,1) 100%);
     display: flex;
+    flex-direction: column;
     justify-content: center;
     align-items: center;
     z-index: 9;
-}
-
-.box-down-screen h1{
-    color: white;
+    color: rgb(43, 43, 43);
 }
 
 /*
@@ -208,8 +207,8 @@ body {
 */
 
 #tilt-screen {
-    background: rgb(228,70,210);
-    background: linear-gradient(90deg, rgba(228,70,210,1) 0%, rgba(22,255,90,1) 100%);
+    background: rgb(152, 152, 152);
+    background: linear-gradient(180deg, rgb(67, 67, 67) 0%, rgb(114, 114, 114) 20%, rgb(0, 122, 12) 90%);
     display: flex;
     flex-direction: column;
 }
@@ -253,7 +252,7 @@ body {
 
 #neopixel-screen {
     background: rgb(2,0,36);
-    background: radial-gradient(circle, rgb(0, 36, 12) 0%, rgb(31, 121, 9) 35%, rgb(4, 189, 35) 100%);
+    background: radial-gradient(circle, rgb(27, 0, 232) 0%, rgb(3, 13, 74) 35%, rgb(0, 0, 0) 100%);
     display: flex;
     flex-direction: column;
     justify-content: space-evenly;
@@ -272,7 +271,7 @@ body {
 .strip {
     display: flex;
     height: 60px;
-    border: 3px solid white;
+    border: 2px solid white;
     border-radius: 100px 100px 100px 100px;
     color: black;
     text-shadow: 1px 1px 5px white;
@@ -280,6 +279,7 @@ body {
     font-weight: bold;
     align-items: center;
     justify-content: center;
+    transition: all 1s ease;
 }
 
 #first-strip {
@@ -324,6 +324,7 @@ body {
     display: flex;
     justify-content: space-evenly;
     align-items: center;
+    background: radial-gradient(circle, rgb(3, 157, 39) 0%, rgb(6, 141, 71) 35%, rgb(0, 92, 138) 100%);
 }
 
 #end-screen iframe {

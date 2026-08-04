@@ -1,7 +1,7 @@
 let d_tilt;
 let maze_completed = false;
 let maze_interval_id;
-const maze_wall_color = "white";
+const maze_wall_color = "#c43e00";
 
 const setupMaze = () => {
     const mazeCanvas = document.getElementById("mazeCanvas");
@@ -38,7 +38,7 @@ const setupMaze = () => {
 
     ballSprite = new Image();
     ballSprite.src =
-        "./key.png" +
+        "./electricity.svg" +
         "?" +
         new Date().getTime();
     ballSprite.setAttribute("crossOrigin", " ");
@@ -48,7 +48,7 @@ const setupMaze = () => {
     };
 
     goalSprite = new Image();
-    goalSprite.src = "./home.png" +
+    goalSprite.src = "./cube.svg" +
         "?" +
         new Date().getTime();
     goalSprite.setAttribute("crossOrigin", " ");
@@ -128,9 +128,19 @@ function makeMaze(ballSprite, goalSprite, mazeCtx) {
 function setMazeComplete() {
     setNeoPixelScreen();
     slide(-1);
-    setTimeout(() => {
-        slide(1, 2);
+
+    // Start countdown from 5
+    let countdown = box_down_timer;
+    document.getElementById("box-down-timer").innerHTML = countdown;
+    const timerInterval = setInterval(() => {
+        countdown--;
+        document.getElementById("box-down-timer").innerHTML = countdown;
+        if (countdown <= 0) {
+            clearInterval(timerInterval);
+            slide(1, 2);
+        }
     }, 1000);
+
     clearInterval(maze_interval_id);
     puzzle_complete();
 }

@@ -42,6 +42,7 @@ const colorNum = 4; //must also change this in server.cpp
 
 let light_order = [];
 let light_string = "";
+let box_down_timer = 2;
 
 let isDialsCompleted = false;
 
@@ -86,7 +87,7 @@ window.onresize = function () {
 };
 
 passkey_txtbox.addEventListener("input", (event) => {
-    if (event.target.value === codeString) {
+    if (event.target.value === codeString || event.target.value === passkey) {
         event.target.value = "";
         passkey_completed();
     }
@@ -95,10 +96,19 @@ passkey_txtbox.addEventListener("input", (event) => {
 const passkey_completed = () => {
     set_light_order();
     slide();
-    setTimeout(() => {
-        // box_down_screen.style.opacity = 1;
-        slide();
+    
+    // Start countdown from 5
+    let countdown = box_down_timer;
+    document.getElementById("box-down-timer").innerHTML = countdown;
+    const timerInterval = setInterval(() => {
+        countdown--;
+        document.getElementById("box-down-timer").innerHTML = countdown;
+        if (countdown <= 0) {
+            clearInterval(timerInterval);
+            slide();
+        }
     }, 1000);
+    
     puzzle_complete(""); // 0 -> 1
 }
 
@@ -386,6 +396,9 @@ function setNeoPixelScreen() {
 }
 
 function showLightNums() {
+    [first_strip, second_strip, third_strip].forEach(strip => {
+        strip.style.background = "white";
+    });
     first_strip.innerHTML = light_order[0];
     second_strip.innerHTML = light_order[1];
     third_strip.innerHTML = light_order[2];

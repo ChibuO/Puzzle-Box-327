@@ -93,7 +93,7 @@ function setSkylineComplete() {
     clearInterval(skyline_interval_id);
     setTimeout(() => {
         slide();
-    }, 2000);
+    }, 1000);
     puzzle_complete();
 }
 

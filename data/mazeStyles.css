@@ -42,7 +42,6 @@
     /* margin-bottom: 20px; */
     display: flex;
     flex-direction: column;
-    /* border: 3px solid orange; */
     flex: 1;
 }
 
@@ -50,8 +49,9 @@
     opacity: 0;
     display: flex;
     margin: auto;
+    margin-top: 20px;
     border-radius: 5px;
-    border: 1px solid #c43e00;
+    /* border: 1px solid #c43e00; */
     overflow: hidden;
 }
 
@@ -59,11 +59,4 @@
     margin: 0;
     /* display: block; */
     background-color: rgba(0, 0, 0, 0.202);
-}
-
-.lr-num-divs {
-    align-items: center;
-    justify-content: center;
-    margin: auto;
-    padding: 0 20px;
 }

@@ -1,7 +1,7 @@
 var webcam_closed = false;
 
 function doConnect() { // makes a connection and defines callbacks
-    updateStatusLabel("Connecting to ws://" + localhost + ":81/ ...");
+    updateStatusLabel("::connecting to ws://" + localhost + ":81/ :::");
     
     websocket = new WebSocket("ws://" + localhost + ":81/");
     
@@ -20,7 +20,7 @@ function doConnect() { // makes a connection and defines callbacks
 }
 
 function onOpen(evt) { // when handshake is complete:
-	updateStatusLabel("Connected.");
+	updateStatusLabel("::connected::");
     isConnectedToBox = true;
     sendMessage("info", 0, codeString);
 
@@ -36,7 +36,7 @@ function onOpen(evt) { // when handshake is complete:
 
 function onClose(evt) { // when socket is closed:
     isConnectedToBox = false;
-	updateStatusLabel("Disconnected. Error: " + evt);
+	updateStatusLabel("::disconnected:: error: " + evt);
     webcam_closed = true;
 }
 

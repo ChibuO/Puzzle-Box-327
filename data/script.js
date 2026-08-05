@@ -438,6 +438,7 @@ function createGradient(colorOrder) {
     });
 
     css += ")";
+    htmlText = "::" + htmlText + "::";
     return [css, htmlText];
 }
 

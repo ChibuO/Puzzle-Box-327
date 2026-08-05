@@ -51,13 +51,20 @@ body {
 .recal-container {
     text-align: center;
     margin: 0;
+    margin-top: 20px;
     /* border: 3px solid yellow; */
+    display: flex;
+    align-items: center;
+    justify-content: center
 }
 
 .recal-btn {
-    align-items: center;
-    height: 50px;
-    margin-bottom: 5px;
+    font-size: 20px;
+    cursor: pointer;
+}
+
+.recal-btn:hover {
+    text-decoration: underline;
 }
 
 /* https://cssgradient.io/ */
@@ -316,7 +323,7 @@ body {
 }
 
 #knob-img {
-    width: 80%;
+    width: 90%;
 }
 
 #end-screen {

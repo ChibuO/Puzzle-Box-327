@@ -52,10 +52,10 @@ function onMessage(msg) { // when socket receives a message
 function onError(evt) { // when an error occurs
 	websocket.close();
 	updateStatusLabel("Websocket error");
-    // skipPuzzle(); // skip passkey, curr_puzz = 0
-    // skipPuzzle(); // skip maze, curr_puzz = 1
-    // skipPuzzle(); // skip freqs
-    // skipPuzzle(); // skip intensities
+    skipPuzzle(); // skip passkey, curr_puzz = 0
+    skipPuzzle(); // skip maze, curr_puzz = 1
+    skipPuzzle(); // skip freqs
+    skipPuzzle(); // skip intensities
     // skipPuzzle(); // skip weights
     // skipPuzzle(); // skip light/dark
 }

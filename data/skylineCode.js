@@ -4,9 +4,9 @@ let skyline_ball_direction = 1;
 let skyline_ball_weight = 0;
 const skyline_num_buildings = 5; // square canvas
 const skyline_wall_color = "white";
+const skylineCanvas = document.getElementById("skylineCanvas");
 
 const setupSkyline = () => {
-    const skylineCanvas = document.getElementById("skylineCanvas");
     const skylineCtx = skylineCanvas.getContext("2d");
     let wingSprite;
     let exitSprite;
@@ -34,14 +34,14 @@ const setupSkyline = () => {
     };
 
     wingSprite = new Image();
-    wingSprite.src = "./key.png";
+    wingSprite.src = "./electricity.svg";
     wingSprite.onload = function () {
         completeOne = true;
         isComplete();
     };
 
     exitSprite = new Image();
-    exitSprite.src = "./home.png";
+    exitSprite.src = "./cube.svg";
     exitSprite.onload = function () {
         completeTwo = true;
         isComplete();

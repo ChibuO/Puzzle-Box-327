@@ -30,24 +30,27 @@
 
 #skylineCanvas {
     margin: 0;
-    border: 1px solid rgb(0, 0, 0);
+    border: 1px solid rgb(13, 0, 112);
     border-radius: 5px;
     overflow: hidden;
-    background-color: rgb(10, 101, 94);
+    background-color: #120400;
 }
 
 #skylineContainer button {
     width: 80px;
     cursor: pointer;
-    background-color: whitesmoke;
+    color: rgb(68, 51, 28);
+    background-color: rgb(236, 230, 222);
     border-radius: 5px;
     border: none;
 }
 
 #skylineContainer button:hover {
-    background-color: rgb(221, 221, 221);
+    background-color: rgb(201, 184, 162);
+    border: 1px solid rgb(143, 128, 108);
+    color: black;
 }
 
 #skylineContainer button:active {
-    background-color: rgb(219, 241, 240);
+    background-color: rgb(143, 128, 108);
 }

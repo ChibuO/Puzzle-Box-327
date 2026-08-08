@@ -243,14 +243,16 @@ body {
     -webkit-user-select: none; /* Safari */
     -ms-user-select: none; /* IE 10 and IE 11 */
     user-select: none; /* Standard syntax */
+    --darkside-color: #120400;
+    --lightside-color: white;
 }
 
 #lightside {
-    background-color: black;
+    background-color: var(--darkside-color);
 }
 
 #darkside {
-    background-color: white;
+    background-color: var(--lightside-color);
 }
 
 /*

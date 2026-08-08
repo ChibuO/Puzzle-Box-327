@@ -49,7 +49,7 @@ function set_rotations(rotations) {
     return;
   }
   curr_speed = Math.round(Math.abs(rotations_to_speed(rotations)));
-  let dialDiv = document.getElementById('foobar'+ knob_num);
+  let dialDiv = document.getElementById('dial-svg'+ knob_num);
 
   dialDiv.getElementsByClassName('knob_number')[0].textContent = curr_speed;
   dialDiv.getElementsByClassName('knob_gfx')[0].style.transform = 'rotate(' + (rotations * 360) + 'deg)';
@@ -156,7 +156,7 @@ function createDialSvg(idNumber) {
   const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
   svg.setAttribute('viewBox', '-6 -6 12 12');
   svg.classList.add('dial');
-  svg.id = 'foobar'+idNumber;
+  svg.id = 'dial-svg'+idNumber;
 
   // Create <defs> and gradient
   const defs = document.createElementNS('http://www.w3.org/2000/svg', 'defs');

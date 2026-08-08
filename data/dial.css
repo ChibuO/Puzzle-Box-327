@@ -1,12 +1,5 @@
-.container {
-  width: 350px;
-  height: 200px;
-  margin: auto;
-  margin-top: 400px;
-  display: flex;
-  outline: transparent;
-  justify-content: center;
-  align-items: center;
+* {
+  --steel-color: linear-gradient(180deg, #434343 0%, #727272 30%, #4a4a4a 60%);
 }
 
 svg.dial {
@@ -60,7 +53,7 @@ svg.dial {
 }
 
 #dial-div1 {
-  background: linear-gradient(180deg, rgb(67, 67, 67) 0%, rgb(114, 114, 114) 30%, rgb(74, 74, 74) 60%);
+  background: var(--steel-color)
 }
 
 #dial-div2 {
@@ -70,13 +63,13 @@ svg.dial {
   align-items: center;
   justify-content: space-evenly;
   flex-direction: column;
-  background: linear-gradient(180deg, rgb(67, 67, 67) 0%, rgb(114, 114, 114) 30%, rgb(74, 74, 74) 60%);
+  background: var(--steel-color);
   position: relative;
   z-index: 3;
 }
 
 #dial-div3 {
-  background: linear-gradient(180deg, rgb(67, 67, 67) 0%, rgb(114, 114, 114) 30%, rgb(74, 74, 74) 60%);
+  background: var(--steel-color);
 }
 
 #center-dial-div {

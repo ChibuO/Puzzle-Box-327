@@ -200,12 +200,12 @@ function updatePage(num, data) {
             // box gives web photoresistor status
             // reveal first half
             if (data === "halfway") {
-                light_lightside.style.background = "white";
-                light_lightside_clue.style.color = "black";
-                light_darkside_clue.style.color = "black";
+                light_lightside.style.background = "var(--lightside-color)";
+                light_lightside_clue.style.color = "var(--darkside-color)";
+                light_darkside_clue.style.color = "var(--darkside-color)";
             } else if (data === "continue") { // reveal second half
-                light_lightside_clue.style.color = "white";
-                light_darkside.style.background = "black";
+                light_lightside_clue.style.color = "var(--lightside-color)";
+                light_darkside.style.background = "var(--darkside-color)";
             } else if (data === "completed") {
                 // box then tells web when all potentiometers turned down
                 let sol_num = setKnobImage(); //for tilt puzzle
@@ -283,13 +283,13 @@ function skipPuzzle() {
             break;
         case 'dark_lbl':
             console.log("skipping dark/light");
-            light_lightside.style.background = "white";
-            light_lightside_clue.style.color = "black";
+            light_lightside.style.background = "var(--lightside-color)";
+            light_lightside_clue.style.color = "var(--darkside-color)";
             // if connected to box, need to wait for knobs off
             if (!isConnectedToBox) {
                 setKnobImage(); //for tilt puzzle
-                light_lightside_clue.style.color = "white";
-                light_darkside.style.background = "black";
+                light_lightside_clue.style.color = "var(--lightside-color)";
+                light_darkside.style.background = "var(--darkside-color)";
                 slide();
                 puzzle_complete();
             }

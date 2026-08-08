@@ -2,14 +2,13 @@ let skyline_completed = false;
 let skyline_interval_id;
 let skyline_ball_direction = 1;
 let skyline_ball_weight = 0;
-const skyline_num_buildings = 5; // square canvas
-const skyline_wall_color = "white";
+const skyline_num_buildings = 7; // square canvas
 const skylineCanvas = document.getElementById("skylineCanvas");
 
 const setupSkyline = () => {
     const skylineCtx = skylineCanvas.getContext("2d");
     let wingSprite;
-    let exitSprite;
+    let tokenSprite;
     let viewbox = document.querySelector("#skyline_box");
     let viewWidth = viewbox.offsetWidth;
     let viewHeight = viewbox.offsetHeight;
@@ -28,28 +27,28 @@ const setupSkyline = () => {
     var isComplete = () => {
         if (completeOne === true && completeTwo === true) {
             setTimeout(function () {
-                makeSkyline(wingSprite, exitSprite, skylineCtx);
+                makeSkyline(wingSprite, tokenSprite, skylineCtx);
             }, 500);
         }
     };
 
     wingSprite = new Image();
-    wingSprite.src = "./electricity.svg";
+    wingSprite.src = "./cube.svg";
     wingSprite.onload = function () {
         completeOne = true;
         isComplete();
     };
 
-    exitSprite = new Image();
-    exitSprite.src = "./cube.svg";
-    exitSprite.onload = function () {
+    tokenSprite = new Image();
+    tokenSprite.src = "./electricity.svg";
+    tokenSprite.onload = function () {
         completeTwo = true;
         isComplete();
     };
 }
 
-function makeSkyline(wingSprite, exitSprite, skylineCtx) {
-    let skyline, draw, player;
+function makeSkyline(wingSprite, tokenSprite, skylineCtx) {
+    let skyline, player;
     let cellSize;
 
     if (player != undefined) {
@@ -58,10 +57,10 @@ function makeSkyline(wingSprite, exitSprite, skylineCtx) {
 
     cellSize = skylineCanvas.width / skyline_num_buildings; //numBuildings x numBuildings grid
 
-    skyline = new Skyline(skyline_num_buildings, skylineCtx, cellSize, exitSprite);
+    skyline = new Skyline(skyline_num_buildings, skylineCtx, cellSize);
     skyline.clear(); //clear canvas
     skyline.drawBuildings(); //loop through map and draw buildings
-    skyline.drawCoins();
+    skyline.drawCoins(tokenSprite);
     skyline.drawOcean();
 
     player = new SkylinePlayer(skyline, skylineCanvas, cellSize, setSkylineComplete, wingSprite);
@@ -98,11 +97,10 @@ function setSkylineComplete() {
 }
 
 class Skyline {
-    constructor(length, ctx, cellSize, endSprite = null) {
+    constructor(length, ctx, cellSize) {
         this.length = length;
         this.width = length;
         this.height = length;
-        this.endSprite = endSprite
         this.cellSize = cellSize;
         this.ctx = ctx;
         this.ctx.lineWidth = this.cellSize / 30;
@@ -160,47 +158,77 @@ class Skyline {
 
     //loop through map and draw building
     drawBuildings() {
-        // console.log("map", this.skylineMap);
-        this.ctx.fillStyle = skyline_wall_color;
-        this.ctx.strokeStyle = 'gray';
+        this.ctx.strokeStyle = '#4a4a4a';
         this.ctx.lineWidth = .5;
         for (let x = 0; x < this.width; x++) {
+            let rect_bottom = this.skylineMap[x] * this.cellSize;
+            let grad = this.ctx.createLinearGradient(0, 0, 0, rect_bottom);
+            grad.addColorStop(0, "#c7c7c7");
+            grad.addColorStop(.1*x, "#616161");
+            grad.addColorStop(.8, "#d4d4d4"); 
+            this.ctx.fillStyle = grad;
             let x_c = this.cellSize * x;
+            this.ctx.beginPath();
             this.ctx.rect(x_c, 0, this.cellSize, this.skylineMap[x] * this.cellSize);
+            this.ctx.fill();
         }
-        this.ctx.fill();
         this.ctx.stroke();
     }
 
-    drawCoins() {
+    drawCoins(tokenSprite) {
         this.coinArray.forEach((x, index) => {
             if (x) {
                 let coinCoords = {
                     x: index,
                     y: this.skylineMap[index]
                 };
-                this.drawCoin(coinCoords);
+                this.drawCoin(coinCoords, tokenSprite);
             }
         });
     }
 
-    drawCoin(coinCoords) {
+    drawCoin(coinCoords, tokenSprite) {
         const halfCellSize = this.cellSize / 2;
-        this.ctx.beginPath();
-        this.ctx.fillStyle = "pink";
-        this.ctx.arc(
-            (coinCoords.x + 1) * this.cellSize - halfCellSize,
-            (coinCoords.y + 1) * this.cellSize - halfCellSize,
-            halfCellSize - 2,
-            0,
-            2 * Math.PI
-        );
-        this.ctx.fill();
+        const x = coinCoords.x * this.cellSize;
+        const y = coinCoords.y * this.cellSize;
+        const padding = this.cellSize / 8;
+        const size = this.cellSize - padding * 2;
+
+        if (tokenSprite) {
+            this.ctx.drawImage(
+                tokenSprite,
+                0,
+                0,
+                tokenSprite.naturalWidth,
+                tokenSprite.naturalHeight,
+                x + padding,
+                y + padding,
+                size,
+                size
+            );
+        } else {
+            // fallback is a pink circle if the sprite is not loaded
+            this.ctx.beginPath();
+            this.ctx.fillStyle = "white";
+            this.ctx.arc(
+                x + halfCellSize,
+                y + halfCellSize,
+                halfCellSize - 2,
+                0,
+                2 * Math.PI
+            );
+            this.ctx.fill();
+        }
     }
 
     drawOcean() {
-        this.ctx.fillStyle = 'black';
-        this.ctx.fillRect(0, (this.width - 1) * this.cellSize, this.width * this.cellSize, this.cellSize);
+        const rect_top = (this.width - 1) * this.cellSize;
+        const rect_bottom = this.width * this.cellSize;
+        const grad = this.ctx.createLinearGradient(0, rect_top, 0, rect_bottom);
+        grad.addColorStop(0, "#FFAE00");
+        grad.addColorStop(1, "#FF002F"); 
+        this.ctx.fillStyle = grad;
+        this.ctx.fillRect(0, rect_top, this.width * this.cellSize, this.cellSize);
     }
 
     clear() {
